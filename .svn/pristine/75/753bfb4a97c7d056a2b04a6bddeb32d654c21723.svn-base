@@ -1,0 +1,11 @@
+<h2 id="what%20is%20kindeditor%3F">What is KindEditor?</h2>
+<p>KindEditor is a lightweight, Open Source(LGPL), cross browser, web based WYSIWYG HTML editor. KindEditor has the ability to convert standard textareas to rich text editing.</p>
+<h2 id="official%20site">Official site</h2>
+<p><a href="http://kindeditor.org/">http://kindeditor.org/</a></p>
+<h2 id="contributors">Contributors</h2>
+<ul>
+<li>Timon Lin</li>
+<li>daif alotaibi (<a href="http://daif.net/">http://daif.net/</a>) : Arabic Translation</li>
+<li>fisker (<a href="https://github.com/fisker">https://github.com/fisker</a>) : QQ style theme</li>
+<li>composite (<a href="https://github.com/composite">https://github.com/composite</a>) : Korean Translation</li>
+</ul>

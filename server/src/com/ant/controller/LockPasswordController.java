@@ -1,0 +1,398 @@
+package com.ant.controller;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import com.ant.business.Device;
+import com.ant.business.LockPassword;
+import com.ant.vo.LockPasswordVo;
+import com.ant.vo.PersonVo;
+import com.isurpass.common.exception.BusinessException;
+import com.isurpass.common.hibernate.BasicScroll;
+import com.isurpass.service.AutoGenerationPasswordService;
+import com.isurpass.service.HiCommuLogService;
+import com.isurpass.service.HiDeviceService;
+import com.isurpass.service.HiLockPasswordService;
+
+@Controller
+@RequestMapping(value="/service/lockpassword")
+@Scope(value = "prototype")
+public class LockPasswordController extends BaseController{
+
+	@Resource
+	private HiLockPasswordService hiLockpasswordservice;
+	@Resource
+	private HiCommuLogService hiCommuLogService;
+	@Resource
+	private HiDeviceService hiDeviceService;
+	@Resource
+	private AutoGenerationPasswordService AutoGenerationPasswordService;
+	
+	private static Log log = LogFactory.getLog(LockPasswordController.class);
+	
+	@RequestMapping(value="/findPage")
+	public @ResponseBody Map<String , Object> findPage(@ModelAttribute("lockpasswordvo")LockPasswordVo lockpasswordvo){
+		if  ( lockpasswordvo.getPage() == null || lockpasswordvo.getRows() == null )
+			throw new BusinessException(getRB().getString("pagerows"));
+		
+		BasicScroll scroll = new BasicScroll(lockpasswordvo.getPage(), lockpasswordvo.getRows());
+		List<LockPassword> lst = hiLockpasswordservice.findPage(lockpasswordvo.getDvcid(),scroll);
+		Device device = hiDeviceService.findByDeviceId(lockpasswordvo.getDvcid());
+		return createResponse(1 , getRB().getString("jquerysuccess") , scroll.getRows() , lst,device.isUseSpecifiyUsercode(),isZwaveLock(device));
+	}
+	
+	@RequestMapping(value="/findAutoPasswordPage")
+	public @ResponseBody Map<String , Object> findAutoPasswordPage(@ModelAttribute("lockpasswordvo")LockPasswordVo lockpasswordvo){
+		if  ( lockpasswordvo.getPage() == null || lockpasswordvo.getRows() == null )
+			throw new BusinessException(getRB().getString("pagerows"));
+		
+		BasicScroll scroll = new BasicScroll(lockpasswordvo.getPage(), lockpasswordvo.getRows());
+		List<LockPassword> lst = hiLockpasswordservice.findPasswordPage(lockpasswordvo.getDvcid(),scroll);
+		List<LockPassword> lpst = hiLockpasswordservice.findPasswordPage(lockpasswordvo.getDvcid());
+		int synchronizedCount = 0;
+		int toBeSynchronizedCount = 0;
+		int needSynchronizeCount = 0;
+		for(LockPassword l : lpst){
+			if(l.getSynstatus()==1){
+				synchronizedCount++;
+			}
+			if(l.getSynstatus()==0||l.getSynstatus()==2){
+				toBeSynchronizedCount++;
+			}
+			if((((l.getStatus()==1||l.getStatus()==8)&&l.getSynstatus()==0)||(l.getStatus()==2&&l.getSynstatus()!=1))
+					&&l.getUsestatus()!=0&&l.getValidfrom().getTime()<new Date().getTime()&&l.getValidthrough().getTime()>new Date().getTime()){
+				needSynchronizeCount++;
+			}
+		}
+		return createResponse(1 , getRB().getString("jquerysuccess") , scroll.getRows() , lst,synchronizedCount , toBeSynchronizedCount, needSynchronizeCount);
+	}
+	
+	@RequestMapping(value="/abandon")
+	public @ResponseBody Map<String , Object> abandonLockPassword(@RequestParam(value = "ids[]") Long[] ids){
+		try{
+			for(int i=0;i<ids.length;i++){
+				LockPassword lockpassword = hiLockpasswordservice.findByLockPasswordId(ids[i]);
+				hiLockpasswordservice.abandon(lockpassword.getLockpasswordid(),getRB());
+			}
+			return createResponse(1 , getRB().getString("droperatesuccess"),null);
+		}catch (Exception e){
+			log.error(e.getMessage() , e);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/generatenowbylock")
+	public @ResponseBody Map<String , Object> generateNowByLock(@RequestParam(value = "deviceid") Long deviceid){
+		try{
+			AutoGenerationPasswordService.autoGenerationPasswordByLock(deviceid);
+			return createResponse(1 , getRB().getString("droperatesuccess"),null);
+		}catch (Exception e){
+			log.error(e.getMessage() , e);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/generateafterbylock")
+	public @ResponseBody Map<String , Object> generateAfterByLock(@RequestParam(value = "deviceid") Long deviceid){
+		try{
+			Device device = hiDeviceService.findByDeviceId(deviceid);
+			if(isZwaveLock(device))
+				return createResponse(1 , getRB().getString("droperatesuccess"),null);
+			hiLockpasswordservice.deleteAllPasswordUnderLock(deviceid,getRB());
+			AutoGenerationPasswordService.autoGenerationPasswordByLock(deviceid);
+			return createResponse(1 , getRB().getString("droperatesuccess"),null);
+		}catch (Exception e){
+			log.error(e.getMessage() , e);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/generatenowbydistrict")
+	public @ResponseBody Map<String , Object> generateNowByDistrict(@RequestParam(value = "districtId") Long districtId){
+		try{
+			AutoGenerationPasswordService.autoGenerationPasswordByDistrict(districtId);
+			return createResponse(1 , getRB().getString("droperatesuccess"),null);
+		}catch (Exception e){
+			log.error(e.getMessage() , e);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/generateafterbydistrict")
+	public @ResponseBody Map<String , Object> generateAfterByDistrict(@RequestParam(value = "districtId") Long districtId){
+		try{
+			List<Device> devicelist = hiDeviceService.findByDistrictIdAndType(districtId, 0);
+			if(devicelist!=null){
+				for(Device d : devicelist){
+					if(!isZwaveLock(d)){
+						hiLockpasswordservice.deleteAllPasswordUnderLock(d.getId(),getRB());
+					}
+				}
+				AutoGenerationPasswordService.autoGenerationPasswordByDistrict(districtId);
+			}
+			return createResponse(1 , getRB().getString("droperatesuccess"),null);
+		}catch (Exception e){
+			log.error(e.getMessage() , e);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/saveLockPassword")
+	public @ResponseBody Map<String , Object> saveLockPassword(@ModelAttribute("lockpasswordvo")LockPasswordVo lockpasswordvo){
+		PersonVo sessionPersonVo = super.getCurrentUser();
+		long personid = 0;
+		int operatepersonid = sessionPersonVo.getId().intValue();
+		if(PersonController.checkIfSecondAdmin(sessionPersonVo)){
+			personid = sessionPersonVo.getSuperpersonid().longValue();
+		}else{
+			personid = sessionPersonVo.getId();
+		}
+		try{			
+			if(lockpasswordvo.getValidfrom().getTime()>lockpasswordvo.getValidthrough().getTime()){
+				throw new BusinessException(getRB().getString("timeerror"));
+			}
+			String week1 = request.getParameter("week1");
+			String week2 = request.getParameter("week2");
+			String week3 = request.getParameter("week3");
+			String week4 = request.getParameter("week4");
+			String week5 = request.getParameter("week5");
+			String week6 = request.getParameter("week6");
+			String week7 = request.getParameter("week7");
+			String starthour = request.getParameter("starthour");
+			String startmin = request.getParameter("startmin");
+			String endhour = request.getParameter("endhour");
+			String endmin = request.getParameter("endmin");
+			if(starthour!=null&&starthour.length()<2){
+				starthour = "0" + starthour;
+			}
+			if(startmin!=null&&startmin.length()<2){
+				startmin = "0" + startmin;
+			}
+			if(endhour!=null&&endhour.length()<2){
+				endhour = "0" + endhour;
+			}
+			if(endmin!=null&&endmin.length()<2){
+				endmin = "0" + endmin;
+			}
+			String starttime = starthour+":"+startmin;
+			String endtime = endhour + ":"+ endmin;
+			lockpasswordvo.setStarttime(starttime);
+			lockpasswordvo.setEndtime(endtime);
+			
+			int week = 0;
+			if(week1!=null){week += Integer.parseInt(week1);}
+			if(week2!=null){week += Integer.parseInt(week2);}
+			if(week3!=null){week += Integer.parseInt(week3);}
+			if(week4!=null){week += Integer.parseInt(week4);}
+			if(week5!=null){week += Integer.parseInt(week5);}
+			if(week6!=null){week += Integer.parseInt(week6);}
+			if(week7!=null){week += Integer.parseInt(week7);}
+			lockpasswordvo.setWeekday(week);	
+			hiLockpasswordservice.save(lockpasswordvo,sessionPersonVo,getRB(),operatepersonid);
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+ "设置密码成功" , new Long(lockpasswordvo.getDvcid()), personid,operatepersonid,9,1);
+			Device device = hiDeviceService.findById(new Long(lockpasswordvo.getDvcid()));
+			if(isZwaveLock(device)){
+				return createResponse(1 , getRB().getString("jsave"),null);
+			}
+			return createResponse(1 , getRB().getString("lockusersave"),null);
+		}
+		catch (Exception e) {
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+ "设置密码失败" , new Long(lockpasswordvo.getDvcid()), personid,operatepersonid,9,0);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+
+	@RequestMapping(value="/saveLockCardUser")
+	public @ResponseBody Map<String , Object> saveLockCardUser(@ModelAttribute("lockpasswordvo")LockPasswordVo lockpasswordvo){
+		PersonVo sessionPersonVo = super.getCurrentUser();
+		long personid = 0;
+		int operatepersonid = sessionPersonVo.getId().intValue();
+		if(PersonController.checkIfSecondAdmin(sessionPersonVo)){
+			personid = sessionPersonVo.getSuperpersonid().longValue();
+		}else{
+			personid = sessionPersonVo.getId();
+		}
+		try{
+			if(lockpasswordvo.getValidfrom().getTime()>lockpasswordvo.getValidthrough().getTime()){
+				throw new BusinessException(getRB().getString("timeerror"));
+			}
+			String week1 = request.getParameter("week1");
+			String week2 = request.getParameter("week2");
+			String week3 = request.getParameter("week3");
+			String week4 = request.getParameter("week4");
+			String week5 = request.getParameter("week5");
+			String week6 = request.getParameter("week6");
+			String week7 = request.getParameter("week7");
+			String starthour = request.getParameter("starthour");
+			String startmin = request.getParameter("startmin");
+			String endhour = request.getParameter("endhour");
+			String endmin = request.getParameter("endmin");
+			if(starthour!=null&&starthour.length()<2){
+				starthour = "0" + starthour;
+			}
+			if(startmin!=null&&startmin.length()<2){
+				startmin = "0" + startmin;
+			}
+			if(endhour!=null&&endhour.length()<2){
+				endhour = "0" + endhour;
+			}
+			if(endmin!=null&&endmin.length()<2){
+				endmin = "0" + endmin;
+			}
+			//卡片用户按星期授权只支持到小时
+			String starttime = starthour+":00";
+			String endtime = endhour + ":59";
+			lockpasswordvo.setStarttime(starttime);
+			lockpasswordvo.setEndtime(endtime);
+			int week = 0;
+			if(week1!=null){week += Integer.parseInt(week1);}
+			if(week2!=null){week += Integer.parseInt(week2);}
+			if(week3!=null){week += Integer.parseInt(week3);}
+			if(week4!=null){week += Integer.parseInt(week4);}
+			if(week5!=null){week += Integer.parseInt(week5);}
+			if(week6!=null){week += Integer.parseInt(week6);}
+			if(week7!=null){week += Integer.parseInt(week7);}
+			lockpasswordvo.setWeekday(week);
+			hiLockpasswordservice.saveLockCardUser(lockpasswordvo,sessionPersonVo,getRB());
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+  "设置卡用户成功" , new Long(lockpasswordvo.getDvcid()), personid,operatepersonid,10,1);
+			Device device = hiDeviceService.findById(new Long(lockpasswordvo.getDvcid()));
+			if(isZwaveLock(device)){
+				return createResponse(1 , getRB().getString("jsave"),null);
+			}
+			return createResponse(1 , getRB().getString("lockusersave"),null);
+		}
+		catch (Exception e) {
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+ "设置卡用户失败"  , new Long(lockpasswordvo.getDvcid()), personid,operatepersonid,10,0);
+			return super.createErrorResponse(-1, e.getMessage());
+
+		}
+	}
+	
+	@RequestMapping(value="/saveFingerprintUser")
+	public @ResponseBody Map<String , Object> saveFingerprintUser(@ModelAttribute("lockpasswordvo")LockPasswordVo lockpasswordvo){
+		PersonVo sessionPersonVo = super.getCurrentUser();
+		long personid = 0;
+		int operatepersonid = sessionPersonVo.getId().intValue();
+		if(PersonController.checkIfSecondAdmin(sessionPersonVo)){
+			personid = sessionPersonVo.getSuperpersonid().longValue();
+		}else{
+			personid = sessionPersonVo.getId();
+		}
+		try{
+			if(lockpasswordvo.getValidfrom().getTime()>lockpasswordvo.getValidthrough().getTime()){
+				throw new BusinessException(getRB().getString("timeerror"));
+			}
+			String week1 = request.getParameter("week1");
+			String week2 = request.getParameter("week2");
+			String week3 = request.getParameter("week3");
+			String week4 = request.getParameter("week4");
+			String week5 = request.getParameter("week5");
+			String week6 = request.getParameter("week6");
+			String week7 = request.getParameter("week7");
+			String starthour = request.getParameter("starthour");
+			String startmin = request.getParameter("startmin");
+			String endhour = request.getParameter("endhour");
+			String endmin = request.getParameter("endmin");
+			if(starthour!=null&&starthour.length()<2){
+				starthour = "0" + starthour;
+			}
+			if(startmin!=null&&startmin.length()<2){
+				startmin = "0" + startmin;
+			}
+			if(endhour!=null&&endhour.length()<2){
+				endhour = "0" + endhour;
+			}
+			if(endmin!=null&&endmin.length()<2){
+				endmin = "0" + endmin;
+			}
+			String starttime = starthour+":"+startmin;
+			String endtime = endhour + ":"+ endmin;
+			lockpasswordvo.setStarttime(starttime);
+			lockpasswordvo.setEndtime(endtime);
+			int week = 0;
+			if(week1!=null){week += Integer.parseInt(week1);}
+			if(week2!=null){week += Integer.parseInt(week2);}
+			if(week3!=null){week += Integer.parseInt(week3);}
+			if(week4!=null){week += Integer.parseInt(week4);}
+			if(week5!=null){week += Integer.parseInt(week5);}
+			if(week6!=null){week += Integer.parseInt(week6);}
+			if(week7!=null){week += Integer.parseInt(week7);}
+			lockpasswordvo.setWeekday(week);
+			hiLockpasswordservice.saveFingerprintUser(lockpasswordvo,sessionPersonVo,getRB());
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+ "设置指纹用户成功" , new Long(lockpasswordvo.getDvcid()), personid,operatepersonid,12,1);
+			Device device = hiDeviceService.findById(new Long(lockpasswordvo.getDvcid()));
+			if(isZwaveLock(device)){
+				return createResponse(1 , getRB().getString("jsave"),null);
+			}
+			return createResponse(1 , getRB().getString("lockusersave"),null);
+		}
+		catch (Exception e) {
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+ "设置指纹用户失败" , new Long(lockpasswordvo.getDvcid()), personid,operatepersonid,12,0);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/deleteLockPassword")
+	public @ResponseBody Map<String , Object> deleteLockPassword(@ModelAttribute("lockpassword")LockPassword lockpassword){
+		PersonVo sessionPersonVo = super.getCurrentUser();
+
+		long personid = 0;
+		int operatepersonid = sessionPersonVo.getId().intValue();
+		if(PersonController.checkIfSecondAdmin(sessionPersonVo)){
+			personid = sessionPersonVo.getSuperpersonid().longValue();
+		}else{
+			personid = sessionPersonVo.getId();
+		}
+		try{
+			hiLockpasswordservice.delete(lockpassword.getLockpasswordid(),getRB());
+			
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+ "删除用户成功" , new Long(lockpassword.getDvcid()), personid,operatepersonid,11,1);
+			Device device = hiDeviceService.findById(new Long(lockpassword.getDvcid()));
+			if(isZwaveLock(device)){
+				return createResponse(1 , getRB().getString("jdelete"),null);
+			}
+			return createResponse(1 , getRB().getString("lockuserdelete"),null);
+		}catch(Exception e){
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+ "删除用户失败" , new Long(lockpassword.getDvcid()), personid,operatepersonid,11,0);
+			return super.createErrorResponse(0, e.getMessage());
+		}
+	}
+	
+	@Deprecated
+	@RequestMapping(value="/hiddenLockPassword")
+	public @ResponseBody Map<String , Object> hiddenLockPassword(@ModelAttribute("lockpassword")LockPassword lockpassword){
+		try{
+			hiLockpasswordservice.hidden(lockpassword.getLockpasswordid(),getRB());
+
+			return createResponse(1 , getRB().getString("jsuccess"),null);
+		}catch (Exception e) {
+			return super.createErrorResponse(0, e.getMessage());
+		}
+	}
+	
+	private boolean isZwaveLock(Device device){
+		if(device!=null&&StringUtils.isNotBlank(device.getProductor())&&device.getProductor().length()>4){
+			return true;
+		}
+		return false;
+	}
+}

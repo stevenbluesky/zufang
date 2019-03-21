@@ -1,0 +1,32 @@
+#extends("page/include/base.vm") #require("static/scss/index.scss") #block("content")
+<div class="login-box m-form">
+	<div class="m-login-title">
+		<a href="index.html" class="logo"><img src="http://127.0.0.1:8080/mj/static/img/login-logo_c4bf6ae.png" /></a> 
+	    <span class="i-fgx">  </span>
+	    <span>登录</span>
+	</div>
+    <form id="form" class="m-plane-bd">
+        <div class="formitm">
+            <div class="ipt">
+                <input type="text" class="u-ipt i-user" datatype="*" name="personCode" placeholder="手机号/用户名" autocomplete="off"/>
+                <input type="password" class="u-ipt i-pwd" datatype="up" name="personPassword" placeholder="密码" autocomplete="off"/>
+            </div>
+        </div>
+        <div class="formitm">
+            <div class="ipt-1 f-cb">
+            	<a id="btn-register" class="s-dft-a f-fl">账号注册</a>
+                <a id="btn-find-pswd" class="s-dft-a f-fr">忘记密码</a>
+            </div>
+        </div>
+        <div class="formitm">
+            <div class="ipt-1 f-cb">
+                <a id="btn-login" class="u-btn blue">登  录</a>
+            </div>
+        </div>
+    </form>
+</div>
+#script("http://pv.sohu.com/cityjson")#end
+#end #script() require('static/libs/pro/index/index') #end 
+  ## auto inject by fis3-preprocess-extlang
+  #require("page/index/index.vm")
+#end

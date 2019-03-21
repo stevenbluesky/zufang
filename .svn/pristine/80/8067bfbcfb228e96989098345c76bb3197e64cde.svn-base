@@ -1,0 +1,177 @@
+package com.ant.vo;
+
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class LockPasswordVo extends CommonVo {
+	
+	private int lockpasswordid;
+	private int dvcid;
+	private int usercode;
+	private String password;
+	private String username;
+	private String countrycode;
+	private String phonenumber;
+	private int passwordFlag;
+	private int usertype ;
+	private int cardtype;
+	private String cardinfo;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Date validfrom;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Date validthrough;
+	//星期天：64星期一：32星期二：16星期三：8星期四：4星  期五：2星期六：1
+	private int weekday;
+	private String starttime;
+	private String endtime;
+	private String fingerprint;
+	private String hotaliduser;
+	private String thirdsendid;
+	private int status;
+	private int usestatus;
+	private int synstatus;
+	public int getLockpasswordid() {
+		return lockpasswordid;
+	}
+	public void setLockpasswordid(int lockpasswordid) {
+		this.lockpasswordid = lockpasswordid;
+	}
+	public int getDvcid() {
+		return dvcid;
+	}
+	public void setDvcid(int dvcid) {
+		this.dvcid = dvcid;
+	}
+	public int getUsercode() {
+		return usercode;
+	}
+	public void setUsercode(int usercode) {
+		this.usercode = usercode;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+	public String getCountrycode() {
+		return countrycode;
+	}
+	public void setCountrycode(String countrycode) {
+		this.countrycode = countrycode;
+	}
+	public String getPhonenumber() {
+		return phonenumber;
+	}
+	public void setPhonenumber(String phonenumber) { 
+		this.phonenumber = phonenumber;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public Date getValidfrom() {
+		return validfrom;
+	}
+	public void setValidfrom(Date validfrom) {
+		this.validfrom = validfrom;
+	}
+	public Date getValidthrough() {
+		return validthrough;
+	}
+	public void setValidthrough(Date validthrough) {
+		this.validthrough = validthrough;
+	}
+	public int getPasswordFlag() {
+		return passwordFlag;
+	}
+	public void setPasswordFlag(int passwordFlag) {
+		this.passwordFlag = passwordFlag;
+	}
+	public int getUsertype()
+	{
+		return usertype;
+	}
+	public void setUsertype(int usertype)
+	{
+		this.usertype = usertype;
+	}
+	public String getCardinfo()
+	{
+		return cardinfo;
+	}
+	public void setCardinfo(String cardinfo)
+	{
+		this.cardinfo = cardinfo;
+	}
+	public int getCardtype()
+	{
+		return cardtype;
+	}
+	public void setCardtype(int cardtype)
+	{
+		this.cardtype = cardtype;
+	}
+	
+	
+	public int getWeekday() {
+		return weekday;
+	}
+	public void setWeekday(int weekday) {
+		this.weekday = weekday;
+	}
+	public String getStarttime() {
+		return starttime;
+	}
+	public void setStarttime(String starttime) {
+		this.starttime = starttime;
+	}
+	public String getEndtime() {
+		return endtime;
+	}
+	public void setEndtime(String endtime) {
+		this.endtime = endtime;
+	}
+	public String getFingerprint() {
+		return fingerprint;
+	}
+	public void setFingerprint(String fingerprint) {
+		this.fingerprint = fingerprint;
+	}
+	public String getHotaliduser() {
+		return hotaliduser;
+	}
+	public void setHotaliduser(String hotaliduser) {
+		this.hotaliduser = hotaliduser;
+	}
+	public String getThirdsendid() {
+		return thirdsendid;
+	}
+	public void setThirdsendid(String thirdsendid) {
+		this.thirdsendid = thirdsendid;
+	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	public int getUsestatus() {
+		return usestatus;
+	}
+	public void setUsestatus(int usestatus) {
+		this.usestatus = usestatus;
+	}
+	public int getSynstatus() {
+		return synstatus;
+	}
+	public void setSynstatus(int synstatus) {
+		this.synstatus = synstatus;
+	}
+	
+	
+}

@@ -1,0 +1,143 @@
+<%if(type == 0){%>
+<div class="m-login-reg f-cb modify-password">
+    <div class="m-form f-fl">
+        <div class="layer-box f-cb" id="js-reset-form">
+            <div class="box-title"><%=label.resetpassword%><div class="btn-close"><i></i></div></div>
+            <div class="box-bd">
+                <div class="m-form">
+                    <form id="reset-password-form" class="m-plane-bd">
+                        <div class="formitm">
+                            <label class="lab"><%=label.originalpassword%><font>*</font></label>
+                            <div class="ipt">
+                                <input type="hidden" name="personCode" value="<%=personCode%>"/>
+                                <input type="password" class="u-ipt" datatype="up" name="personPassword" placeholder="<%=label.originalpassword%>"  autocomplete="off"/>
+                            </div>
+                        </div>
+                        <div class="formitm">
+                            <label class="lab"><%=label.newpassword%><font>*</font></label>
+                            <div class="ipt">
+                                <input type="password" class="u-ipt"  id="password" name="newPassword"  datatype="up"  placeholder="<%=label.newpassword%>"  autocomplete="off"/>
+                            </div>
+                        </div>
+                        <div class="formitm">
+                            <label class="lab"><%=label.querenpassword%><font>*</font></label>
+                            <div class="ipt">
+                                <input type="password" class="u-ipt"  datatype="up|tobe(password)" placeholder="<%=label.querenpassword%>"  autocomplete="off"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="box-ft">
+                <div class="btns">
+                    <button class="u-btn btn-close gray"><%=label.cancel%></button>
+                    <button class="u-btn red" id="resetPswdBtn"><%=label.confirm%></button>
+                </div>
+            </div>
+        </div>
+        <div class="layer-box f-cb f-dn">
+            <div class="box-title"><%=label.operatetips%><div class="btn-close"><i></i></div></div>
+            <div class="box-bd">
+                <div class="box-bd-content"><%=label.modifysuccess%></div>
+            </div>
+            <div class="box-ft">
+                <div class="btns">
+                    <button class="u-btn red btn-close" id="btn-save"><%=label.confirm%></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%}else if(type == 1){%>
+<div class="head-pic-outer">
+    <div class="m-head-pic-box">
+        <div class="head-pic-outline">
+            <div class="head-pic">
+                <%
+                    var imgPath = data.personImgUrl;
+                    if(imgPath.indexOf("no") >= 0){
+                        imgPath = common.BASE_PATH + '/static/img/no-user.jpg';
+                    }
+                    if(imgPath.length == 0){
+                        imgPath = common.BASE_PATH + '/static/img/no-user.jpg';
+                    }
+                %>
+                <img src="<%=imgPath%>" alt="<%=label.touxiang%>" width="140" height="140" id="coverImgUrl" data-src="<%=imgPath%>">
+                <input type="hidden">
+            </div>
+        </div>
+        <div class="choose-pic" id="choosePicBtn">
+            <i class="fa fa-pencil fa-2x"></i>
+            <input type="file">
+        </div>
+        
+    </div>
+    <span><%=label.photorequire3%></span>
+</div>
+<%}else if(type==2){%>
+<form id="svaeCellForm">
+    <div class="m-form">
+        <div class="formitm">
+            <label class="lab">
+               <%=label.usernumber%>：
+            </label>
+            <div class="ipt">
+                <span ><%=data.personCode%></span>
+            </div>
+        </div>
+        <div class="formitm">
+            <label class="lab">
+                <%=label.name%>：
+            </label>
+            <div class="ipt">
+                <input type="text" class="u-ipt f-dn" datatype="*{2,30}" name="realName" value="<%=data.realName%>" autocomplete="off"/>
+                <span ><%=data.realName%></span>
+            </div>
+            <i class="fa fa-edit fa-2x icon-large"></i>
+        </div>
+        <div class="formitm">
+            <label class="lab ">
+                <%=label.phonenumber%>：
+            </label>
+            <div class="ipt">
+                <input type="text" class="u-ipt f-dn" datatype="n{5,12}" name="phone" value="<%=data.phone%>" autocomplete="off"/>
+                <span ><%=data.phone%></span>
+            </div>
+            <i class="fa fa-edit fa-2x icon-large"></i>
+        </div>
+        <div class="formitm">
+            <label class="lab ">
+                <%=label.idcard%>：
+            </label>
+            <div class="ipt">
+                <input type="text" class="u-ipt f-dn"   name="idNo" value="<%=data.idNo%>" autocomplete="off"/>
+                <span ><%=data.idNo%></span>
+            </div>
+            <i class="fa fa-edit fa-2x icon-large"></i>
+        </div>
+        <div class="formitm">
+            <label class="lab ">
+                <%=label.email%>：
+            </label>
+            <div class="ipt">
+                <input type="text" class="u-ipt f-dn"  datatype="e" name="email" value="<%=data.email%>" autocomplete="off"/>
+                <span ><%=data.email%></span>
+            </div>
+            <i class="fa fa-edit fa-2x icon-large"></i>
+        </div>
+        <div class="formitm">
+            <label class="lab ">
+                <%=label.loginpassword%>：
+            </label>
+            <div class="ipt">
+                <a class="s-dft-a" id="btn-modify-pswd" data-personCode="<%=data.personCode%>"><%=label.modifyloginpassword%></a>
+            </div>
+        </div>
+        <div class="formitm formitm-1">
+            <div class="ipt">
+                <a class="u-btn gray" id="btn-save" style="width:100px;margin-left:150px"><%=label.save%></a>
+            </div>
+        </div>
+    </div>
+</form>
+<%}%>

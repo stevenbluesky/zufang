@@ -1,0 +1,6 @@
+{
+    "repos": "https://github.com/moment/moment.git",
+    "version": "2.10.6",
+    "name": "moment",
+    "main": "moment.min.js"
+}

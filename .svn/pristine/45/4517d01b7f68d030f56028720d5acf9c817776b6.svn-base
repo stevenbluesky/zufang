@@ -1,0 +1,180 @@
+#extends("page/include/base.vm") 
+	#require("static/scss/home.scss") 
+	#block("content")
+		<div class="g-sd">
+			<div class="g-sdc">
+				<div class="m-logo">
+					<a href="home.html">
+						<img src="http://localhost:8080/mj/static/img/logo.png"/>
+					</a>
+				</div>
+				#widget("widget/sidebarmenus/nav.vm" "var:type=2")
+			</div>
+		</div>
+		<div class="g-mn">
+			#block("header")
+				#widget("widget/header/header.vm")
+			#end
+			<div class="m-page-title">
+				<span><i>&gt;</i>我的门锁</span>
+			</div>
+			<div class="g-mnc">
+				<div class="search-item f-cb">
+					<ul class="f-cb f-fl">
+						<li><i class="fa fa-wifi fa-fw"></i>通讯状态：</li>
+						<li><a href="">全部</a></li>
+						<li><a href="">在线</a></li>
+						<li><a href="">离线</a></li>
+					</ul>
+					<ul class="f-cb f-fl">
+						<li><i class="fa fa-battery-full fa-fw"></i>电量：</li>
+						<li><a href="">全部</a></li>
+						<li><a href="">正常</a></li>
+						<li><a href="">电量低</a></li>
+					</ul>
+				</div>
+				<div class="search-item">
+					<ul class="f-cb">
+						<li><i class="fa fa-map-marker fa-fw"></i>安装地址：</li>
+						<li>
+							<input type="hidden" id="provinceCode-search" class="u-select"/>
+						</li>
+						<li>
+							<input type="hidden" id="cityCode-search" class="u-select"/>
+                            
+						</li>
+						<li>
+							<input type="hidden" id="areasCode-search" class="u-select"/>
+						</li>
+						<li>
+							<input type="text" placeholder="地址详细" class="u-ipt"/>
+						</li>
+					</ul>
+				</div>
+				<div class="search-item search-item-last">
+					<ul class="f-cb">
+						<li><i class="fa fa-user-secret fa-fw"></i>被授权人：</li>
+						<li>
+							<select class="u-select">
+								<option>李必琪</option>
+							</select>
+						</li>
+						<li>
+							<button class="u-btn gray">搜索</button>
+						</li>
+					</ul>
+				</div>
+				<div class="search-list">
+					<ul class="f-cb">
+						<li>
+							<div class="list-wrap f-cb">
+								<i class="checked fa fa-plus"></i>
+								<!-- 圆圈的两种状态 -->
+								<!--checked fa fa-plus fa-lg -->
+								<!--checked circle-->
+								<a href="lockDetail.html?id=1" class="f-fl">
+									<p>门锁编码：10.2.93.201</p>
+									<p>房源编号：测试1-6</p>
+									<p>安装地址：测试</p>
+								</a>
+								<div class="f-fr opt">
+									<i class="fa fa-times-circle status-1"></i>
+									<p class="status-1">离线</p>
+									<hr>
+									<i class="fa fa-battery-full status-2"></i>
+									<p class="status-2">94%</p>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="list-wrap f-cb">
+								<i class="checked circle"></i>
+								<!-- 圆圈的两种状态 -->
+								<!--checked fa fa-plus fa-lg -->
+								<!--checked circle-->
+								<a href="lockDetail.html?id=1" class="f-fl">
+									<p>门锁编码：10.2.93.201</p>
+									<p>房源编号：测试1-6</p>
+									<p>安装地址：测试</p>
+								</a>
+								<div class="f-fr opt">
+									<i class="fa fa-times-circle status-1"></i>
+									<p class="status-1">离线</p>
+									<hr>
+									<i class="fa fa-battery-full status-2"></i>
+									<p class="status-2">94%</p>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="list-wrap f-cb">
+								<i class="checked fa fa-plus"></i>
+								<!-- 圆圈的两种状态 -->
+								<!--checked fa fa-plus fa-lg -->
+								<!--checked circle-->
+								<a href="lockDetail.html?id=1" class="f-fl">
+									<p>门锁编码：10.2.93.201</p>
+									<p>房源编号：测试1-6</p>
+									<p>安装地址：测试</p>
+								</a>
+								<div class="f-fr opt">
+									<i class="fa fa-times-circle status-1"></i>
+									<p class="status-1">离线</p>
+									<hr>
+									<i class="fa fa-battery-full status-2"></i>
+									<p class="status-2">94%</p>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="list-wrap f-cb">
+								<i class="checked fa fa-plus"></i>
+								<!-- 圆圈的两种状态 -->
+								<!--checked fa fa-plus fa-lg -->
+								<!--checked circle-->
+								<a href="lockDetail.html?id=1" class="f-fl">
+									<p>门锁编码：10.2.93.201</p>
+									<p>房源编号：测试1-6</p>
+									<p>安装地址：测试</p>
+								</a>
+								<div class="f-fr opt">
+									<i class="fa fa-times-circle status-1"></i>
+									<p class="status-1">离线</p>
+									<hr>
+									<i class="fa fa-battery-full status-2"></i>
+									<p class="status-2">94%</p>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="list-wrap f-cb">
+								<i class="checked fa fa-plus"></i>
+								<!-- 圆圈的两种状态 -->
+								<!--checked fa fa-plus fa-lg -->
+								<!--checked circle-->
+								<a href="lockDetail.html?id=1" class="f-fl">
+									<p>门锁编码：10.2.93.201</p>
+									<p>房源编号：测试1-6</p>
+									<p>安装地址：测试</p>
+								</a>
+								<div class="f-fr opt">
+									<i class="fa fa-times-circle status-1"></i>
+									<p class="status-1">离线</p>
+									<hr>
+									<i class="fa fa-battery-full status-2"></i>
+									<p class="status-2">94%</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	#end 
+	#script()
+		require('static/libs/pro/index/wifi')
+	#end
+
+  ## auto inject by fis3-preprocess-extlang
+  #require("page/index/home.vm")
+#end

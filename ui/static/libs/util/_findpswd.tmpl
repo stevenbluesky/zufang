@@ -1,0 +1,57 @@
+<div class="m-login-reg f-cb modify-password">
+    <div class="m-form f-fl">
+        <div class="layer-box f-cb" id="js-forget-form">
+            <div class="box-title"><%=label.resetpassword%><div class="btn-close"><i></i></div></div>
+            <div class="box-bd">
+                <div class="m-form">
+                    <form id="find-password-form" class="m-plane-bd">
+                    <div class="formitm">
+	                
+	            </div>
+                        <div class="formitm">
+                            <label class="lab"><%=label.account1%><font>*</font></label>
+                            <div class="ipt">
+                                <input type="text" class="u-ipt"  datatype="*{1,20}" name="personCode" placeholder="<%=label.account1%>"  id="personCode" autocomplete="off"/>
+                            </div>
+                        </div>
+                        <div class="formitm">
+                            <label class="lab"><%=label.verificationcode%><font>*</font></label>
+                            <div class="ipt">
+                                <input type="text" class="u-ipt u-ipt-1" id="captcha"  datatype="yzm" name="captcha" placeholder="<%=label.verificationcode%>" maxlength="6" autocomplete="off"/>
+                                <a class="u-btn normal" id="btn-get-captcha-1"><%=label.getverificationcode%></a>
+                            </div>
+                        </div>
+                        <div class="formitm">
+                            <label class="lab"><%=label.newpassword%><font>*</font></label>
+                            <div class="ipt">
+                                <input type="password" class="u-ipt" id="password" datatype="up" name="personPassword" placeholder="<%=label.newpassword%>" autocomplete="off"/>
+                            </div>
+                        </div>
+                        <div class="formitm">
+                            <label class="lab"><%=label.confirmpassword%><font>*</font></label>
+                            <div class="ipt">
+                                <input type="password" class="u-ipt"  datatype="up|tobe(password)" placeholder="<%=label.confirmpassword%>" autocomplete="off"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="box-ft">
+                <div class="btns">
+                    <button class="u-btn btn-close gray"><%=label.cancel%></button><button class="u-btn red" id="findPswdBtn"><%=label.confirm%></button>
+                </div>
+            </div>
+        </div>
+        <div class="layer-box f-cb f-dn">
+            <div class="box-title"><%=label.operatetips%><div class="btn-close"><i></i></div></div>
+            <div class="box-bd">
+                <div class="box-bd-content"><%=label.findpasswordsuccess%></div>
+            </div>
+            <div class="box-ft">
+                <div class="btns">
+                    <button class="u-btn red btn-close"><%=label.confirm%></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

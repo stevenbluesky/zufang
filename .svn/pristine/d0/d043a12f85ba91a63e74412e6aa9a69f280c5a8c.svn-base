@@ -1,0 +1,194 @@
+<%if(type == 0){%>
+    <div class="layer-box f-cb">
+        <div class="box-title"><%=label.newroom%><div class="btn-close"><i></i></div></div>
+        <div class="box-bd">
+            <div class="m-form">
+                <form id="svaeCellForm" class="m-plane-bd">
+                    <div class="formitm">
+                        <label class="lab"><%=label.roomname%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="roomName" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.roomtype%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="hidden" id="roomType" class="u-select" style="width:300px"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.roomrent%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="rentfee"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.building%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="build"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.unit%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="unit"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.floor%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="floor"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.roomphoto%></label>
+                        <div class="ipt">
+                            <a class="u-btn red" id="btn-add-fengmian" style="margin-left:170px"><%=label.photoselect%></a>
+                            <p><span class="u-tips"><%=label.photorequire%></span></p>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.remark%></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="remark" nocheck="nocheck" autocomplete="off"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-ft">
+            <div class="btns">
+                <button class="u-btn btn-close gray"><%=label.cancel%></button><button class="u-btn red" id="btn-save"><%=label.confirm%></button>
+            </div>
+        </div>
+    </div>
+<%}else if(type == 1){%>
+   <!--  <%if(data.length == 0){%>
+        <div class="no_list">暂时没有此类数据</div>
+    <%}%> -->
+    <%
+        for (var i in data){
+    %>
+        <li>
+            <a href="<%=common.BASE_PATH%>/equipment.html?id=<%=data[i].districtId%>&roomId=<%=data[i].id%>">
+                <div class="list-wrap f-cb">
+                    <h3 class="cell-name"><%=data[i].roomName%></h3>
+                    <div class="cell-details f-cb">
+                        <div class="f-fl">
+                            <%
+                                var imgPath = data[i].roomImg;
+                                if(imgPath.indexOf("no") >= 0){
+                                    imgPath = common.IMG_PATH + imgPath;
+                                }
+                            %>
+                            <img src="<%=imgPath%>" alt="<%=label.roomphoto%>">
+                        </div>
+                        <ul class="f-fl">
+                            <li><%=label.numberofdevice%> <%=data[i].deviceCount%></li>
+                            <li><%=label.menpai%> <%=data[i].build%> <%=label.building%>,<%=data[i].unit%> <%=label.unit%>,<%=data[i].floor%> <%=label.floor%></li>
+                            <li><%=label.type%>：<%=Data.roomType[data[i].roomType-1].text%></li>
+                            <li><%=label.yishouquan%>： <%=data[i].grantFlag%> <%=label.roomren%>
+                            </li>
+                            <li><%=label.remark%>：<%=data[i].remark%></li>
+                            <li>
+                                <button class="u-btn gray btn-open-edit"
+                                        data-roomImg="<%=data[i].roomImg%>"
+                                        data-roomType="<%=data[i].roomType%>"
+                                        data-unit="<%=data[i].unit%>"
+                                        data-rentfee="<%=data[i].rentfee%>"
+                                        data-build="<%=data[i].build%>"
+                                        data-floor="<%=data[i].floor%>"
+                                        data-roomName="<%=data[i].roomName%>"
+                                        data-remark="<%=data[i].remark%>"
+                                        data-id="<%=data[i].id%>"
+                                        data-districtId="<%=data[i].districtId%>"
+                                        ><%=label.modify%></button>
+                                <button class="u-btn gray btn-delete"
+                                        data-id="<%=data[i].id%>"
+                                        ><%=label.ddelete%></button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </a>
+        </li>
+    <%}%>
+    <li class="new new-room btn-open-save">
+        <div class="list-wrap f-cb">
+        </div>
+    </li>
+<%}else if(type == 2){%>
+    <div class="layer-box f-cb">
+        <div class="box-title"><%=label.modifyroom%><div class="btn-close"><i></i></div></div>
+        <div class="box-bd">
+            <div class="m-form">
+                <form id="svaeCellForm" class="m-plane-bd">
+                    <div class="formitm">
+                        <label class="lab"><%=label.roomname%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="hidden" name="id" value="<%=data.id%>"/>
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="roomName" value="<%=data.roomName%>" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.roomtype%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="hidden" id="roomType" class="u-select" style="width:300px"/>
+                        </div>
+                    </div>
+                     <div class="formitm">
+                        <label class="lab"><%=label.roomrent%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="rentfee" value="<%=data.rentfee%>"/>
+                        </div>
+                    </div>
+                    <div class="formitm"> 
+                        <label class="lab"><%=label.building%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="build" value="<%=data.build%>"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.unit%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="unit" value="<%=data.unit%>"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.floor%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="floor" value="<%=data.floor%>"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.roomphoto%></label>
+                        <div class="ipt">
+                            <%
+                                var imgPath = data.roomImg,flag = true;
+                                if(imgPath.indexOf("no") >= 0){
+                                    imgPath = common.IMG_PATH  + imgPath;
+                                    flag = false;
+                                }
+                            %>
+                            <div><img src="<%=imgPath%>" width="115" height="150"  id="coverImgUrl" 
+                                <%if(flag){%>data-src="<%=data.roomImg%>"<%}%>/></div>
+                            <a class="u-btn red" id="btn-add-fengmian" style="margin-left:170px"><%=label.photoselect%></a>
+                            <p><span class="u-tips"><%=label.photorequire2%></span></p>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.remark%></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="remark" nocheck="nocheck" value="<%=data.remark%>" autocomplete="off"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-ft">
+            <div class="btns">
+                <button class="u-btn btn-close gray"><%=label.cancel%></button><button class="u-btn red" id="btn-save"><%=label.confirm%></button>
+            </div>
+        </div>
+    </div>
+<%}%>

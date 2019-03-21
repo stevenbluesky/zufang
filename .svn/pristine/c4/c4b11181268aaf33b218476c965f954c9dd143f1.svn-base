@@ -1,0 +1,475 @@
+package com.isurpass.service;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.ResourceBundle;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.scheduling.annotation.Async;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.ant.business.Device;
+import com.ant.business.District;
+import com.ant.business.LockPassword;
+import com.ant.business.Room;
+import com.ant.config.MjConfig;
+import com.ant.constant.CommonConstant;
+import com.ant.restful.service.RestfulUtil;
+import com.ant.util.AES;
+import com.ant.util.ConstDefine;
+import com.ant.util.StringUtil;
+import com.ant.util.Utils;
+import com.ant.vo.LockPasswordVo;
+import com.isurpass.common.exception.BusinessException;
+import com.isurpass.common.hibernate.BasicScroll;
+import com.isurpass.common.hibernate.CriteriaWrap;
+import com.isurpass.common.hibernate.ExpWrap;
+import com.isurpass.common.sms.AliSmsSender;
+import com.isurpass.common.sms.MessageParser;
+
+public class HiLockPasswordService extends BaseService<LockPassword> {
+
+	private static Log log = LogFactory.getLog(HiLockPasswordService.class);
+
+	private boolean isZwaveLock(Device device){
+		if(device==null)
+			return false;
+		String productor = device.getProductor();
+		if(StringUtils.isNotBlank(productor)&&productor.length()>4){
+			return true;
+		}
+		return false;
+	}
+	
+	public void save(LockPasswordVo lockpassword, ResourceBundle rb) 
+	{
+		HiDeviceService hiDeviceService = super.createService(HiDeviceService.class);
+		Device device = hiDeviceService.findById(new Long(lockpassword.getDvcid()));	
+		if ( lockpassword.getPasswordFlag() == 1 )
+		{
+			Random r = new Random(System.currentTimeMillis());
+			lockpassword.setPassword(String.format("%06d", r.nextInt(1000000)));
+		}
+		String tid = StringUtil.getUUID();
+		lockpassword.setThirdsendid(tid);
+		if(isZwaveLock(device)){
+			lockpassword.setStatus(0);
+		}else{
+			lockpassword.setStatus(1);
+		}
+		
+		sendpassword(lockpassword,device,rb);
+		
+		if(lockpassword.getHotaliduser()==null){
+			sendSms(lockpassword,device,rb);
+		}else{
+			//给酒店客户发短信  您已成功预订${hotal}${room}房间，入住时间：${starttime}-${endtime}，请于${passwordtime}后到${hotal}刷身份证获取开门密码。
+			log.info("您已成功预订房间，请到店刷身份证获取开门密码。");
+			sendSms(lockpassword,device);
+		}
+		
+		LockPassword lp = new LockPassword();
+		try {
+			PropertyUtils.copyProperties(lp, lockpassword);
+		} catch (Throwable e) {
+			log.error(e.getMessage() , e);
+		}
+		if(lockpassword.getHotaliduser()==null){
+			lp.setPassword("");
+		}else{
+			String p = AES.encrypt2Str(lp.getPassword());
+			lp.setPassword(p);
+		}
+		super.save(lp);
+	}
+
+	public void saveLockCardUser(LockPasswordVo lockpassword, ResourceBundle rb)
+	{
+		HiDeviceService hiDeviceService = super.createService(HiDeviceService.class);
+		Device device = hiDeviceService.findById(new Long(lockpassword.getDvcid()));
+		String tid = StringUtil.getUUID();
+		lockpassword.setThirdsendid(tid);
+		lockpassword.setStatus(1);
+		sendcardinfo(lockpassword,device,rb);
+		LockPassword lp = new LockPassword();
+		try {
+			PropertyUtils.copyProperties(lp, lockpassword);
+		} catch (Throwable e) {
+			log.error(e.getMessage() , e);
+		} 
+		super.save(lp);
+	}
+	
+	public void saveFingerprintUser(LockPasswordVo lockpassword, ResourceBundle rb){
+		//TODO
+		HiDeviceService hiDeviceService = super.createService(HiDeviceService.class);
+		Device device = hiDeviceService.findById(new Long(lockpassword.getDvcid()));
+		String tid = StringUtil.getUUID();
+		lockpassword.setThirdsendid(tid);
+		lockpassword.setStatus(1);
+		sendfingerprint(lockpassword,device,rb);
+		//sendSms(lockpassword,device,rb);无短信模板 
+		
+		LockPassword lp = new LockPassword();
+		try {
+			PropertyUtils.copyProperties(lp, lockpassword);
+		} catch (Throwable e) {
+			log.error(e.getMessage() , e);
+		} 
+		super.save(lp);
+	}
+	
+	public void delete(long lockpasswordid, ResourceBundle rb) 
+	{
+		LockPassword lockpassword = super.query(lockpasswordid);
+		if ( lockpassword == null )
+			return ;
+		HiDeviceService hiDeviceService = super.createService(HiDeviceService.class);
+		Device device = hiDeviceService.findById(new Long(lockpassword.getDvcid()));
+		sendDeletepassword(lockpassword , device,rb);
+		if(isZwaveLock(device)){
+			lockpassword.setStatus(ConstDefine.LOCKPASSWORD_STATUS_DELEET);
+		}else{
+			lockpassword.setStatus(ConstDefine.LOCKPASSWORD_STATUS_DELETING);
+		}
+		
+		lockpassword.setDeletetime(new Date());
+		
+		super.update(lockpassword);
+	}
+
+	public List<LockPassword> findPage(int lockid, BasicScroll scroll) 
+	{
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.add(ExpWrap.eq("dvcid", lockid));
+		cw.add(ExpWrap.lt("status", ConstDefine.LOCKPASSWORD_STATUS_DELEET));
+		cw.setScroll(scroll);
+		return cw.list();
+	}
+
+	private void sendpassword(LockPasswordVo lockpassword,Device device, ResourceBundle rb)
+	{
+		if(CommonConstant.restFlag == 1){
+			Map<String , Object> map = new HashMap<String , Object>();
+			map.put("zwavedeviceid", device.getPtDeviceId());
+			map.put("password", lockpassword.getPassword());
+			map.put("usercode", lockpassword.getUsercode());
+			map.put("username", lockpassword.getUsername());
+			if(isZwaveLock(device)){
+				map.put("asynch", 1);
+			}else{
+				map.put("asynch", 0);
+			}
+			map.put("tid", lockpassword.getThirdsendid());
+			if(lockpassword.getWeekday()!=0){//星期勾选了才传送这三个参数
+				map.put("weekday", lockpassword.getWeekday());
+				map.put("starttime",lockpassword.getStarttime());
+				map.put("endtime",lockpassword.getEndtime());
+			}
+			if(lockpassword.getValidfrom() == null){
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.HOUR_OF_DAY, 0);
+				c.set(Calendar.MINUTE, 0);
+				c.set(Calendar.SECOND, 0);
+				lockpassword.setValidfrom(c.getTime());
+			}
+			if(lockpassword.getValidthrough() == null){
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.HOUR_OF_DAY, 23);
+				c.set(Calendar.MINUTE, 59);
+				c.set(Calendar.SECOND, 59);
+				lockpassword.setValidthrough(c.getTime());
+			}
+			map.put("validfrom", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lockpassword.getValidfrom()));
+			map.put("validthrough", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lockpassword.getValidthrough()));
+			
+			/**调用修改密码接口*/
+
+			String str = "" ;
+			if ( lockpassword.getUsercode() != ConstDefine.LOCKPASSWORD_USERCODE_TEMP )
+				str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/setlockuserpassword", map,rb);//下发用户密码
+			else {
+				List<LockPassword> temppl = findTempPasswordByDvicdAndUserCodeAndStatus(device.getId().intValue());
+				if(temppl!=null&&temppl.size()>0){
+					throw new BusinessException(CommonConstant.getErrorMsg(30512,rb));
+				}
+				str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/setlockpassword", map,rb);//下发临时密码
+			}
+			Utils.checkResult(str,rb);
+			
+			try {
+				JSONObject json = JSON.parseObject(str);
+				if ( json.containsKey("usercode"))
+					lockpassword.setUsercode(json.getIntValue("usercode"));
+			} catch (Exception e) {
+				throw new BusinessException(rb.getString("seecib"));
+			}
+			 
+		}
+	}
+	
+	private void sendcardinfo(LockPasswordVo lockpassword,Device device, ResourceBundle rb){
+		if(CommonConstant.restFlag == 1){
+			Map<String , Object> map = new HashMap<String , Object>();
+			map.put("zwavedeviceid", device.getPtDeviceId());
+			map.put("cardname", lockpassword.getUsername());
+			map.put("cardinfo", lockpassword.getCardinfo());
+			map.put("cardtype", lockpassword.getCardtype());
+			if(isZwaveLock(device)){
+				map.put("asynch", 1);
+			}else{
+				map.put("asynch", 0);
+			}
+			map.put("tid", lockpassword.getThirdsendid());
+			if(lockpassword.getValidfrom() == null){
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.HOUR_OF_DAY, 0);
+				c.set(Calendar.MINUTE, 0);
+				c.set(Calendar.SECOND, 0);
+				lockpassword.setValidfrom(c.getTime());
+			}
+			if(lockpassword.getValidthrough() == null){
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.HOUR_OF_DAY, 23);
+				c.set(Calendar.MINUTE, 59);
+				c.set(Calendar.SECOND, 59);
+				lockpassword.setValidthrough(c.getTime());
+			}
+			if(lockpassword.getWeekday()!=0){//星期勾选了才传送这三个参数
+				map.put("weekday", lockpassword.getWeekday());
+				map.put("starttime",lockpassword.getStarttime());
+				map.put("endtime",lockpassword.getEndtime());
+			}
+			map.put("validfrom", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lockpassword.getValidfrom()));
+			map.put("validthrough", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lockpassword.getValidthrough()));
+			
+			/**调用修改密码接口*/
+
+			String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/addDoorlockCard", map,rb);
+			Utils.checkResult(str,rb);
+			
+			JSONObject json = JSON.parseObject(str);
+			if ( json.containsKey("usercode"))
+				lockpassword.setUsercode(json.getIntValue("usercode"));
+		}
+	}
+	
+	private void sendfingerprint(LockPasswordVo lockpassword,Device device, ResourceBundle rb){
+		if(CommonConstant.restFlag == 1){
+			Map<String , Object> map = new HashMap<String , Object>();
+			map.put("zwavedeviceid", device.getPtDeviceId());
+			map.put("fingerprint", lockpassword.getFingerprint());
+			map.put("username", lockpassword.getUsername());
+			if(isZwaveLock(device)){
+				map.put("asynch", 1);
+			}else{
+				map.put("asynch", 0);
+			}
+			map.put("tid", lockpassword.getThirdsendid());
+			if(lockpassword.getValidfrom() == null){
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.HOUR_OF_DAY, 0);
+				c.set(Calendar.MINUTE, 0);
+				c.set(Calendar.SECOND, 0);
+				lockpassword.setValidfrom(c.getTime());
+			}
+			if(lockpassword.getValidthrough() == null){
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.HOUR_OF_DAY, 23);
+				c.set(Calendar.MINUTE, 59);
+				c.set(Calendar.SECOND, 59);
+				lockpassword.setValidthrough(c.getTime());
+			}
+			if(lockpassword.getWeekday()!=0){//星期勾选了才传送这三个参数
+				map.put("weekday", lockpassword.getWeekday());
+				map.put("starttime",lockpassword.getStarttime());
+				map.put("endtime",lockpassword.getEndtime());
+			}
+			map.put("validfrom", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lockpassword.getValidfrom()));
+			map.put("validthrough", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lockpassword.getValidthrough()));
+			
+			/**调用修改密码接口*/
+
+			String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/setlockfingerprintuserinfo", map,rb);
+			Utils.checkResult(str,rb);
+			
+			JSONObject json = JSON.parseObject(str);
+			if ( json.containsKey("usercode"))
+				lockpassword.setUsercode(json.getIntValue("usercode"));
+		}
+	}
+	private void sendDeletepassword(LockPassword lockpassword,Device device, ResourceBundle rb)
+	{
+		Map<String , Object> map = new HashMap<String , Object>();
+		map.put("zwavedeviceid", device.getPtDeviceId());
+		map.put("usercode", lockpassword.getUsercode());
+		if(isZwaveLock(device)){
+			map.put("asynch", 1);
+		}else{
+			map.put("asynch", 0);
+		}
+		map.put("tid", lockpassword.getThirdsendid());
+		String str ;
+		
+		if ( lockpassword.getUsertype() == 32 ){
+			str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/deleteDoorlockCard", map,rb);
+		}else if ( lockpassword.getUsertype() == 22 ){
+			str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/deletelockfingerprintuser", map,rb);
+		}else if ( lockpassword.getUsercode() != ConstDefine.LOCKPASSWORD_USERCODE_TEMP ){
+			str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/deletelockuserpassword", map,rb);
+		}else{ 
+			str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/deletelockpassword", map,rb);
+		}
+		Utils.checkResult(str,rb);
+	} 
+	
+
+	@Async
+	public void sendSms(LockPasswordVo lockpassword,Device dbDevice, ResourceBundle rb)
+	{
+		JSONObject json = new JSONObject();
+		
+		String templatecode = "SMS_36100250";
+		if(dbDevice.getBindRoomId() != null){
+			HiRoomService hiRoomService = super.createService(HiRoomService.class);
+			Room dbRoom = hiRoomService.findById(dbDevice.getBindRoomId());
+			HiDistrictService hiDistrictService = super.createService(HiDistrictService.class);
+			District dbDistrict = hiDistrictService.findById(dbRoom.getDistrictId());
+//			text = "您的【" + dbDistrict.getDistrictName() + "】小区" + dbRoom.getBuild() + "栋" + dbRoom.getUnit() + 
+//			"单元" + dbRoom.getFloor() + "楼" + dbRoom.getRoomName() + "房间" + dbDevice.getDeviceName() + "锁";
+			 
+			json.put("districtName", dbDistrict.getDistrictName());
+			json.put("build", dbRoom.getBuild());
+			json.put("unit", dbRoom.getUnit());
+			json.put("floor", dbRoom.getFloor());
+			json.put("roomName", dbRoom.getRoomName());
+		}else{
+			//text = "您的" + dbDevice.getDeviceName() + "锁";
+			templatecode = "SMS_36110165";
+		}
+		
+		json.put("deviceName", dbDevice.getDeviceName());
+		json.put("password", lockpassword.getPassword());
+
+		if(ConstDefine.LOCKPASSWORD_USERCODE_TEMP != lockpassword.getUsercode()){
+			json.put("passwordtype", rb.getString("yonghu"));
+			//text = text + "被设置用户密码为：" + lockpassword.getPassword() + "";
+		}else{
+			json.put("passwordtype", rb.getString("linshi"));
+			//text = text + "被设置临时密码为：" + lockpassword.getPassword() + "";
+		}
+
+		//"您的【${districtName}】小区${build}栋${unit}单元${floor}楼${roomName}房间${deviceName}锁被设置${passwordtype}密码为：${password}"
+		MessageParser mp = new MessageParser(null ,templatecode , json);
+		//【管家提醒】"${districtName}小区${build}栋${unit}单元${floor}楼${roomName}房间${deviceName}锁已添加您的指纹，您可在${validfrom}至${validthrough}内开门"
+		AliSmsSender sender = new AliSmsSender();
+		if(lockpassword.getCountrycode()!=null&&!"".equals(lockpassword.getCountrycode())&&!"86".equals(lockpassword.getCountrycode())){
+			sender.sendSMS(lockpassword.getCountrycode(), lockpassword.getPhonenumber(), mp);
+		}else{
+			sender.sendSMS("86", lockpassword.getPhonenumber(), mp);
+		}
+		
+//		pmap.put("message", text);
+//		String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/sendsms", pmap);
+//		Map resultMap = JSON.parseObject(str,HashMap.class);
+//		if(StringUtil.checkNull(resultMap.get("resultCode"))){
+//			throw new BusinessException("系统错误，错误代码为空。");
+//		}
+//		int resultCode = Integer.parseInt(resultMap.get("resultCode").toString());
+//		if(resultCode != 0){
+//			throw new BusinessException("系统错误，错误代码：" + resultCode);
+//		}
+	}
+	
+	@Async
+	public void sendSms(LockPasswordVo lockpassword,Device dbDevice)
+	{
+		JSONObject json = new JSONObject();
+		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm:ss");
+		String templatecode = "SMS_142946625";
+		if(dbDevice.getBindRoomId() == null){
+			return ;
+		}
+		HiRoomService hiRoomService = super.createService(HiRoomService.class);
+		Room dbRoom = hiRoomService.findById(dbDevice.getBindRoomId());
+		HiDistrictService hiDistrictService = super.createService(HiDistrictService.class);
+		District dbDistrict = hiDistrictService.findById(dbRoom.getDistrictId());
+		 
+		json.put("hotal", dbDistrict.getDistrictName());
+		json.put("room", dbRoom.getRoomName());
+		json.put("starttime",sdf.format(lockpassword.getValidfrom()));
+		json.put("endtime", sdf.format(lockpassword.getValidthrough()));
+		json.put("passwordtime", sdf.format(new Date(lockpassword.getValidfrom().getTime() - (long) 2 * 60 * 60 * 1000)));
+
+		//您已成功预订${hotal}酒店${room}房间，入住时间：从${starttime}到${endtime}，请于${passwordtime}后到店刷身份证获取开门密码。
+		MessageParser mp = new MessageParser(null ,templatecode , json);
+		AliSmsSender sender = new AliSmsSender();
+
+		sender.sendSMS("86", lockpassword.getPhonenumber(), mp);
+
+	}
+	public LockPassword findByUsertypeUserCode(int dvcid , int usertype , int usercode)
+	{
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.add(ExpWrap.eq("dvcid", dvcid));
+		cw.add(ExpWrap.eq("usertype", usertype));
+		cw.add(ExpWrap.eq("usercode", usercode));
+		cw.add(ExpWrap.eq("status", 0));
+		cw.add(ExpWrap.ge("validthrough", new Date()));
+		return cw.uniqueResult();
+	}
+	public List<LockPassword> findTempPasswordByDvicdAndUserCodeAndStatus(int dvcid){
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.add(ExpWrap.eq("dvcid", dvcid));
+		cw.add(ExpWrap.eq("usertype", 21));
+		cw.add(ExpWrap.eq("usercode", 242));
+		cw.add(ExpWrap.in("status", new int[]{0,1,2}));
+		if(cw.list()!=null&&cw.list().size()>0){
+			return cw.list();
+		}
+		return null;
+	}
+	public List<LockPassword> findByDvcid(Long id,int status) {
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.add(ExpWrap.eq("dvcid", id));
+		cw.add(ExpWrap.eq("status", status));
+		if(cw.list()!=null&&cw.list().size()>0){
+			return cw.list();
+		}
+		return null;
+	}
+	public LockPassword findByTidAndZwavedeviceid(String tid,int zwavedeviceid){
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.add(ExpWrap.eq("dvcid", zwavedeviceid));
+		cw.add(ExpWrap.eq("thirdsendid", tid));
+		return cw.uniqueResult();
+	}
+	public List<LockPassword> findByZwavedeviceidAndUsercode(int zwavedeviceid,int usercode) throws Exception{
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.add(ExpWrap.eq("dvcid", zwavedeviceid));
+		cw.add(ExpWrap.eq("usercode", usercode));
+		cw.add(ExpWrap.eq("status", ConstDefine.LOCKPASSWORD_STATUS_DELETING));
+		if(cw.list()!=null&&cw.list().size()>0){
+			return cw.list();
+		}
+		return null;
+	}
+	public void deleteByZwavedeviceid(int zwavedeviceid){
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.add(ExpWrap.eq("dvcid", zwavedeviceid));
+		List<LockPassword> list = cw.list();
+		if(list!=null&&list.size()>0){
+			for(LockPassword l : list){
+				l.setStatus(ConstDefine.LOCKPASSWORD_STATUS_DELEET);
+				l.setDeletetime(new Date());
+			}
+		}
+	}
+}

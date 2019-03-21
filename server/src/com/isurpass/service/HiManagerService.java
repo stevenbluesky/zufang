@@ -1,0 +1,242 @@
+package com.isurpass.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+import javax.annotation.Resource;
+
+import com.isurpass.common.exception.BusinessException;
+import org.hibernate.LockOptions;
+
+import com.ant.business.District;
+import com.ant.business.Manager;
+import com.ant.business.TbSequence;
+import com.ant.config.MjConfig;
+import com.ant.constant.CommonConstant;
+import com.ant.controller.PersonController;
+import com.ant.restful.service.RestfulUtil;
+import com.ant.util.Utils;
+import com.ant.vo.ManagerVo;
+import com.ant.vo.PersonVo;
+import com.isurpass.common.hibernate.BasicScroll;
+import com.isurpass.common.hibernate.CriteriaWrap;
+import com.isurpass.common.hibernate.ExpWrap;
+
+/**
+ * 管理员service
+ *
+ */
+public class HiManagerService extends BaseService<Manager>{
+	
+	@Resource
+	private HiOperateLogService hoOperateLogService ;
+	
+	/**
+	 * 保存管理员信息
+	 * @param room
+	 * @param sessionPersonVo
+	 * @param rb 
+	 */
+	public void saveManager(Manager manager,PersonVo sessionPersonVo, ResourceBundle rb){
+		if(PersonController.checkIfSecondAdmin(sessionPersonVo)){
+			manager.setPersonId(sessionPersonVo.getSuperpersonid().longValue());
+		}else{
+			manager.setPersonId(sessionPersonVo.getId());
+		}
+		manager.setPersonId(sessionPersonVo.getId());
+		manager.setInputDate(new Date());
+		manager.setLoginName(this.getManagerId());
+		manager.setTypeinpersonid(sessionPersonVo.getId().intValue());
+		if(this.checkLoginName(manager.getLoginName(), null)){
+			throw new BusinessException(rb.getString("hmsadminid"));
+		}
+		
+		super.save(manager);
+		
+		/**更新小区房间数 + 1*/
+		HiDistrictService hiDistrictService = super.createService(HiDistrictService.class);
+		District dbDistrict = hiDistrictService.findById(manager.getDistrictId());
+		hiDistrictService.updateManagerCount(manager.getDistrictId(), 1);
+		
+		/**同步小区管理员信息*/
+		this.syncAddManager(manager,rb);
+		long personid = 0;
+		int operatepersonid = sessionPersonVo.getId().intValue();
+		if(PersonController.checkIfSecondAdmin(sessionPersonVo)){
+			personid = sessionPersonVo.getSuperpersonid().longValue();
+		}else{
+			personid = sessionPersonVo.getId();
+		}
+		/**保存日志*/
+		hoOperateLogService.saveOperateLog(4,
+				"【" + dbDistrict.getDistrictName() + "】小区添加管理员【" + manager.getManagerName() + "】",
+				sessionPersonVo.getRealName(), personid, operatepersonid, sessionPersonVo.getIp(), manager.getId(),
+				dbDistrict.getDistrictName(), manager.getManagerName(), null);
+	}
+	
+	/**
+	 * 同步新增管理员
+	 * @param manager
+	 * @param rb 
+	 */
+	public void syncAddManager(Manager manager, ResourceBundle rb){
+		if(CommonConstant.restFlag == 1){
+			Map<String , Object> map = new HashMap<String , Object>();
+			List<Map<String , Object>> list = new ArrayList<Map<String , Object>>();
+			map.put("loginname", manager.getLoginName());
+			map.put("password", manager.getLoginPassword());
+			map.put("comnutiyid", manager.getDistrictId());
+			list.add(map);
+			Map<String , Object> pmap = new HashMap<String , Object>();
+			pmap.put("administrator", list);
+			
+			/**调用新增管理员接口*/
+			String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/comnunityadministrator/addadministrator", pmap,rb);
+			Utils.checkResult(str,rb);
+		}
+	}
+	
+	/**
+	 * 修改管理员信息
+	 * @param room
+	 * @param sessionPersonVo
+	 * @param rb 
+	 */
+	public void updateManager(Manager manager,PersonVo sessionPersonVo, ResourceBundle rb){
+		
+		manager.setLoginName(MjConfig.get("serviceId") + manager.getLoginName());
+		if(this.checkLoginName(manager.getLoginName(), manager.getId())){
+			throw new BusinessException(rb.getString("hmsadminid"));
+		}
+		
+		Manager dbManager = this.findById(manager.getId());
+		
+		Manager.checkSecondAdminRole(dbManager, sessionPersonVo,rb);
+//		dbManager.setLoginName(manager.getLoginName());
+		dbManager.setLoginPassword(manager.getLoginPassword());
+		dbManager.setManagerName(manager.getManagerName());
+		dbManager.setPhone(manager.getPhone());
+		dbManager.setIdType(manager.getIdType());
+		dbManager.setIdNo(manager.getIdNo());
+		dbManager.setRemark(manager.getRemark());
+		
+		super.update(dbManager);
+		
+		/**同步小区管理员信息*/
+		this.syncUpdateManager(dbManager,rb);
+		HiDistrictService hiDistrictService = super.createService(HiDistrictService.class);
+		District dbDistrict = hiDistrictService.findById(manager.getDistrictId());
+		long personid = 0;
+		int operatepersonid = sessionPersonVo.getId().intValue();
+		if(PersonController.checkIfSecondAdmin(sessionPersonVo)){
+			personid = sessionPersonVo.getSuperpersonid().longValue();
+		}else{
+			personid = sessionPersonVo.getId();
+		}
+		/**保存日志*/
+		hoOperateLogService.saveOperateLog(5, "【" + dbDistrict.getDistrictName() + "】小区修改管理员【" + manager.getManagerName() + "】", sessionPersonVo.getRealName(), personid,operatepersonid, 
+				sessionPersonVo.getIp(), manager.getId(),dbDistrict.getDistrictName(),manager.getManagerName(),null);
+	}
+
+	/**
+	 * 同步修改管理员
+	 * @param rb 
+	 * @param manager
+	 */
+	public void syncUpdateManager(Manager dbManager, ResourceBundle rb){
+		if(CommonConstant.restFlag == 1){
+			Map<String , Object> pmap = new HashMap<String , Object>();
+			pmap.put("loginname", dbManager.getLoginName());
+			pmap.put("password", dbManager.getLoginPassword());
+			
+			/**调用新增管理员接口*/
+			String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/comnunityadministrator/updatepassword", pmap,rb);
+			Utils.checkResult(str,rb);
+		}
+	}
+	
+	/**
+	 * 根据id查询
+	 * @param id
+	 * @return
+	 */
+	public Manager findById(Long id)
+	{
+		return super.query(id);
+	}
+	
+	/**
+	 * 分页查询
+	 * @param district
+	 * @param page
+	 * @param rows
+	 * @return
+	 */
+	public List<Manager> findPage(ManagerVo managerVo,BasicScroll scroll)
+	{
+		CriteriaWrap cw = super.createCriteriaWrap();
+		//cw.addifNotNull(ExpWrap.eq("personId", managerVo.getPersonId()));
+		cw.addifNotNull(ExpWrap.eq("districtId", managerVo.getDistrictId()));
+		
+		cw.setScroll(scroll);
+		return cw.list();
+	}
+	
+	
+	/**
+	 * 校验登录id是否已存在
+	 * @return 
+	 * @version V1.0
+	 */
+	public boolean checkLoginName(String loginName,Long id){
+		Manager dbManager = this.findByLoginName(loginName);
+		if(dbManager == null){
+			return false;
+		}
+		if(id == null)
+			return true;
+		if(id.longValue() == dbManager.getId().longValue()){	//传入的id与查询出的id一致，则不重复
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	/**
+	 * 根据登录id查询登录信息
+	 * @version V1.0
+	 */
+	public Manager findByLoginName(String loginName)
+	{
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.add(ExpWrap.eq("loginName", loginName));
+		return cw.uniqueResult();
+	}
+	
+	/**
+	 * 获取managerId
+	 * @return
+	 */
+	private static Object waitobj = new Object();
+	
+	public String getManagerId()
+	{
+		
+		synchronized(waitobj)
+		{
+			TbSequence tb = (TbSequence)super.sessionFactory.getCurrentSession().get(TbSequence.class, "districtManager");
+			super.sessionFactory.getCurrentSession().buildLockRequest(LockOptions.UPGRADE).lock(tb);
+			
+			tb.setCurrent_value(tb.getCurrent_value() + tb.getIncrement());
+			String managerid = String.format("%s%04d", MjConfig.get("serviceId") , tb.getCurrent_value());
+			
+			return managerid ;
+		}
+		
+	}
+	
+}

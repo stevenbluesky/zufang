@@ -1,0 +1,156 @@
+<%if(type == 0){%>
+    <div class="layer-box f-cb">
+        <div class="box-title"><%=label.addadmin%><div class="btn-close"><i></i></div></div>
+        <div class="box-bd">
+            <div class="m-form">
+                <form id="svaeCellForm" class="m-plane-bd">
+                    <div class="formitm">
+                        <label class="lab"><%=label.name%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{2,30}" name="managerName" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.password1%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="n{6,6}" name="loginPassword" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.phonenumber%><font></font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt" name="phone" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.credentialtype%><font></font></label>
+                        <div class="ipt">
+                            <input type="hidden" id="idType" class="u-select"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.credentialid%><font></font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  name="idNo" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.remark%></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="remark" nocheck="nocheck" autocomplete="off"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-ft">
+            <div class="btns">
+                <button class="u-btn btn-close gray"><%=label.cancel%></button><button class="u-btn red" id="btn-save"><%=label.confirm%></button>
+            </div>
+        </div>
+    </div>
+<%}else if(type == 1){%>
+   <!--  <%if(data.length == 0){%>
+        <div class="no_list">暂时没有此类数据</div>
+    <%}%> -->
+    <%
+        for (var i in data){
+    %>
+        <li>
+            <div class="list-wrap f-cb" >
+                <h3 class="cell-name"><%=data[i].roomName%></h3>
+                <div class="cell-details f-cb" >
+                    <ul class="f-fl">
+                        <li><%=label.createtime%>：<%=new Date(data[i].inputDate).Format('yyyy-MM-dd hh:mm:ss')%></li>
+                        <li><%=label.loginid%>：<%=data[i].loginName%></li>
+                        <li><%=label.name%>：<%=data[i].managerName%></li>
+                        <li><%=label.phonenumber%>：<%=data[i].phone%></li>
+                        <li><%=label.idtype%>：
+                            <!-- <%if(data[i].idType && data[i].idType != 'undefined'){%>
+                                <%=Data.idType[data[i].idType].text%>
+                            <%}%> -->
+                            <%=label.idcard%>
+                        </li>
+                        <li><%=label.credentialid%>：<%=data[i].idNo%></li>
+                        <li><%=label.remark%>：<%=data[i].remark%></li>
+                        <li>
+                            <button class="u-btn gray btn-open-edit"
+                                    data-districtId="<%=data[i].districtId%>"
+                                    data-loginName="<%=data[i].loginName%>"
+                                    data-loginPassword="<%=data[i].loginPassword%>"
+                                    data-managerName="<%=data[i].managerName%>"
+                                    data-phone="<%=data[i].phone%>"
+                                    data-idType="<%=data[i].idType%>"
+                                    data-remark="<%=data[i].remark%>"
+                                    data-idNo="<%=data[i].idNo%>"
+                                    data-id="<%=data[i].id%>"
+                                    ><%=label.modify%></button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </li>
+    <%}%>
+    <li class="new new-manager btn-open-save">
+        <div class="list-wrap f-cb" style="height:250px">
+        </div>
+    </li>
+<%}else if(type == 2){%>
+    <div class="layer-box f-cb">
+        <div class="box-title"><%=label.modifyadmin%><div class="btn-close"><i></i></div></div>
+        <div class="box-bd">
+            <div class="m-form">
+                <form id="svaeCellForm" class="m-plane-bd">
+                    <div class="formitm">
+                        <label class="lab"><%=label.loginid%></label>
+                        <div class="ipt">
+                            <input type="hidden" name="id" value="<%=data.id%>"/>
+                            <input type="text" class="u-ipt" readonly value="<%=data.loginName%>" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.name%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{2,30}" name="managerName" value="<%=data.managerName%>" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.password1%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="password" class="u-ipt"  datatype="n{6,6}" name="loginPassword" value="<%=data.loginPassword%>" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.phonenumber%><font></font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt" name="phone" value="<%=data.phone%>" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.credentialtype%><font></font></label>
+                        <div class="ipt">
+                            <input type="hidden" id="idType" class="u-select"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.credentialid%><font></font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt" name="idNo" value="<%=data.idNo%>" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.remark%></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="remark" value="<%=data.remark%>" nocheck="nocheck" autocomplete="off"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-ft">
+            <div class="btns">
+                <button class="u-btn btn-close gray"><%=label.cancel%></button><button class="u-btn red" id="btn-save"><%=label.confirm%></button>
+            </div>
+        </div>
+    </div>
+<%}%>

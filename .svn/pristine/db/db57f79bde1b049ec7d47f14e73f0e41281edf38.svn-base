@@ -1,0 +1,6 @@
+{
+    "repos": "https://github.com/imakewebthings/waypoints.git",
+    "version": "4.0.0",
+    "name": "waypoints",
+    "main": "waypoints.js"
+}

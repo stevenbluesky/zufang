@@ -1,0 +1,6 @@
+{
+    "repos": "https://github.com/rstacruz/nprogress.git",
+    "version": "v0.1.6",
+    "name": "nprogress",
+    "main": "nprogress.js"
+}

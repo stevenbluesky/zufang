@@ -1,0 +1,159 @@
+<%if(type == 0){%>
+    <div class="layer-box f-cb">
+        <div class="box-title"><%=label.authuser%><div class="btn-close"><i></i></div></div>
+        <div class="box-bd">
+            <div class="m-form">
+                <form id="svaeCellForm" class="m-plane-bd">
+	                <div class="formitm">
+		                <label class="lab"><%=label.countrycode%><font>*</font></label>
+		                <div  class="ipt">
+		                	<input datatype="*" type="hidden" id="scountrycode" value="86" name="countrycode" class="u-select" style="width:300px"/>
+		                </div>
+		            </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.phonenumber%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  name="grantUserName" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.truename%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="grantRealName" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.starttime%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*" id="startTime" name="grantBeginDate" onfocus="this.blur()" errMsg="<%=label.youxiaoqi%>"/>
+                            <span class="laydate-icon" onclick="laydate(start);"></span>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.endtime%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*" id="endTime" name="grantEndDate" onfocus="this.blur()" errMsg="<%=label.youxiaoqi%>"/>
+                            <span class="laydate-icon" onclick="laydate(end);"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-ft">
+            <div class="btns">
+                <button class="u-btn btn-close gray"><%=label.cancel%></button><button class="u-btn red" id="btn-grant"><%=label.confirm%></button>
+            </div>
+        </div>
+    </div>
+<%}else if(type == 1){%>
+   <!--  <%if(data.length == 0){%>
+        <div class="no_list">暂时没有此类数据</div>
+    <%}%> -->
+    <%
+        for (var i in data){
+    %>
+        <li>
+            <a href="#">
+                <div class="list-wrap f-cb" style="height:210px">
+               		 <div class="f-fl">
+                        <%
+                            var imgPath = common.BASE_PATH + '/static/img/man.jpg';
+                        %>
+                        <img src="<%=imgPath%>" alt="<%=label.communityphoto%>">
+                    </div>
+                    <div class="cell-details f-cb">
+                        <ul class="f-fl">
+                            <li><%=label.phonenumber%>：<%=data[i].grantUserName%></li>
+                            <li><%=label.truename%>：<%=data[i].grantRealName%></li>
+                            <li><%=label.starttime%>：<%=new Date(data[i].grantBeginDate).Format('yyyy-MM-dd hh:mm:ss')%></li>
+                            <li><%=label.endtime%>：<%=new Date(data[i].grantEndDate).Format('yyyy-MM-dd hh:mm:ss')%>
+                                    <%if(data[i].grantEndDate < new Date().getTime()){%>
+                                        <font color="red">(<%=label.authexpired%>)</font>
+                                    <%}%>
+                            
+                            </li> 
+                            <li><%=label.remark%>：<%=data[i].remark%></li>
+                            <li>
+                                <button class="u-btn gray btn-delete"
+                                        data-id="<%=data[i].id%>"
+                                        ><%=label.ddelete%></button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </a>
+        </li>
+    <%}%>
+    <li class="new new-roomprivilege btn-open-save">
+        <div class="list-wrap f-cb">
+        </div>
+    </li>
+<%}else if(type == 2){%>
+    <div class="layer-box f-cb">
+        <div class="box-title"><%=label.modifycommunity%><div class="btn-close"><i></i></div></div>
+        <div class="box-bd">
+            <div class="m-form">
+                <form id="svaeCellForm" class="m-plane-bd">
+                    <div class="formitm">
+                        <label class="lab"><%=label.roomname%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="hidden" name="id" value="<%=data.id%>"/>
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="roomName" value="<%=data.roomName%>" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.roomtype%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="hidden" id="roomType" class="u-select"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.building%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="build" value="<%=data.build%>"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.unit%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="unit" value="<%=data.unit%>"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.floor%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="floor" value="<%=data.floor%>"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.communityphoto%></label>
+                        <div class="ipt">
+                            <%
+                                var imgPath = data.roomImg,flag = true;
+                                if(imgPath.indexOf("no") >= 0){
+                                    imgPath = common.IMG_PATH  + imgPath;
+                                    flag = false;
+                                }
+                            %>
+                            <div><img src="<%=imgPath%>" width="115" height="150"  id="coverImgUrl" 
+                                <%if(flag){%>data-src="<%=data.roomImg%>"<%}%>/></div>
+                            <a class="u-btn red" id="btn-add-fengmian"><%=label.photoselect%></a>
+                            <p><span class="u-tips"><%=label.photorequire2%></span></p>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.remark%></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="remark" nocheck="nocheck" value="<%=data.remark%>" autocomplete="off"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-ft">
+            <div class="btns">
+                <button class="u-btn btn-close gray"><%=label.cancel%></button><button class="u-btn red" id="btn-save"><%=label.confirm%></button>
+            </div>
+        </div>
+    </div>
+<%}%>

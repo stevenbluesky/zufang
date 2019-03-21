@@ -1,0 +1,13 @@
+<footer class="g-ft">
+	<div class="g-wrap">
+		
+	</div>
+</footer>
+<div class="m-ft-flex">
+	<ul>
+		<li id="toTop" class="f-dn"><a><i class="top"></i></a></li>
+		#if($!isLogin)
+		<li><a href="$!{request.contextPath}$!{ns}/upload.html"><i class="plus "></i></a></li>
+		#end
+	</ul>
+</div>

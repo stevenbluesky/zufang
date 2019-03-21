@@ -1,0 +1,151 @@
+package com.ant.controller;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ant.business.DoorlockPasswordRule;
+import com.ant.business.DoorlockPasswordRuleDtl;
+import com.ant.business.Room;
+import com.ant.util.StringUtil;
+import com.ant.vo.PasswordRuleDtlVO;
+import com.ant.vo.PasswordRuleVO;
+import com.ant.vo.PersonVo;
+import com.isurpass.common.exception.BusinessException;
+import com.isurpass.common.hibernate.BasicScroll;
+import com.isurpass.service.HiPasswordRuleDtlService;
+import com.isurpass.service.HiPasswordRuleService;
+
+@Controller
+@RequestMapping(value="/service/passwordrule")
+@Scope(value = "prototype")
+public class PasswordRuleController extends BaseController{
+
+	@Resource
+	private HiPasswordRuleService passwordRuleService;
+	@Resource
+	private HiPasswordRuleDtlService passwordRuleDtlService;
+	
+	private static Log log = LogFactory.getLog(PasswordRuleController.class);
+	
+	@RequestMapping(value="/findPage")
+	public @ResponseBody Map<String , Object> findPage(@ModelAttribute("passwordrulevo")PasswordRuleVO passwordrulevo){
+		try{
+			DoorlockPasswordRule psrule = passwordRuleService.findByDistrictId(passwordrulevo.getDistrictid());
+			if(psrule==null){
+				return createResponse(1 , getRB().getString("jquerysuccess") , 0 , null,0,0);
+			}
+			
+			passwordrulevo.setDoorlockpasswordruleid(psrule.getDoorlockpasswordruleid());
+			BasicScroll scroll = new BasicScroll(passwordrulevo.getPage(), passwordrulevo.getRows());
+			List<DoorlockPasswordRuleDtl> lst = passwordRuleDtlService.findPage(passwordrulevo, scroll);			
+			
+			return createResponse(1 , getRB().getString("jquerysuccess") , scroll.getRows() , lst,psrule.getIsuse(),psrule.getDoorlockpasswordruleid());
+		}catch (Exception e) {
+			log.error(e.getMessage() , e);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/savepasswordruledtl")
+	public @ResponseBody Map<String , Object> savePasswordRuleDtl(@ModelAttribute("passwordruledtlvo")PasswordRuleDtlVO passwordruledtlvo){
+		try{
+			if(StringUtils.isBlank(passwordruledtlvo.getStarttime())){
+				throw new BusinessException("go");//
+			}
+			DoorlockPasswordRule psrule = passwordRuleService.findByDistrictId(passwordruledtlvo.getDistrictId());
+			if(psrule==null){
+				DoorlockPasswordRule dpr = new DoorlockPasswordRule();
+				dpr.setDistrictid(passwordruledtlvo.getDistrictId());
+				dpr.setIsuse(0);
+				dpr.setCreatetime(new Date());
+				passwordRuleService.save(dpr);
+				psrule = passwordRuleService.findByDistrictId(passwordruledtlvo.getDistrictId());
+				passwordruledtlvo.setDoorlockpasswordruleid(psrule.getDoorlockpasswordruleid());
+			}
+			
+			passwordruledtlvo.setDuration(passwordruledtlvo.getHour()*60+passwordruledtlvo.getMin());
+			passwordruledtlvo.setWeekday(passwordruledtlvo.getWeek1()+passwordruledtlvo.getWeek2()+passwordruledtlvo.getWeek3()+
+					passwordruledtlvo.getWeek4()+passwordruledtlvo.getWeek5()+passwordruledtlvo.getWeek6()+passwordruledtlvo.getWeek7());
+			passwordRuleDtlService.savePasswordRuleDtl(passwordruledtlvo);
+			
+			return createResponse(1 , getRB().getString("jaddsuccess") , null);
+		}catch (Exception e){
+			log.error(e.getMessage() , e);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+	@RequestMapping(value="/changeIsuse")
+	public @ResponseBody Map<String , Object> changeIsuse(int isuse,long districtId){
+		try{
+			DoorlockPasswordRule psrule = passwordRuleService.findByDistrictId(districtId);
+			if(psrule==null){
+				return null;
+			}
+			psrule.setIsuse(isuse==1?1:0);
+			passwordRuleService.update(psrule);
+			return createResponse(1 , getRB().getString("droperatesuccess"),null);
+		}catch (Exception e){
+			log.error(e.getMessage() , e);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/getdoorlockpasswordruledtl")
+	public @ResponseBody Map<String , Object> getDoorlockPasswordRuleDtl(Long doorlockpasswordruledtlid){
+		try{
+			DoorlockPasswordRuleDtl psruledtl = passwordRuleDtlService.findByDoorlockPasswordRuleDtlId(doorlockpasswordruledtlid);
+			return createResponse(1 , getRB().getString("jsave"),psruledtl);
+		}catch (Exception e){
+			log.error(e.getMessage() , e);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+	//updatepasswordruledtl
+	@RequestMapping(value="/updatepasswordruledtl")
+	public @ResponseBody Map<String , Object> updateDoorlockPasswordRuleDtl(@ModelAttribute("passwordruledtlvo")PasswordRuleDtlVO passwordruledtlvo){
+		try{
+			DoorlockPasswordRuleDtl psruledtl = passwordRuleDtlService.findByDoorlockPasswordRuleDtlId(passwordruledtlvo.getDoorlockpasswordruledtlid());
+			psruledtl.setStarttime(passwordruledtlvo.getStarttime());
+			psruledtl.setDuration(passwordruledtlvo.getHour()*60+passwordruledtlvo.getMin());
+			psruledtl.setWeekday(passwordruledtlvo.getWeek1()+passwordruledtlvo.getWeek2()+passwordruledtlvo.getWeek3()+
+					passwordruledtlvo.getWeek4()+passwordruledtlvo.getWeek5()+passwordruledtlvo.getWeek6()+passwordruledtlvo.getWeek7());
+			psruledtl.setCreatetime(new Date());
+			passwordRuleDtlService.saveOrUpdate(psruledtl);
+			
+			return createResponse(1 , getRB().getString("jsave"),null);
+		}catch (Exception e){
+			log.error(e.getMessage() , e);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+	//deletedoorlockpasswordruledtls
+	@RequestMapping(value="/deletedoorlockpasswordruledtls")
+	public @ResponseBody Map<String , Object> deleteDoorlockPasswordRuleDtl(@RequestParam(value = "ids[]") Long[] ids){
+		try{
+			for(int i=0;i<ids.length;i++){
+				DoorlockPasswordRuleDtl del = passwordRuleDtlService.findByDoorlockPasswordRuleDtlId(ids[i]);
+				passwordRuleDtlService.delete(del);
+			}
+			return createResponse(1 , getRB().getString("jsave"),null);
+		}catch (Exception e){
+			log.error(e.getMessage() , e);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+	
+	
+}

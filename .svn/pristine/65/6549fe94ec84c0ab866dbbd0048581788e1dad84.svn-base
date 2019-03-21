@@ -1,0 +1,179 @@
+package com.isurpass.service;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.ant.business.Device;
+import com.ant.business.DoorlockPasswordRule;
+import com.ant.business.DoorlockPasswordRuleDtl;
+import com.ant.business.LockPassword;
+import com.ant.config.MjConfig;
+import com.ant.restful.service.RestfulUtil;
+import com.ant.util.ConstDefine;
+import com.ant.util.Utils;
+import com.ant.vo.LockPasswordVo;
+import com.isurpass.common.exception.BusinessException;
+
+public class AutoGenerationPasswordService {
+
+	private HiPasswordRuleService passwordRuleService;
+	private HiDeviceService HiDeviceService;
+	private HiPasswordRuleDtlService passwordRuleDtlService;
+	private AutoGenerationPasswordExecuteService autoGenerationPasswordExecuteService;
+	@Resource
+	public void setPasswordRuleService(HiPasswordRuleService passwordRuleService) {
+		this.passwordRuleService = passwordRuleService;
+	}
+	@Resource
+	public void setHiDeviceService(HiDeviceService hiDeviceService) {
+		HiDeviceService = hiDeviceService;
+	}
+	@Resource
+	public void setPasswordRuleDtlService(HiPasswordRuleDtlService passwordRuleDtlService) {
+		this.passwordRuleDtlService = passwordRuleDtlService;
+	}
+	@Resource
+	public void setAutoGenerationPasswordExecuteService(
+			AutoGenerationPasswordExecuteService autoGenerationPasswordExecuteService) {
+		this.autoGenerationPasswordExecuteService = autoGenerationPasswordExecuteService;
+	}
+	
+	private static Log log = LogFactory.getLog(AutoGenerationPasswordService.class);
+
+	public void sendPassword(List<LockPasswordVo> waitToSendPasswordList){
+		for(LockPasswordVo l : waitToSendPasswordList){
+			sendpassword(l);
+		}
+	}
+	
+	public void updateValidTime(List<LockPassword> waitToUpdateValidTimeList){
+		for(LockPassword l : waitToUpdateValidTimeList){
+			updateLockUserValidTimeAsynchronous(l);
+		}
+	}
+	
+	public void autoGenerationPassword(){
+		List<DoorlockPasswordRule> alluserule = passwordRuleService.findAllUseRule();
+		if(alluserule==null)
+			return;
+		List<LockPasswordVo> waitToSendPasswordList = new ArrayList<LockPasswordVo>();
+		List<LockPassword> waitToUpdateValidTimeList = new ArrayList<LockPassword>();
+		try{
+			for(DoorlockPasswordRule rule : alluserule){//分小区进行操作
+				List<Device> districtlock = HiDeviceService.findByDistrictIdAndType(rule.getDistrictid(),0);//查找小区下的门锁
+				List<DoorlockPasswordRuleDtl> dtllist = passwordRuleDtlService.findByDoorlockPasswordRuleId(rule.getDoorlockpasswordruleid());
+				if(districtlock!=null&&dtllist!=null){
+					for(Device lock : districtlock){//分门锁进行操作
+						autoGenerationPasswordExecuteService.generationPasswordByLock(lock,dtllist,waitToSendPasswordList,waitToUpdateValidTimeList);
+					}
+				}
+			}
+			sendPassword(waitToSendPasswordList);
+			updateValidTime(waitToUpdateValidTimeList);
+		} catch (Exception e) {
+			log.error("Password Generation failed", e);
+			throw new BusinessException(e.getMessage());
+		}
+	}
+	
+	public void autoGenerationPasswordByLock(long deviceid){
+		List<LockPasswordVo> waitToSendPasswordList = new ArrayList<LockPasswordVo>();
+		List<LockPassword> waitToUpdateValidTimeList = new ArrayList<LockPassword>();
+		Device device = HiDeviceService.findByDeviceId(deviceid);
+		DoorlockPasswordRule rule = passwordRuleService.findByDistrictId(device.getDistrictId());
+		if(rule==null)
+			return;
+		List<DoorlockPasswordRuleDtl> dtllist = passwordRuleDtlService.findByDoorlockPasswordRuleId(rule.getDoorlockpasswordruleid());
+		if(dtllist==null)
+			return;
+		try {
+			autoGenerationPasswordExecuteService.generationPasswordByLock(device,dtllist,waitToSendPasswordList,waitToUpdateValidTimeList);
+			sendPassword(waitToSendPasswordList);
+			updateValidTime(waitToUpdateValidTimeList);
+		} catch (Exception e) {
+			log.error("Password Generation by lock failed", e);
+			throw new BusinessException(e.getMessage());
+		}
+	}
+	
+	public void autoGenerationPasswordByDistrict(long districtid){
+		List<LockPasswordVo> waitToSendPasswordList = new ArrayList<LockPasswordVo>();
+		List<LockPassword> waitToUpdateValidTimeList = new ArrayList<LockPassword>();
+		DoorlockPasswordRule rule = passwordRuleService.findByDistrictId(districtid);
+		List<Device> districtlock = HiDeviceService.findByDistrictIdAndType(districtid,0);//查找小区下的门锁
+		if(rule==null)
+			return;
+		List<DoorlockPasswordRuleDtl> dtllist = passwordRuleDtlService.findByDoorlockPasswordRuleId(rule.getDoorlockpasswordruleid());
+		if(dtllist==null)
+			return;
+		try {
+			for(Device lock : districtlock){//分门锁进行操作
+				autoGenerationPasswordExecuteService.generationPasswordByLock(lock,dtllist,waitToSendPasswordList,waitToUpdateValidTimeList);
+			}
+			sendPassword(waitToSendPasswordList);
+			updateValidTime(waitToUpdateValidTimeList);
+		} catch (Exception e) {
+			log.error("Password Generation by District failed", e);
+			throw new BusinessException(e.getMessage());
+		}
+	}
+	
+	private void sendpassword(LockPasswordVo lockpassword){
+		Map<String , Object> map = new HashMap<String , Object>();
+		map.put("zwavedeviceid", lockpassword.getZwavedeviceid());
+		map.put("password", lockpassword.getPassword());
+		map.put("usercode", lockpassword.getUsercode());
+		map.put("asynch", 0);
+		map.put("tid", lockpassword.getThirdsendid());
+		if(lockpassword.getValidfrom() == null){
+			Calendar c = Calendar.getInstance();
+			c.set(Calendar.HOUR_OF_DAY, 0);
+			c.set(Calendar.MINUTE, 0);
+			c.set(Calendar.SECOND, 0);
+			lockpassword.setValidfrom(c.getTime());
+		}
+		if(lockpassword.getValidthrough() == null){
+			Calendar c = Calendar.getInstance();
+			c.set(Calendar.HOUR_OF_DAY, 23);
+			c.set(Calendar.MINUTE, 59);
+			c.set(Calendar.SECOND, 59);
+			lockpassword.setValidthrough(c.getTime());
+		}
+		map.put("validfrom", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lockpassword.getValidfrom()));
+		map.put("validthrough", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lockpassword.getValidthrough()));
+		
+		String str = "" ;
+		if ( lockpassword.getUsercode() != ConstDefine.LOCKPASSWORD_USERCODE_TEMP )
+			str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/setlockuserpassword", map);
+		Utils.checkResult(str);
+		try {
+			JSONObject json = JSON.parseObject(str);
+			if ( json.containsKey("usercode"))
+				lockpassword.setUsercode(json.getIntValue("usercode"));
+			if(json.getIntValue("resultCode")==30580)
+				lockpassword.setStatus(ConstDefine.LOCKPASSWORD_STATUS_SENDTIMEFAILED);
+		} catch (Exception e) {
+			throw new BusinessException("系统错误");
+		}
+	}
+	
+	private void updateLockUserValidTimeAsynchronous(LockPassword lockPassword) {
+		Device device = HiDeviceService.findById((long)lockPassword.getDvcid());
+		Map<String , Object> map = new HashMap<String , Object>();
+		map.put("zwavedeviceid", device.getPtDeviceId());
+		map.put("tid", lockPassword.getThirdsendid());
+		map.put("validfrom", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lockPassword.getValidfrom()));
+		map.put("validthrough", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(lockPassword.getValidthrough()));
+		
+		String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/updatelockuservalidtimeasynchronous", map);
+		Utils.checkResult(str);
+	}
+}

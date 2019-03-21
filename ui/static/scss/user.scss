@@ -1,0 +1,125 @@
+@import "base";
+
+.head-pic-outer {
+	position: relative;
+	margin: 30px auto 50px;
+
+	span {
+		position: absolute;
+		top: 160px;
+		left: 60%;
+		font-size: 15px;
+		color: #b3b3b3;
+	}
+}
+
+/* 头像模块 */
+.m-head-pic-box {
+	position: relative;
+	margin: 0 auto;
+	width: 154px;
+
+	.head-pic-outline {
+		position: relative;
+		width: 154px;
+		height: 154px;
+		border: 2px solid #e0e0e0;
+		border-radius: 77px;
+		overflow: hidden;
+
+		.head-pic {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			margin: auto;
+			width: 140px;
+			height: 140px;
+			border-radius: 70px;
+			overflow: hidden;
+			text-align: center;
+			img{
+				width: 100%;
+				height: 100%;
+			}
+		}
+	}
+}
+.choose-pic {
+	display: table-cell;
+	position: absolute;
+	top: 110px;
+	left: 110px;
+	overflow: hidden;
+	width: 40px;
+	height: 40px;
+	background-color: #df011b;
+	color: #fff;
+	border-radius: 20px;
+
+	.fa-pencil {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translateX(-50%) translateY(-50%);
+	}
+	input {
+		position: absolute;
+		font-size: 100px;
+		opacity: 0;
+	}
+}
+.modify-password {
+	.m-plane {
+		background-color: #ededed;
+		font-size: 12px !important;
+
+		.m-plane-hd {
+			background-color: #fff;
+			font-size: 16px;
+			color: #47515b;
+			line-height: 60px;
+		}
+		.m-plane-bd {
+			.u-ipt {
+				background-color: #ededed !important;
+				border-color: #403d44 !important;
+			}
+			.u-ipt-5 {
+				display: inline-block;
+				width: 160px;
+			}
+			.lab {
+				font-size: 12px;
+			}
+			.ipt {
+				a {
+					color: #072fb2;
+				}
+			}
+		}
+	}
+}
+.g-mnc {
+	.m-form {
+		width: 660px;
+		margin: 0 auto;
+
+		.formitm {
+			position: relative;
+
+			.fa-edit {
+				position: absolute;
+				right: 0;
+				top: 10px;
+				cursor: pointer;
+				color: $color;
+
+				&.z-sel {
+					color: $btn-red;
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,702 @@
+<%if(type == 0){%>
+  <div class="m-form">
+    <div class="formitm">
+        <label class="lab ">
+            <%=label.powerofbattery%>：
+        </label>
+        <div class="ipt">
+            <%if(data.battery <= 10){%>
+                <font color="red"><%=data.battery%>%</font>
+            <%}else{%>
+                <%=data.battery%>%
+            <%}%>
+        </div>
+    </div>
+    <div class="formitm">
+        <label class="lab ">
+            <%=label.status%>：
+        </label>
+        <div class="ipt">
+            <%if(data.signalFlag == 1){%>
+            	<font color="red"><%=label.offline%></font>
+            <%}else{%>
+            	<%=label.online%>
+            <%}%>
+        </div>
+    </div>
+    <div class="formitm">
+        <label class="lab ">
+            <%=label.anzhuangdizhi%>：
+        </label>
+        <div class="ipt">
+            <%=data.districtName%>
+            <%if(data.bindStatus == 1){%>
+                <%=data.build%> <%=label.building%>,<%=data.unit%> <%=label.unit%>,<%=data.floor%> <%=label.floor%>,<%=data.roomName%>
+            <%}%>
+        </div>
+    </div>
+</div>
+<%}else if(type == 1){%>
+<ul class="cell-list" >    
+    <%
+        for (var i in data.list){
+    %>
+	    <li>
+	        <div class="list-wrap f-cb" style="height:260px"> 
+	            <h3 class="cell-name">
+	            <%if(data.list[i].usertype==21){%>
+	            	<%if(data.list[i].usercode == 242){%>
+	            		<%=label.randomcode%>
+	           		<%}else{%>
+	            		<%=label.pincodeuser%>
+	            <%}}else if(data.list[i].usertype==22){%>
+	            	<%=label.fingerprintuser%>
+	            <%}else{%>
+	            	<%=label.carduser%>
+	            <%}%>
+	            </h3>
+	            <div class="cell-details f-cb">
+	                <div class="f-fl f-tac passwordimg">
+	                    <%
+	                        var imgPath = common.BASE_PATH + '/static/img/no-lock.png';
+	                    %>
+	                    <img src="<%=imgPath%>" alt="<%=label.photo%>">
+	                </div>
+	                <ul class="f-fl">
+	                	<%if(data.list[i].usercode != 242){%>
+	                    <li><%=label.bianhao%>：<%=data.list[i].usercode%>&nbsp;
+	                    	<%=label.status%>：<%if(data.list[i].status==0){%><%=label.normal%><%}%>
+	                    	<%if(data.list[i].status==1){%><%=label.doorstatus1%><%}%>
+	                    	<%if(data.list[i].status==2){%><%=label.doorstatus2%><%}%>
+	                    	<%if(data.list[i].status==3){%><%=label.doorstatus3%><%}%>
+	                    	<%if(data.list[i].status==4){%><%=label.doorstatus4%><%}%>
+	                    	<%if(data.list[i].status==5){%><%=label.doorstatus5%><%}%>
+	                    	<%if(data.list[i].status==7){%><%=label.doorstatus7%><%}%>
+	                    	<%if(data.list[i].status==8){%><%=label.doorstatus8%><%}%>
+	                    <%}else{%>
+	                    <li><%=label.status%>：<%if(data.list[i].status==0){%><%=label.normal%><%}%>
+	                    	<%if(data.list[i].status==1){%><%=label.doorstatus1%><%}%>
+	                    	<%if(data.list[i].status==2){%><%=label.doorstatus2%><%}%>
+	                    	<%if(data.list[i].status==3){%><%=label.doorstatus3%><%}%>
+	                    	<%if(data.list[i].status==4){%><%=label.doorstatus4%><%}%>
+	                    	<%if(data.list[i].status==5){%><%=label.doorstatus5%><%}%>
+	                    	<%if(data.list[i].status==7){%><%=label.doorstatus7%><%}%>
+	                    	<%if(data.list[i].status==8){%><%=label.doorstatus8%><%}%>
+	                    <%}%></li>
+	                    <li><%=label.userphone%>：<%=data.list[i].phonenumber%> </li>
+	                    <li><%=label.username%>：<%=data.list[i].username%> </li>
+	                    <li><%=label.kaishitime%>： <%=new Date(data.list[i].validfrom).Format('yyyy-MM-dd hh:mm:ss')%>
+	                    </li>
+	                    <li> <%=label.jieshutime%>： <%=new Date(data.list[i].validthrough).Format('yyyy-MM-dd hh:mm:ss')%>
+	                    </li>
+
+	                   	
+	                    <%if(data.list[i].weekday != 0){%>
+	                    <li><%=label.weekday%>:
+	                    <%if(((data.list[i].weekday)%(Math.pow(2, 7)))/(Math.pow(2, 7-1)) >= 1.0){%><%=label.dtian%>.<%}%>
+						<%if(((data.list[i].weekday)%(Math.pow(2, 6)))/(Math.pow(2, 6-1)) >= 1.0){%><%=label.dyi%>.<%}%>
+						<%if(((data.list[i].weekday)%(Math.pow(2, 5)))/(Math.pow(2, 5-1)) >= 1.0){%><%=label.der%>.<%}%>
+						<%if(((data.list[i].weekday)%(Math.pow(2, 4)))/(Math.pow(2, 4-1)) >= 1.0){%><%=label.dsan%>.<%}%>
+						<%if(((data.list[i].weekday)%(Math.pow(2, 3)))/(Math.pow(2, 3-1)) >= 1.0){%><%=label.dsi%>.<%}%>
+						<%if(((data.list[i].weekday)%(Math.pow(2, 2)))/(Math.pow(2, 2-1)) >= 1.0){%><%=label.dwu%>.<%}%>
+						<%if(((data.list[i].weekday)%(Math.pow(2, 1)))/(Math.pow(2, 1-1)) >= 1.0){%><%=label.dliu%>.<%}%>
+	                    </li>
+	                    <li><%=label.dailystarttime%>:<%=data.list[i].starttime%>  <%=label.dailyendtime%>:<%=data.list[i].endtime%></li>
+	                    <%}%>
+	                    <li>
+	                    <%if(data.list[i].status<8){%>
+	                    	<button class="u-btn gray btn-delete" data-id="<%=data.list[i].lockpasswordid%>" data-type="0" ><%=label.invalid%></button>
+	                    <%}%>
+	                    </li>
+	                </ul>
+	            </div>
+	        </div>
+	    </li>
+    <%}%>
+    
+    <%if(data.list.length < 11){%>
+    <li class="new new-password btn-open-save">
+        <div class="list-wrap f-cb">
+        </div>
+    </li>
+    <%}else if(specifyusercode != true){%>
+    <li class="new new-password btn-open-save">
+        <div class="list-wrap f-cb">
+        </div>
+    </li>
+    <%}%>
+</ul>
+<%}else if(type == 2){%>
+    <div class="layer-box f-cb">
+        <div class="box-title"><%=label.adduser%><div class="btn-close" id="lockdetailclose"><i></i></div></div>
+        <div class="box-bd">
+            <div class="m-form">
+                <form id="svaeCellForm" class="m-plane-bd">
+                <%if(authuser.length > 0 ){%>
+                      <div class="formitm">
+                            <label class="lab"><%=label.authuser%></label>
+                             <div class="ipt">
+	                           <select id="authuserselect" name="authuser" style="width:300px">
+	                           		<option value=""><%=label.otheruser%></option>
+	                               <%
+								        for (var au in authuser){
+								    %>
+								    	<option value="<%=authuser[au].id%>" realname="<%=authuser[au].grantRealName%>" username="<%=authuser[au].grantUserName%>"><%=authuser[au].grantRealName%>(<%=authuser[au].grantUserName%>)</option>
+								    <%}%>
+	                            </select>
+ 							 </div>
+                        </div>
+                   <%}%>     
+                        
+					<div class="formitm">
+		                <label class="lab"><%=label.countrycode%><font>*</font></label>
+		                <div  class="ipt">
+		                	<input datatype="*" type="hidden" id="scountrycode" value="86" name="countrycode" class="u-select" style="width:300px"/>
+		                </div>
+		            </div>
+                        <div class="formitm">
+                            <label class="lab"><%=label.userphone%><font>*</font></label>
+                            <div class="ipt">
+                                <input type="text" class="u-ipt" id="phonenumber" datatype="m" name="phonenumber" autocomplete="off"/>
+                                <ul id="tip" style="margin:0;z-index:200; border: 1px grey solid;padding:0;display:none"></ul>
+                                <input type="hidden" id="customerid" name="customerid" />
+                            </div>
+                        </div>
+
+                    <div class="formitm">
+                        <label class="lab"><%=label.username%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt" datatype="*{1,20}" id="username" name="username" autocomplete="off"/>
+                        </div>
+                    </div>
+					<div class="formitm" id="enhide">
+					    <label class="lab">&nbsp;</label>
+					    <div class="ipt">
+					        <font size="4">刷身份证用户</font><input type="checkbox" name="hotaliduser" id="hotaliduser" value="1" style="zoom:180%;" >
+					    </div>
+					</div>
+                    <div class="formitm" id="uusertype">
+                        <label class="lab"><%=label.usertype%><font>*</font></label>
+                        <div class="ipt">
+	                        <select id="usertype" name="usertype" style="width:300px">
+	                        	<option value="21"><%=label.pincodeuser%></option>
+	                        	<option value="32"><%=label.carduser%></option>
+	                        	<option value="22"><%=label.fingerprintuser%></option>
+	                        </select>
+                        </div>
+                    </div>
+					<input type="hidden" id="fingerprint" name="fingerprint"/>
+                    <div class="formitm"  id="passwordusercode">
+                        <label class="lab"><%=label.mimabianhao%><font>*</font></label>
+                        <div class="ipt">
+                           <select id="usercode" datatype="*{1,20}" name="usercode" style="width:300px">
+                             <%if( specifyusercode != true ){%>
+                              	<option value="255"><%=label.auto%></option>
+							<%}else{%> 
+                               <%for (var i in availableusercode){%>
+							    	<option value="<%=i%>"><%=availableusercode[i]%></option>
+							    <%}%>
+							<%}%> 
+								<option value="242"><%=label.randomcode%></option>
+                            </select>   
+                        </div>
+                    </div>
+                    
+                    <div class="formitm" id="passwordFlagbox">
+                        <label class="lab"><%=label.pincodetype%><font>*</font></label>
+                        <div class="ipt">
+                           <select id="passwordFlag" name="passwordFlag" style="width:300px">
+                                <option value="0"><%=label.assigncode%></option>
+                                <option value="1"><%=label.suijicode%></option>
+                                <option value="2"><%=label.presetpassword%></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="formitm" id="passwordBox">
+                        <label class="lab"><%=label.password1%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="password" class="u-ipt" value=""  datatype="n{4,10}" name="password" errMsg="<%=label.passwordlength%>"maxlength="10" autocomplete="off"/>
+                        </div>
+                    </div>
+                     <div class="formitm" id="cardtypeBox" style="display:none">
+                        <label class="lab"><%=label.cardtype%><font>*</font></label>
+                        <div class="ipt">
+                           <select id="cardtype" name="cardtype" style="width:300px">
+                                <option value="1"><%=label.mfcard%></option>
+                                <option value="2"><%=label.idcard%></option>
+                                <option value="15"><%=label.others%></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="formitm" id="carinfoBox" style="display:none">
+                        <label class="lab"><%=label.cardno%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt" value=""  name="cardinfo" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.kaishitime%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  value="" id="startTime" datatype="*" name="validfrom"  placeholder="<%=label.kaishitime%>"  onfocus="this.blur()" errMsg="<%=label.youxiaoqi%>"/>
+                            <span class="laydate-icon" onclick="laydate(start);"></span>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.jieshutime%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  value="" id="endTime" datatype="*" name="validthrough"  placeholder="<%=label.jieshutime%>" onfocus="this.blur()" errMsg="<%=label.youxiaoqi%>"/>
+                            <span class="laydate-icon" onclick="laydate(end);"></span>
+                        </div>
+                    </div>
+                    <div class="formitm" id="weekshow">
+                    <hr>
+                    	  <label class="lab"><%=label.weekday%></label>
+                    	  <div class="ipt" id="weekday">
+                    	  	<input type="checkbox" name="week7" value="64" ><%=label.dtian%>&nbsp;
+        					<input type="checkbox" name="week1" value="32" ><%=label.dyi%>&nbsp;
+        					<input type="checkbox" name="week2" value="16" ><%=label.der%>&nbsp;
+        					<input type="checkbox" name="week3" value="8" ><%=label.dsan%>&nbsp;
+        					<input type="checkbox" name="week4" value="4" ><%=label.dsi%>&nbsp;
+        					<input type="checkbox" name="week5" value="2" ><%=label.dwu%>&nbsp;
+        					<input type="checkbox" name="week6" value="1" ><%=label.dliu%>
+                    	  </div>
+                    </div>
+                    <div class="formitm" id="dailystarttime">
+                        <label class="lab"><%=label.dailystarttime%></label>
+                        <div class="ipt">
+                            <select name="starthour" style="width:60px">  
+					            <option value="00" selected>00</option>   
+					            <option value="01" >01</option>    
+					            <option value="02" >02</option>   
+					            <option value="03" >03</option>    
+					            <option value="04" >04</option>   
+					            <option value="05" >05</option>   
+					            <option value="06" >06</option>   
+					            <option value="07" >07</option>   
+					            <option value="08" >08</option>   
+					            <option value="09" >09</option>   
+					            <option value="10" >10</option>   
+					            <option value="11" >11</option>   
+					            <option value="12" >12</option>   
+					            <option value="13" >13</option>   
+					            <option value="14" >14</option>   
+					            <option value="15" >15</option>   
+					            <option value="16" >16</option>   
+					            <option value="17" >17</option>   
+					            <option value="18" >18</option>   
+					            <option value="19" >19</option>   
+					            <option value="20" >20</option>   
+					            <option value="21" >21</option>    
+					            <option value="22" >22</option>   
+					            <option value="23" >23</option>    
+					        </select><%=label.dshi%>  
+					        <label id="startmin"><select name="startmin" style="width:60px">  
+					            <option value="00" >00</option>   
+					            <option value="01" >01</option>
+					            <option value="02" >02</option>   
+					            <option value="03" >03</option>    
+					            <option value="04" >04</option>   
+					            <option value="05" >05</option>
+					            <option value="06" >06</option>   
+					            <option value="07" >07</option>
+					            <option value="08" >08</option>   
+					            <option value="09" >09</option>    
+					            <option value="10" >10</option>   
+					            <option value="11" >11</option>
+					            <option value="12" >12</option>   
+					            <option value="13" >13</option>
+					            <option value="14" >14</option>   
+					            <option value="15" >15</option>    
+					            <option value="16" >16</option>   
+					            <option value="17" >17</option>
+					            <option value="18" >18</option>   
+					            <option value="19" >19</option>
+					            <option value="20" >20</option>   
+					            <option value="21" >21</option>    
+					            <option value="22" >22</option>   
+					            <option value="23" >23</option>
+					            <option value="24" >24</option>   
+					            <option value="25" >25</option>   
+					            <option value="26" >26</option>   
+					            <option value="27" >27</option>
+					            <option value="28" >28</option>   
+					            <option value="29" >29</option>   
+					            <option value="30" selected>30</option> 
+					            <option value="31" >31</option>
+					            <option value="32" >32</option>   
+					            <option value="33" >33</option>    
+					            <option value="34" >34</option>   
+					            <option value="35" >35</option>
+					            <option value="36" >36</option>   
+					            <option value="37" >37</option>
+					            <option value="38" >38</option>   
+					            <option value="39" >39</option>    
+					            <option value="40" >40</option>   
+					            <option value="41" >41</option>
+					            <option value="42" >42</option>   
+					            <option value="43" >43</option>
+					            <option value="44" >44</option>   
+					            <option value="45" >45</option>    
+					            <option value="46" >46</option>   
+					            <option value="47" >47</option>
+					            <option value="48" >48</option>   
+					            <option value="49" >49</option>
+					            <option value="50" >50</option>   
+					            <option value="51" >51</option>    
+					            <option value="52" >52</option>   
+					            <option value="53" >53</option>
+					            <option value="54" >54</option>   
+					            <option value="55" >55</option>   
+					            <option value="56" >56</option>   
+					            <option value="57" >57</option>
+					            <option value="58" >58</option>   
+					            <option value="59" >59</option>   
+					        </select><%=label.dfen%></label>
+                        </div>
+                    </div>
+                    <div class="formitm" id="dailyendtime">
+                        <label class="lab"><%=label.dailyendtime%></label>
+                        <div class="ipt">
+                           <select name="endhour" style="width:60px">  
+					            <option value="00" >00</option>   
+					            <option value="01" >01</option>     
+					            <option value="02" >02</option>   
+					            <option value="03" >03</option>    
+					            <option value="04" >04</option>   
+					            <option value="05" >05</option>   
+					            <option value="06" >06</option>   
+					            <option value="07" >07</option>   
+					            <option value="08" >08</option>   
+					            <option value="09" >09</option>  
+					            <option value="10" >10</option>   
+					            <option value="11" >11</option>   
+					            <option value="12" >12</option>   
+					            <option value="13" >13</option>     
+					            <option value="14" selected>14</option>   
+					            <option value="15" >15</option>   
+					            <option value="16" >16</option>   
+					            <option value="17" >17</option>    
+					            <option value="18" >18</option>   
+					            <option value="19" >19</option>   
+					            <option value="20" >20</option>   
+					            <option value="21" >21</option>   
+					            <option value="22" >22</option>   
+					            <option value="23" >23</option>    
+					        </select><%=label.dshi%>
+					        <label id="endmin"><select name="endmin" style="width:60px">  
+					            <option value="00" >00</option>   
+					            <option value="01" >01</option>
+					            <option value="02" >02</option>   
+					            <option value="03" >03</option>    
+					            <option value="04" >04</option>   
+					            <option value="05" >05</option>
+					            <option value="06" >06</option>   
+					            <option value="07" >07</option>
+					            <option value="08" >08</option>   
+					            <option value="09" >09</option>    
+					            <option value="10" >10</option>   
+					            <option value="11" >11</option>
+					            <option value="12" >12</option>   
+					            <option value="13" >13</option>
+					            <option value="14" >14</option>   
+					            <option value="15" >15</option>    
+					            <option value="16" >16</option>   
+					            <option value="17" >17</option>
+					            <option value="18" >18</option>   
+					            <option value="19" >19</option>
+					            <option value="20" >20</option>   
+					            <option value="21" >21</option>    
+					            <option value="22" >22</option>   
+					            <option value="23" >23</option>
+					            <option value="24" >24</option>   
+					            <option value="25" >25</option>   
+					            <option value="26" >26</option>   
+					            <option value="27" >27</option>
+					            <option value="28" >28</option>   
+					            <option value="29" >29</option>   
+					            <option value="30" selected>30</option> 
+					            <option value="31" >31</option>
+					            <option value="32" >32</option>   
+					            <option value="33" >33</option>    
+					            <option value="34" >34</option>   
+					            <option value="35" >35</option>
+					            <option value="36" >36</option>   
+					            <option value="37" >37</option>
+					            <option value="38" >38</option>   
+					            <option value="39" >39</option>    
+					            <option value="40" >40</option>   
+					            <option value="41" >41</option>
+					            <option value="42" >42</option>   
+					            <option value="43" >43</option>
+					            <option value="44" >44</option>   
+					            <option value="45" >45</option>    
+					            <option value="46" >46</option>   
+					            <option value="47" >47</option>
+					            <option value="48" >48</option>   
+					            <option value="49" >49</option>
+					            <option value="50" >50</option>   
+					            <option value="51" >51</option>    
+					            <option value="52" >52</option>   
+					            <option value="53" >53</option>
+					            <option value="54" >54</option>   
+					            <option value="55" >55</option>   
+					            <option value="56" >56</option>   
+					            <option value="57" >57</option>
+					            <option value="58" >58</option>   
+					            <option value="59" >59</option>   
+					        </select><%=label.dfen%></label>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                       <br>
+                       </div>
+                    <div class="search-item search-item-last">
+    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-ft">
+            <div class="btns">
+                <button class="u-btn btn-close gray" id="lockcancel"><%=label.cancel%></button><button class="u-btn red" id="btn-save" data-type="0"><%=label.confirm%></button>
+            </div>
+        </div>
+    </div>
+<%}else if(type == 3){%>
+    <div class="layer-box f-cb">
+        <div class="box-title"><%=label.modifydynamicpassword%><div class="btn-close"><i></i></div></div>
+        <div class="box-bd">
+            <div class="m-form">
+                <form id="svaeCellForm" class="m-plane-bd">
+                    <div class="formitm">
+                        <label class="lab"><%=label.sendingmethod%><font>*</font></label>
+                        <div class="ipt">
+                           <select id="passwordFlag" name="tempPasswordFlag">
+                                <option value="0"><%=label.manualsending%></option>
+                                <option value="1"><%=label.randomsending%></option>
+                            </select>
+                        </div>
+                    </div>
+                    <%if(obj.grantFlag && obj.grantFlag == 1){%>
+                        <div class="formitm">
+                            <label class="lab"><%=label.phonenumber%><font>*</font></label>
+                            <div class="ipt">
+                                <input type="text" class="u-ipt" datatype="m" name="phone" autocomplete="off" value="<%=obj.grantUserName%>"/>
+                            </div>
+                        </div>
+                    <%}else{%>
+                        <div class="formitm">
+                            <label class="lab"><%=label.phonenumber%><font>*</font></label>
+                            <div class="ipt">
+                                <input type="text" class="u-ipt" datatype="m" name="phone" autocomplete="off"/>
+                            </div>
+                        </div>
+                    <%}%>
+                    <div class="formitm" id="passwordBox">
+                        <label class="lab"><%=label.password1%><font>*</font></label>
+                        <div class="ipt">
+                            <%if(tempPassword=='FFFFFF'){ tempPassword =''}%>
+                            <input type="password" class="u-ipt" value="<%=tempPassword%>" datatype="n{4,10}" errMsg="<%=label.passwordlength%>" name="tempPassword" maxlength="10" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.kaishitime%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt" value="<%=tempPwdBeginDate%>" id="startTime" datatype="*" name="tempPwdBeginDate"  placeholder="<%=label.kaishitime%>"  onfocus="this.blur()" errMsg="<%=label.youxiaoqi%>"/>
+                            <span class="laydate-icon" onclick="laydate(start);"></span>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.jieshutime%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  value="<%=tempPwdEndDate%>" id="endTime" datatype="*" name="tempPwdEndDate"  placeholder="<%=label.jieshutime%>" onfocus="this.blur()" errMsg="<%=label.youxiaoqi%>"/>
+                            <span class="laydate-icon" onclick="laydate(end);"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-ft">
+            <div class="btns">
+                <button class="u-btn btn-close gray"><%=label.cancel%></button><button class="u-btn red" id="btn-save" data-type="1"><%=label.confirm%></button>
+            </div>
+        </div>
+    </div>
+<%}else if(type == 4){%>
+    <%if(flag == 0){%>
+        <table>
+            <thead>
+               <tr>
+                    <th><%=label.xuhao%></th>
+                    <th><%=label.unlockperson%></th>
+                    <th><%=label.jieguo%></th>
+                    <th><%=label.unlocktime%></th>
+                </tr>
+            </thead>
+        </table>
+        <div class="scroll">
+            <table>
+                <%
+                    for (var i in data){
+                %>
+                <tr>
+                    <td><%=(parseInt(i,10)+1)%></td>
+                    <td><%=data[i].operateName%></td>
+                    <td><%=data[i].result%></td>
+                    <td><%=new Date(data[i].inputDate).Format('yyyy-MM-dd hh:mm:ss')%></td>
+                </tr>
+                <%}%>
+            </table>
+        </div>
+    <%}else if (flag == 1){%>
+        <table>
+            <thead>
+               <tr>
+                    <th><%=label.xuhao%></th>
+                    <th><%=label.remainingbattery%>（%）</th>
+                    <th><%=label.shangbaoshijian%></th>
+                </tr>
+            </thead>
+        </table>
+        <div class="scroll">
+            <table>
+                <%
+                    for (var i in data){
+                %>
+                <tr>
+                    <td><%=(parseInt(i,10)+1)%></td>
+                    <td><%=data[i].battery%></td>
+                    <td><%=new Date(data[i].inputDate).Format('yyyy-MM-dd hh:mm:ss')%></td>
+                </tr>
+                <%}%>
+            </table>
+        </div>
+    <%}else if (flag == 2){%>
+        <table>
+            <thead>
+               <tr>
+                    <th><%=label.xuhao%></th>
+                    <th><%=label.tongxunneirong%></th>
+                    <th><%=label.shangbaoshijian%></th>
+                </tr>
+            </thead>
+        </table>
+        <div class="scroll">
+            <table>
+                <%
+                    for (var i in data){
+                %>
+                <tr>
+                    <td><%=(parseInt(i,10)+1)%></td>
+                    <td><%=data[i].commuText%></td>
+                    <td><%=new Date(data[i].inputDate).Format('yyyy-MM-dd hh:mm:ss')%></td>
+                </tr>
+                <%}%>
+            </table>
+        </div>
+   <%}else if(flag == 3){%>
+   <table width="100%" border="1" cellpadding="2" cellspacing="0" style="border-color:#ddd;margin:auto;">
+   			<div style="height:30px">
+	   			<font size="4">
+	   				<%=label.synchronizedc%>:<%=synchronizedCount%><%=label.ge%>,
+	   				<%=label.tobesynchronized%>:<%=toBeSynchronizedCount%><%=label.ge%>,
+	   				<%=label.needsynchronizednow%>:<font color="#FF0000"><%=needSynchronizeCount%><%=label.ge%></font>
+	   			</font>
+	            <a class="u-btn gray" id="btn-abandon" style="float:right;"><%=label.abandon%></a>
+	            <a class="u-btn gray" id="btn-genenow" style="float:right;margin-right:1px;"><%=label.generationnow%></a>
+	            <a class="u-btn gray" id="btn-geneafter" style="float:right;margin-right:1px;"><%=label.regenerate%></a>
+	        </div>
+           <tr >
+                <th></th>
+                <th style="text-align:center;"><%=label.sn%></th>
+                <th style="text-align:center"><%=label.timetostart%></th>
+                <th style="text-align:center"><%=label.timetoend%></th>
+                <th style="text-align:center"><%=label.usestatus%></th>
+                <th style="text-align:center"><%=label.sendstatus%></th>
+            </tr>
+        <div class="scroll">
+            <%
+                for (var i in data){
+            %>
+            <tr>
+                <td style="text-align:center"><input type="checkbox" name="no" value="<%=data[i].lockpasswordid%>" style="zoom:180%;vertical-align: -3px;"></td>
+                <td style="text-align:center"><%=data[i].usercode%></td>
+                <td style="text-align:center"><%=new Date(data[i].validfrom).Format('yyyy-MM-dd hh:mm:ss')%></td>
+				<td style="text-align:center"><%=new Date(data[i].validthrough).Format('yyyy-MM-dd hh:mm:ss')%></td>
+				<td style="text-align:center"><%if(data[i].usestatus==0){%><%=label.unused%><%}%>
+                	<%if(data[i].usestatus==1){%><%=label.used%><%}%>
+                	<%if(data[i].usestatus==2){%><%=label.abandon%><%}%></td>
+				<td style="text-align:center"><%if(data[i].status==0&&data[i].synstatus==1){%><%=label.issued%>
+					<%}else if(((data[i].status==1&&data[i].synstatus==0)||(data[i].status==2&&data[i].synstatus!=1))&&data[i].usestatus==1&&data[i].validfrom<new Date().getTime()&&data[i].validthrough>new Date().getTime()){%>
+					<font color="#FF0000"><%=label.needsynchronize%></font>
+					<%}else if(data[i].status==1&&data[i].synstatus==0){%><%=label.doorstatus1%>
+                	<%}else if(data[i].status==2&&data[i].synstatus==2){%><%=label.doorstatus2%>
+                	<%}else if(data[i].status==3){%><%=label.doorstatus3%>
+                	<%}else if(data[i].status==4){%><%=label.doorstatus4%>
+                	<%}else if(data[i].status==5){%><%=label.doorstatus5%>
+                	<%}else if(data[i].status==7){%><%=label.doorstatus7%>
+                	<%}else if(data[i].status==8){%><%=label.doorstatus8%><%}%></td>
+            </tr>
+            <%}%>
+        </table>
+        </div>     
+    <%}%>
+<%}else if(type == 5){%>
+    <ul>
+        <li class="lock-number icon">
+            <span class="circle">
+                <i class="fa fa-lock fa-2x"></i>
+            </span>
+            <span class="description">
+                <%=data.deviceName%>
+            </span>
+        </li>
+        <li class="li-hr1">
+            <hr>
+            <%if(data.signalFlag == 1){%>
+                <div class="special-block">
+                    <span class="fa-stack fa-lg">
+                      <i class="fa fa-circle fa-stack-2x"></i>
+                      <i class="fa fa-remove fa-stack-1x fa-inverse"></i>
+                    </span>
+                </div>
+            <%}%>
+        </li>
+        <li class="address icon">
+            <span class="circle">
+                <i class="fa fa-wifi fa-2x"></i>
+            </span>
+            <span class="description">
+                <a href="<%=common.BASE_PATH%>/wifiDetail.html?id=<%=data.gatewayId%>"><%=data.gatewayName%></a>
+            </span>
+        </li>
+        <li class="li-hr1">
+            <hr>
+            <%if(data.gatewaySignalFlag == 1){%>
+                <div class="special-block">
+                    <span class="fa-stack fa-lg">
+                      <i class="fa fa-circle fa-stack-2x"></i>
+                      <i class="fa fa-remove fa-stack-1x fa-inverse"></i>
+                    </span>                         
+                    <span class="info">
+                        <%=label.jiancha%>
+                    </span>
+                </div>
+            <%}%>
+        </li>
+        <li class="server icon">
+            <span class="circle">
+                <i class="fa fa-cloud fa-2x"></i>
+            </span>
+            <span class="description">
+                <span><%=label.cloudserver%></span>
+            </span> 
+        </li>
+    </ul>    
+
+<%}%>
+
+
+
+
+
+

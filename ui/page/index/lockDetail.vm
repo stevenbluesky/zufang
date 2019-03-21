@@ -1,0 +1,65 @@
+#extends("/page/include/base.vm") 
+	#require("/static/scss/detail.scss") 
+	#block("content")
+		<div class="g-sd">
+			<div class="g-sdc">
+				#widget("widget/sidebarmenus/nav.vm" "var:type=2")
+			</div>
+		</div>
+		<div class="g-mn">
+			#block("header")
+				#widget("widget/header/header.vm")
+			#end
+			<div class="m-page-title">
+				<span><a href="$!{request.contextPath}$!{ns}/lock.html">#springMessage('view.label.device')</a></span>
+				<span><i>&gt;</i>#springMessage('view.label.equipmentdetails')</span>
+			</div>
+			<div class="g-mnc">
+				<div class="m-wifi-station">
+					
+				</div>
+				<ul class="form-box-ul">
+					<li>#springMessage('view.label.codemanagement')</li>
+					<li>#springMessage('view.label.doorlocklog')</li>
+					<li>#springMessage('view.label.equipmentlog')</li>
+					<li>#springMessage('passwordstatus')</li>
+				</ul>
+				<div class="show-box">
+					
+				</div>
+				<div class="show-box">
+					
+				</div>
+				<div class="show-box">
+					<div class="search-item f-cb search-type">
+						<ul class="f-cb f-fl">
+							<li><a >#springMessage('view.label.ddoorlocklog')</a></li>
+							<li><a >#springMessage('view.label.batterylog')</a></li>
+							<li><a >#springMessage('view.label.devicenotify')</a></li>
+						</ul>
+					</div>
+					<div class="search-item f-cb search-time">
+						<ul class="f-cb f-fl">
+							<li><a >#springMessage('view.label.currentlog')</a></li>
+							<li><a >#springMessage('view.label.latestweek')</a></li>
+							<li><a >#springMessage('view.label.latestmonth')</a></li>
+						</ul>
+					</div>
+					<div id="list" class="m-demo">
+					
+					</div>
+					<div class="page" id="page"></div>
+				</div>
+				<div class="show-box" id="passwordstatus">
+					<div id="lista" class="m-demo">
+					
+					</div>
+					<div class="page" id="pagea"></div>
+				</div>
+			</div>
+		</div>
+	#end 
+	#script()
+		require('/static/libs/pro/index/lockDetail')
+	#end
+#end

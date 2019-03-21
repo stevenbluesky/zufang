@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<bean id="calculateRoomFeeJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的类 -->
+		<property name="targetObject">
+			<ref bean="RoomFeeCalculatorService" />
+		</property>
+		<!-- 调用的类中的方法 -->
+		<property name="targetMethod">
+			<value>calculateRoomFee</value>
+		</property>
+	</bean>
+	
+	<bean id="sendRoomFeeSmsJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的类 -->
+		<property name="targetObject">
+			<ref bean="RoomFeeCalculatorService" />
+		</property>
+		<!-- 调用的类中的方法 -->
+		<property name="targetMethod">
+			<value>sendRoomFeeSms</value>
+		</property>
+	</bean>
+	
+	<bean id="notifyarrearageUserJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 调用的类 -->
+		<property name="targetObject">
+			<ref bean="RoomFeeCalculatorService" />
+		</property>
+		<!-- 调用的类中的方法 -->
+		<property name="targetMethod">
+			<value>notifyarrearageUser</value>
+		</property>
+	</bean>
+	
+	<!-- 定义触发事件 -->
+	<bean id="calculateRoomFeeTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="calculateRoomFeeJob" />
+		</property>
+		<property name="cronExpression">
+		<!--  <value>0 0/2 * * * ?</value>  5秒钟执行一次--> 
+		<!--  <value>0 0 0 * * ?</value>      每天凌晨0点执行一次--> 
+		<value>0 1 0 1 * ?</value> <!-- fire on the 1th day of every month at 00:01 -->
+		</property>
+	</bean>
+	
+	<bean id="sendRoomFeeSmsTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="sendRoomFeeSmsJob" />
+		</property>
+		<property name="cronExpression">
+		<value>0 0 9 1 * ?</value> <!-- fire on the 1th day of every month at 09:00 -->
+		</property>
+	</bean>
+
+	<bean id="notifyarrearageUserTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="notifyarrearageUserJob" />
+		</property>
+		<property name="cronExpression">
+		<value>0 0 9 5 * ?</value> <!-- fire on the 5th day of every month at 09:00 -->
+		</property>
+	</bean>
+	
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref local="calculateRoomFeeTrigger" />
+				<ref local="sendRoomFeeSmsTrigger" />
+				<ref local="notifyarrearageUserTrigger" />
+			</list>
+		</property>
+	</bean>	
+</beans>

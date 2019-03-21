@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+#html("/static/js/mod-amd.js")
+
+    #head()
+         <!-- 基本配置信息 -->
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta http-equiv="Pragma" content="no-cache"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="renderer" content="webkit" />
+
+        <!-- seo 优化部分 -->
+        <meta name="title" content=""/>
+        <meta name="keywords" content=""/>
+        <meta name="author" content="libiqi"/>
+        <meta name="email" content="274793580@qq.com"/>
+        <meta name="Description" content=""/>
+
+
+        <!-- 防止缓存 -->
+        <meta HTTP-EQUIV="Pragma" CONTENT="no-cache">
+        <meta HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+        <meta HTTP-EQUIV="Expires" CONTENT="0">
+         
+        <title>$title</title>
+        <script type="text/javascript" src="js/label/#springMessage('js.label.resourcefile')"></script> 
+        <link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico" />
+
+        <link rel="stylesheet" type="text/css" href="/static/libs/laypage/skin/laypage.css" />
+        <link rel="stylesheet" type="text/css" href="/components/webuploader/webuploader.css" />
+        <link rel="stylesheet" type="text/css" href="/static/libs/laydate/need/laydate.css" />
+        <link rel="stylesheet" type="text/css" href="/static/libs/laydate/skins/molv/laydate.css" />
+       
+        #require("/static/libs/layer/skin/layer.css")
+        #require("components/font-awesome/css/font-awesome.css")
+         <script type="text/javascript" src="static/components/moment/moment.min.js"></script>
+             
+        #script()
+            var ns = '$!ns';
+        #end
+    #end
+    #body()
+	    #block("header")
+            
+        #end
+		<div class="g-bd f-cb">
+            #block("content")
+            #end
+        </div>
+    #end
+#end

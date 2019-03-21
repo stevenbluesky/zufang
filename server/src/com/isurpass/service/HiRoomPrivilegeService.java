@@ -1,0 +1,185 @@
+package com.isurpass.service;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+import javax.annotation.Resource;
+
+import com.isurpass.common.exception.BusinessException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.alibaba.fastjson.JSON;
+import com.ant.business.Device;
+import com.ant.business.District;
+import com.ant.business.Room;
+import com.ant.business.RoomPrivilege;
+import com.ant.config.MjConfig;
+import com.ant.constant.CommonConstant;
+import com.ant.controller.PersonController;
+import com.ant.restful.service.RestfulUtil;
+import com.ant.util.Utils;
+import com.ant.vo.PersonVo;
+import com.ant.vo.RoomPrivilegeVo;
+import com.isurpass.common.hibernate.BasicScroll;
+import com.isurpass.common.hibernate.CriteriaWrap;
+import com.isurpass.common.hibernate.ExpWrap;
+
+public class HiRoomPrivilegeService extends BaseService<RoomPrivilege>
+{
+	private static Log log = LogFactory.getLog(HiRoomPrivilegeService.class);
+
+	@Resource
+	private HiOperateLogService hiOperateLogService;
+
+	public void saveRoomPrivilege(RoomPrivilege roomprivilege,PersonVo sessionPersonVo, ResourceBundle rb)
+	{
+		HiRoomService hiRoomservice = super.createService(HiRoomService.class);
+		Room room = hiRoomservice.findById(roomprivilege.getRoomId());
+		
+		Room.checkSecondAdminRole(room, sessionPersonVo,rb);
+		
+		HiDeviceService hiDeviceService = super.createService(HiDeviceService.class);
+		List<Device> bindDeviceList = hiDeviceService.findBindDevice(roomprivilege.getRoomId());
+		
+		List<Integer> zwavedeviceid = new ArrayList<Integer>();
+		if(bindDeviceList.size() == 0)
+			throw new BusinessException(rb.getString("hrpsbind"));
+
+		for(Device tempDevice : bindDeviceList){
+			zwavedeviceid.add(Integer.parseInt(tempDevice.getPtDeviceId()));
+			if ( room.getGrantFlag() == null || room.getGrantFlag() == 0 )
+			{
+				tempDevice.setBaseDegrees(tempDevice.getCurrentDegrees());
+				tempDevice.setInitPreMonthDegrees(1);	//需要初始化本月初始度數
+				hiDeviceService.update(tempDevice);
+			}
+		}
+		 
+		if(CommonConstant.restFlag == 1){
+			Map<String , Object> map = new HashMap<String , Object>();
+			map.put("username", roomprivilege.getGrantUserName());//TODO 拿着电话号码存入username
+			map.put("zwavedeviceid", zwavedeviceid);
+			map.put("countrycode", roomprivilege.getCountrycode());
+			map.put("validfrom", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(roomprivilege.getGrantBeginDate()));
+			map.put("validthrough", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(roomprivilege.getGrantEndDate()));
+			
+			String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/grantdevice", map,rb);
+			Utils.checkResult(str,rb);
+			
+			/**不用发送短信提醒*/
+		}
+		roomprivilege.setTypeinpersonid(sessionPersonVo.getId());
+		super.save(roomprivilege);
+		
+		if ( room.getGrantFlag() == null )
+			room.setGrantFlag(0);
+		
+		room.setGrantFlag(room.getGrantFlag() + 1);
+		
+		hiRoomservice.update(room);
+		/**保存日志*/
+		HiDistrictService hiDistrictService = super.createService(HiDistrictService.class);
+		District dbDistrict = hiDistrictService.findById(room.getDistrictId());
+		long personid = 0;
+		int operatepersonid = sessionPersonVo.getId().intValue();
+		if(PersonController.checkIfSecondAdmin(sessionPersonVo)){
+			personid = sessionPersonVo.getSuperpersonid().longValue();
+		}else{
+			personid = sessionPersonVo.getId();
+		}
+		hiOperateLogService.saveOperateLog(13, "将【" +  dbDistrict.getDistrictName() + "】小区下【" + room.getRoomName() + "】房间授权给" 
+				+ roomprivilege.getGrantRealName() + "（" + roomprivilege.getGrantUserName() + "）", 
+				sessionPersonVo.getRealName(), personid,operatepersonid, 
+				sessionPersonVo.getIp(), room.getId(),dbDistrict.getDistrictName(),room.getRoomName(),roomprivilege.getGrantRealName()+ "（" + roomprivilege.getGrantUserName() + "）");
+	}
+	
+	public void deleteRoomPrivilege(RoomPrivilege roomprivilege,PersonVo sessionPersonVo, ResourceBundle rb)
+	{
+		RoomPrivilege rp = super.query(roomprivilege.getId());
+		
+		HiRoomService hiRoomservice = super.createService(HiRoomService.class);
+		Room dbRoom = hiRoomservice.findById(rp.getRoomId());
+		
+		Room.checkSecondAdminRole(dbRoom, sessionPersonVo,rb);
+		dbRoom.setGrantFlag(dbRoom.getGrantFlag() - 1);
+		hiRoomservice.update(dbRoom);
+		
+		/**查询房间绑定的设备*/
+		HiDeviceService hiDeviceService = super.createService(HiDeviceService.class);
+		List<Device> bindDeviceList = hiDeviceService.findBindDevice(rp.getRoomId());
+		
+		/**调用解授权接口*/
+		List<Integer> zwavedeviceid = new ArrayList<Integer>();
+		if(bindDeviceList.size() != 0){
+			for(Device tempDevice : bindDeviceList){
+				zwavedeviceid.add(Integer.parseInt(tempDevice.getPtDeviceId()));
+			}
+			
+			/**调用授权接口*/
+			if(CommonConstant.restFlag == 1){
+				Map<String , Object> map = new HashMap<String , Object>();
+				map.put("username", rp.getGrantUserName() );
+				map.put("zwavedeviceid", zwavedeviceid);
+				log.info(JSON.toJSONString(map));
+				String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/ungrantdevice", map,rb);
+				Utils.checkResult(str,rb);
+			}
+		}
+		
+		/**保存日志*/
+		HiDistrictService hiDistrictService = super.createService(HiDistrictService.class);
+		District dbDistrict = hiDistrictService.findById(dbRoom.getDistrictId());
+		long personid = 0;
+		int operatepersonid = sessionPersonVo.getId().intValue();
+		if(PersonController.checkIfSecondAdmin(sessionPersonVo)){
+			personid = sessionPersonVo.getSuperpersonid().longValue();
+		}else{
+			personid = sessionPersonVo.getId();
+		}
+		hiOperateLogService.saveOperateLog(14, "将【" + dbDistrict.getDistrictName() + "】小区下【" + dbRoom.getRoomName() + "】房间解除" 
+				+ rp.getGrantRealName() + "（" + rp.getGrantUserName()  + "）的授权", 
+				sessionPersonVo.getRealName(), personid,operatepersonid, 
+				sessionPersonVo.getIp(), dbRoom.getId(),dbDistrict.getDistrictName(),dbRoom.getRoomName(),rp.getGrantRealName()+ "（" + rp.getGrantUserName()  + "）");
+		
+		super.delete(rp);
+	}
+	
+	public List<RoomPrivilege> findPage(RoomPrivilegeVo roompriviliege,BasicScroll scroll)
+	{
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.addifNotNull(ExpWrap.eq("roomId", roompriviliege.getRoomId()));
+		return cw.list();
+	}
+	
+	public List<RoomPrivilege> findValidRoomPrivilegebyPhonenumber(String phonenumber)
+	{
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.addifNotNull(ExpWrap.eq("grantUserName", phonenumber));
+		List<RoomPrivilege> lst = cw.list();
+				
+		if ( lst == null || lst.size() == 0 )
+			return lst ;
+		
+		Date now = new Date();
+		for ( ListIterator<RoomPrivilege> it = lst.listIterator() ; it.hasNext() ; )
+		{
+			RoomPrivilege rp = it.next();
+			if ( rp.getGrantEndDate() != null && rp.getGrantEndDate().before(now))
+				it.remove();
+		}
+		
+		return lst ;
+	}
+	
+	public List<RoomPrivilege> findbyRoomid(long roomid)
+	{
+		return super.findByProperty( "roomId", roomid);
+	}
+}

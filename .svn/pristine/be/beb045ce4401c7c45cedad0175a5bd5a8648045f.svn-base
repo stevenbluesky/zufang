@@ -1,0 +1,847 @@
+var $ = require('jquery'),
+	common = require('static/libs/util/common'),
+	laypage = require('static/libs/laypage/laypage'),
+	validate = require('static/libs/util/validate'),
+	tmpl = __inline('_lockDetail.tmpl');
+require('select2');
+require('select2/select2_locale_zh-CN');
+require('static/libs/laydate/laydate');
+
+var id = common.getUrlParm("id"),
+	data = {
+		id: id,
+		deviceId: id,
+		dvcid: id,
+		page: 1,
+		rows: 100
+	};
+	obj = {};
+var allusercode = {
+		'1':'1',
+		'2':'2',
+		'3':'3',
+		'4':'4',
+		'5':'5',
+		'6':'6',
+		'7':'7',
+		'8':'8',
+		'9':'9',
+		'10':'10',
+		'11':'11',
+		'12':'12',
+		'13':'13',
+		'14':'14',
+		'15':'15',
+		'16':'16',
+		'17':'17',
+		'18':'18',
+		'19':'19',
+		'20':'20',
+};
+var availableusercode = {};
+var authuser = {};
+var specifyusercode = true ;
+
+init();
+
+function init() {
+
+	window.start = {
+		elem: '#startTime',
+		format: 'YYYY-MM-DD hh:mm:ss',
+		max: '2099-06-16 23:59:59', //最大日期
+		istime: true,
+		istoday: true,
+		choose: function(datas) {
+			end.min = datas; //开始日选好后，重置结束日的最小日期
+			end.start = datas //将结束日的初始值设定为开始日
+		}
+	};
+	window.end = {
+		elem: '#endTime',
+		format: 'YYYY-MM-DD hh:mm:ss',
+		min: laydate.now(),
+		max: '2099-06-16 23:59:59',
+		istime: true,
+		istoday: false,
+		choose: function(datas) {
+			start.max = datas; //结束日选好后，重置开始日的最大日期
+		}
+	};
+	
+	$(document)
+		//
+		.on('click', '.form-box-ul li', function(event) {
+			event.preventDefault();
+			$(this).addClass('z-sel').siblings('.z-sel').removeClass('z-sel');
+			var index = $(this).index();
+			$(".show-box").hide().eq(index).show();
+			if (index == 2)
+				$(".search-type li").eq(0).trigger('click');
+			if (index == 3){
+				data.type = 3;
+				loadLista(1);
+			}
+		})
+		// 
+		.on('click', '.search-item li', function(event) {
+			event.preventDefault();
+			$(this).addClass('z-sel').siblings('li').removeClass('z-sel');
+		})
+		// 
+		.on('click', '.search-type li', function(event) {
+			event.preventDefault();
+			var index = $(this).index();
+			data.type = index;
+			loadList(1);
+		})
+		.on('click', '.search-time li', function(event) {
+			event.preventDefault();
+			var index = $(this).index();
+			data.queryFlag = index;
+			loadList(1);
+		})
+		.on('click', '#lockdetailclose', function(event) {
+			event.preventDefault();
+			start.max = '2099-06-16 23:59:59';
+			end.min = laydate.now();
+		})
+		//新增用户弹出层取消时
+		.on('click', '#lockcancel', function(event) {
+			event.preventDefault();
+			start.max = '2099-06-16 23:59:59';
+			end.min = laydate.now();
+		})
+		//手机号码输入框内容动态展示
+		.on('keyup','#phonenumber',function(event){
+			event.preventDefault();
+			$('#tip').hide();
+			var val = $('#phonenumber').val();
+			if(val.length>0){
+				$.ajax({
+					type:"post",
+					dataType: "json",
+					url: common.BASE_PATH + '/service/customer/findInfo',
+					data: {"customerinfo":val},
+					success: function(json) {
+						var tipHtml="";
+						//typeof callback === 'function' && callback(json);
+						$("#tip").show();
+						for(var i =0;i<json.length;i++){
+							var sex = json[i].sex=="1"?",男":",女";
+							var phonenumber = json[i].phonenumber==""?"":","+json[i].phonenumber;
+							var identity = json[i].identity==""?"":","+json[i].identity;
+							var title = json[i].title=="1"?",列车长":",乘务员";
+							var label = json[i].label==""?"":","+json[i].label;
+							tipHtml += "<li>"+json[i].name+sex+phonenumber+identity+title+label+"</li>";
+						}
+						//获得输入框宽度
+						//var width=parseInt($("input[name='phonenumber']").width());
+						$('#tip').html(tipHtml).width("470px");
+						$('#tip').css("position","relative").css("left",0).css("list-style-type","none");
+						if(json.length==0){
+							$("#tip").hide();
+						}
+						$('#tip li').click(function(){
+							$('#tip').hide();
+							var ind = $(this).index();
+							$('#phonenumber').val(json[ind].phonenumber);
+							$('#username').val(json[ind].name);
+							$('#fingerprint').val(json[ind].fingerprint);
+						});
+					},
+					failure: function(json) {
+						typeof failure === 'function' && failure(json);
+					}
+				})
+			}
+			
+			//TODO
+		})
+		// 新增密码
+		.on('click', '.btn-open-save', function(event) {
+			event.preventDefault();
+			
+			var type = parseInt($(this).attr('data-type'), 10),
+				tmplData = {
+					obj: obj
+				};
+			switch (type) {
+				case 0:
+					tmplData.type = 2;
+					tmplData.password = $(this).attr('data-password');
+					tmplData.pwdBeginDate = $.trim($(this).attr('data-pwdBeginDate'));
+					tmplData.pwdEndDate = $.trim($(this).attr('data-pwdEndDate'));
+					break;
+				case 1:
+					tmplData.type = 3;
+					tmplData.tempPassword = $(this).attr('data-tempPassword');
+					tmplData.tempPwdBeginDate = $.trim($(this).attr('data-tempPwdBeginDate'));
+					tmplData.tempPwdEndDate = $.trim($(this).attr('data-tempPwdEndDate'));
+					break;
+			}
+			var _tmpl = $.trim(tmpl({
+				type: 2,
+				availableusercode: availableusercode,
+				authuser: authuser,
+				specifyusercode: specifyusercode
+			}));
+			common.open({
+				title: false,
+				closeBtn: false,
+				zIndex: 100,
+				content: _tmpl,
+				shadeClose: false,
+				scrollbar: false,
+				success: function(layero, index) {
+					$(layero).find('.btn-close').attr('data-index', index);
+					$("#scountrycode").select2({
+						placeholder: label.countrycode,
+						data: {
+							results: parsePlaceData(countryCode, 'countryCode', 'countryName')
+						}
+					});
+				}
+			});
+			$("#dailystarttime").hide();
+			$("#dailyendtime").hide();
+			if(label.dlang!="cn"){
+				$("#enhide").hide();
+			};
+			/*$("#scountrycode").append(countryNumber());*/
+		})
+		//修改
+		.on('click', '#btn-save', function(event) {
+			event.preventDefault();
+			saveAction(parseInt($(this).attr('data-type'), 10));
+		})
+		//失效密码
+		.on('click', '.btn-delete', function(event) {
+			event.preventDefault();
+			deleteAction($(this).attr('data-id'), $(this).attr('data-type'));
+		})
+		//隐藏密码
+		/*.on('click', '.btn-hidden', function(event) {
+			event.preventDefault();
+			hiddenAction($(this).attr('data-id'), $(this).attr('data-type'));
+		})*/
+		.on('change', '#authuserselect', function(event) {
+			event.preventDefault();
+			//alert($(this).find("option:selected").attr('realname'));
+			$("#phonenumber").val($(this).find("option:selected").attr('username'))
+			$("#username").val($(this).find("option:selected").attr('realname'))
+		})
+		.on('change', '#usercode', function(event) {
+			event.preventDefault();
+			var result = $(this).val();
+			switch (parseInt(result, 10)) {
+				case 242:
+					$("#passwordFlag option:gt(0)").remove();
+					var optionTags = '<option value="1">'+label.suijicode+'</option>';
+					$("#passwordFlag").append(optionTags);
+					break;
+				default:
+					$("#passwordFlag option:gt(0)").remove();
+					var optionTags = '<option value="1">'+label.suijicode+'</option><option value="2">'+label.presetpassword+'</option>';
+					$("#passwordFlag").append(optionTags);
+					break;
+			}
+		})
+		.on('change', '#passwordFlag', function(event) {
+			event.preventDefault();
+			var result = $(this).val();
+			switch (parseInt(result, 10)) {
+				case 0:
+					$("#uusertype").show();
+					$("#enhide").show();
+					$("#weekshow").show();
+					$("#passwordusercode").show();
+					$("#weekshow").show();
+					$("#passwordBox").show();
+					break;
+				case 1:
+					$("#uusertype").show();
+					$("#enhide").show();
+					$("#weekshow").show();
+					$("#passwordusercode").show();
+					$("#weekshow").show();
+					$("#passwordBox").hide();
+					break;
+				case 2:
+					$("#passwordusercode").hide();
+					$("#uusertype").hide();
+					$("#passwordBox").hide();
+					$("#weekshow").hide();
+					$("#enhide").hide();
+					$("#dailystarttime").hide();
+					$("#dailyendtime").hide();
+					break;
+			}
+		})
+		.on('change', '#hotaliduser', function(event) {
+			event.preventDefault();
+			$("#usertype").val(21);
+			//$("#usertype").attr("selected","selected");
+			if($("#hotaliduser").is(':checked')){
+				$("#usertype").attr("disabled","disabled");
+				$("#usertype").css('background-color','#EEEEEE');
+			}else{
+				$("#usertype").removeAttr("disabled"); 
+				$("#usertype").css('background-color','#FFFFFF');
+			}
+		})
+		.on('change', '#weekday', function(event) {
+			event.preventDefault();
+			if(!$("input[type='checkbox']").is(':checked')){
+				$("#dailystarttime").hide();
+				$("#dailyendtime").hide();
+			}else{
+				$("#dailystarttime").show();
+				$("#dailyendtime").show();
+				if($("#usertype").val()==32){
+					$("#startmin").hide();
+					$("#endmin").hide();
+				}else{
+					$("#startmin").show();
+					$("#endmin").show();
+				}
+			}
+		})
+		.on('change', '#usertype', function(event) {
+			event.preventDefault();
+			var result = $(this).val();
+			switch (parseInt(result, 10)) {
+				case 21:
+					$("#carinfoBox").hide();
+					$("#cardtypeBox").hide();
+					$("#passwordBox").show();
+					$("#passwordFlagbox").show();
+					$("#passwordusercode").show();
+					break;
+				case 32:
+					$("#carinfoBox").show();
+					$("#cardtypeBox").show();
+					$("#passwordFlagbox").hide();
+					$("#passwordBox").hide();
+					$("#passwordusercode").hide();
+					break;
+				case 22:
+					$("#carinfoBox").hide();
+					$("#cardtypeBox").hide();
+					$("#passwordFlagbox").hide();
+					$("#passwordBox").hide();
+					$("#passwordusercode").hide();
+					break;
+			}
+		})
+		.on('click', '#btn-abandon', function(event) {
+			event.preventDefault();
+			var ids = [];
+			var ci = document.getElementsByName("no");
+			//遍历复选框数组  如果被选中ci[i].checked的值就是true
+			for(var i = 0;i < ci.length;i++){
+				if(ci[i].checked==true){
+					ids.push(ci[i].value);
+				}
+			}
+			if(ids.length!=1){
+				var mess = label.choosearecord;
+				common.msg(mess);
+				return ;
+			}
+			common.confirm(label.doyouconfirmtoabandontheuser, function(index) {
+				$.ajax({
+					type:"post",
+					url: common.BASE_PATH + '/service/lockpassword/abandon',
+					data: {"ids":ids},
+					dataType: "json",
+					success: function(json) {
+						typeof callback === 'function' && callback(json);
+						loadLista(1);
+						common.msg(json.message);
+					},
+					failure: function(json) {
+						typeof failure === 'function' && failure(json);
+					}
+				})
+			});
+
+		})
+		.on('click', '#btn-genenow', function(event) {
+			event.preventDefault();
+			var that = '#btn-genenow';
+			if ($(that).hasClass('z-dis')) return;
+			$(that).addClass('z-dis');
+			$.ajax({
+				type:"post",
+				url: common.BASE_PATH + '/service/lockpassword/generatenowbylock',
+				data: {"deviceid":id},
+				dataType: "json",
+				success: function(json) {
+					typeof callback === 'function' && callback(json);
+					loadLista(1);
+					common.msg(json.message);
+				},
+				failure: function(json) {
+					typeof failure === 'function' && failure(json);
+				}
+			})
+		})
+		.on('click', '#btn-geneafter', function(event) {
+			event.preventDefault();
+			common.confirm(label.doyouconfirmtoregenerate, function(index) {
+				geneAfter();
+			});
+		})
+		.on('change', '#scountrycode', function(event) {
+			event.preventDefault();
+			var result = $('#scountrycode').val();
+			switch (parseInt(result, 10)) {
+				case 86:
+					$("#phonenumber").attr({datatype:"m"});
+					break;
+				default :
+					$("#phonenumber").attr({datatype:"n"});
+			}
+		});
+	
+	loadDetail();
+	loadDeviceinfo();
+
+	$(".form-box-ul li").eq(0).trigger('click');
+	
+}
+function geneAfter(){
+	var that = '#btn-geneafter';
+	if ($(that).hasClass('z-dis')) return;
+	$(that).addClass('z-dis');
+	$.ajax({
+		type:"post",
+		url: common.BASE_PATH + '/service/lockpassword/generateafterbylock',
+		data: {"deviceid":id},
+		dataType: "json",
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+			loadLista(1);
+			common.msg(json.message);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+
+// 修改
+function saveAction(type) {
+	var that = '#btn-save';
+	$("#usertype").removeAttr("disabled"); 
+	if ($(that).hasClass('z-dis')) return;
+	if (validate.check("#svaeCellForm")) {
+		$(that).addClass('z-dis');
+		var formData = $("#svaeCellForm").serializeJson();
+		formData.dvcid = id;
+		
+		if(formData.usertype == 22){
+			var fingerprintval = $("#fingerprint").val();
+			if(fingerprintval==""||fingerprintval==undefined){
+				var mess = label.requirefingerprint;
+				common.msg(mess);
+				$(that).removeClass('z-dis');
+				return;
+			}
+			saveFingerprintUser(formData,
+					function(json){
+				common.msg(json.message,function(){
+					common.closeAll();
+					loadDetail();
+				})
+			}
+			);
+		}
+		else if(formData.usertype == 32){
+			saveCardUser(formData,
+					function(json) {
+				common.msg(json.message, function() {
+					common.closeAll();
+					loadDetail();
+				})
+			},
+			function() {
+				$(that).removeClass('z-dis');
+			});
+		}
+		else 
+		{
+			savePassword(formData,
+					function(json) {
+						common.msg(json.message, function() {
+							common.closeAll();
+							loadDetail();
+						})
+					},
+					function() {
+						$(that).removeClass('z-dis');
+					});
+		}
+	}
+};
+//失效
+function deleteAction(pwdid, type) {
+	var formData = {
+		lockpasswordid: pwdid,
+		dvcid: id
+	};
+
+	deletePassword(
+		formData,
+		function(json) {
+			common.msg(json.message, function() {
+				loadDetail();
+			})
+		});
+};
+//隐藏
+function hiddenAction(pwdid, type) {
+	var formData = {
+		lockpasswordid: pwdid,
+		dvcid: id
+	};
+
+	hiddenPassword(
+		formData,
+		function(json) {
+			common.msg(json.message, function() {
+				loadDetail();
+			})
+		});
+};
+function hiddenPassword(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/lockpassword/hiddenLockPassword',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//分页查询
+function loadList(cur) {
+	data.page = cur || 1;
+	data.rows = 100;
+	var url = '/service/openDeviceLog/findPage';
+	switch (data.type) {
+		case 0:
+			url = '/service/openDeviceLog/findPage';
+			break;
+		case 1:
+			url = '/service/deviceBattery/findPage';
+			break;
+		case 2:
+			url = '/service/commuLog/findPage';
+			break;
+	};
+	findPage(url, data, function(json) {
+		var _tmpl = $.trim(tmpl({
+			type: 4,
+			flag: data.type,
+			data: json.object.list
+		}));
+		$("#list").html(_tmpl);
+		if (json.object.count > 0) {
+			laypage({
+				cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+				pages: Math.ceil(json.object.count / data.rows), //总页数
+				curr: cur, //当前页
+				jump: function(e, first) { //触发分页后的回调
+					if (!first) {
+						loadList(e.curr);
+					}
+				}
+			});
+			$("#page").show();
+		} else {
+			$("#page").hide();
+		}
+	})
+};
+function loadLista(cur) {
+	data.page = cur || 1;
+	data.rows = 10;
+	var url = '/service/lockpassword/findAutoPasswordPage';
+	findPage(url, data, function(json) {
+		var _tmpl = $.trim(tmpl({
+			type: 4,
+			flag: data.type,
+			data: json.object.list,
+			synchronizedCount:json.synchronizedCount,
+			toBeSynchronizedCount:json.toBeSynchronizedCount,
+			needSynchronizeCount:json.needSynchronizeCount
+		}));
+		$("#lista").html(_tmpl);
+		if (json.object.count > 0) {
+			laypage({
+				cont: 'pagea', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+				pages: Math.ceil(json.object.count / data.rows), //总页数
+				curr: cur, //当前页
+				jump: function(e, first) { //触发分页后的回调
+					if (!first) {
+						loadLista(e.curr);
+					}
+				}
+			});
+			$("#pagea").show();
+		} else {
+			$("#pagea").hide();
+		}
+	})
+};
+
+//查询详情
+function loadDetail() {
+	initLockpassword(data, 
+		function(json) {
+		
+		var useduc = {} ;
+		specifyusercode = json.isUseSpecifiyUsercode;
+		for ( var up in json.object.list )
+			useduc[json.object.list[up].usercode] = json.object.list[up].usercode ;
+
+		availableusercode = {};
+		for ( var uc in allusercode )
+		{
+			if ( useduc[uc] === undefined )
+				availableusercode[uc] = allusercode[uc] ;
+		}
+
+		var _tmpl = $.trim(tmpl({
+			type: 1,
+			data: json.object,
+			specifyusercode: specifyusercode
+		}));
+		obj = json.object;
+		$(".show-box").eq(0).html(_tmpl);
+	})
+}
+
+function initPasswordDetail(data, callback, failure)
+{
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/lockpassword/findAutoPasswordPage',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+function initAuthUser(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/roomprivilege/findPage',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+
+function loadDeviceinfo()
+{
+	initDevice(data, 
+			function(json) 
+			{
+			specifyusercode = json.object.useSpecifiyUsercode;
+			var _tmpl = $.trim(tmpl({
+				type: 5,
+				data: json.object
+			}));
+			$(".m-wifi-station").eq(0).html(_tmpl);
+			var _tmpl = $.trim(tmpl({
+				type: 0,
+				data: json.object
+			}));
+			$(".show-box").eq(1).html(_tmpl);
+			if (json.object.bindRoomId) {
+				initAuthUser({
+					roomId: json.object.bindRoomId,
+					page: 1,
+					rows: 100
+					}, 
+				function(data) {
+					authuser = data.object.list;
+				}
+				)
+			} 
+		}
+	)
+}
+
+//查询设备详情
+function initDevice(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/device/initDevice',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+
+function initLockpassword(data, callback, failure)
+{
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/lockpassword/findPage',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+
+//分页查询
+function findPage(url, data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + url,
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//用户密码修改  失效密码传ff即可
+function savePassword(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/lockpassword/saveLockPassword',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+			start.max = '2099-06-16 23:59:59';
+			end.min = laydate.now();
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+			start.max = '2099-06-16 23:59:59';
+			end.min = laydate.now();
+		}
+	})
+}
+
+function saveCardUser(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/lockpassword/saveLockCardUser',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+function saveFingerprintUser(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/lockpassword/saveFingerprintUser',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+			start.max = '2099-06-16 23:59:59';
+			end.min = laydate.now();
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+			start.max = '2099-06-16 23:59:59';
+			end.min = laydate.now();
+		}
+	})
+}
+
+function deletePassword(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/lockpassword/deleteLockPassword',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+
+//动态密码修改
+function updateTempPassword(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/device/updateTempPassword',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+// 查找Room是否授权
+function findRoomById(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/room/findRoomById',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//解析地址
+function parsePlaceData(obj, key, value) {
+	var arr = [];
+	$.each(obj, function(i, n) {
+		arr.push({
+			id: n[key],
+			text: n[value]
+		})
+	})
+	return arr;
+};

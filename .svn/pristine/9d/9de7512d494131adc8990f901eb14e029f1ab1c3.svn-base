@@ -1,0 +1,50 @@
+package com.isurpass.message.processor;
+
+import java.util.Date;
+import javax.annotation.Resource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.ant.business.Device;
+import com.ant.business.LockPassword;
+import com.ant.vo.LockUserResultVo;
+import com.isurpass.service.HiDeviceService;
+import com.isurpass.service.HiLockPasswordService;
+
+public class AddingFingerPrintUserStatusProcessor implements IMessageProcessor {
+	private static Log log = LogFactory.getLog(AddingFingerPrintUserStatusProcessor.class);
+
+	@Resource
+	private HiLockPasswordService hilockpasswordService;
+	@Resource
+	private HiDeviceService hideviceservice;
+
+	@Override
+	public void process(JSONObject message) {
+		LockUserResultVo lockuserresult = JSON.parseObject(message.getString("objparam"),LockUserResultVo.class);
+		
+		String zwavedeviceid = message.getString("zwavedeviceid");
+		int usercode = message.getIntValue("intparam");
+		String username = lockuserresult.getUsername();
+		Date validfrom = lockuserresult.getValidfrom();
+		Date validthrough = lockuserresult.getValidthrough();
+		int resultCode = lockuserresult.getResultCode();
+		Device device = hideviceservice.findByPtDeviceId(zwavedeviceid);
+		if(resultCode==4){
+			LockPassword lockPassword = new LockPassword();
+			lockPassword.setDvcid(device.getId().intValue());
+			lockPassword.setPhonenumber("");
+			lockPassword.setUsertype(22);
+			lockPassword.setUsercode(usercode);
+			lockPassword.setUsername(username);
+			lockPassword.setValidfrom(validfrom);
+			lockPassword.setValidthrough(validthrough);
+			lockPassword.setCreatetime(new Date());
+			lockPassword.setUsestatus(1);
+			lockPassword.setSynstatus(1);
+			hilockpasswordService.save(lockPassword);
+		}
+	}
+
+}

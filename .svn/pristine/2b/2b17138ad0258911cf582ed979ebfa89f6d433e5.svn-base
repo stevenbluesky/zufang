@@ -1,0 +1,6 @@
+{
+    "repos": "https://github.com/aralejs/sticky.git",
+    "version": "1.4.0",
+    "name": "sticky",
+    "main": "sticky.js"
+}

@@ -1,0 +1,46 @@
+package com.isurpass.service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.beanutils.PropertyUtils;
+
+import com.ant.business.CommuLog;
+import com.ant.business.Device;
+import com.ant.business.District;
+import com.ant.business.Gateway;
+import com.ant.business.Room;
+import com.ant.vo.CommuLogVo;
+import com.ant.vo.DeviceVo;
+import com.isurpass.common.hibernate.BasicScroll;
+import com.isurpass.common.hibernate.HqlWrap;
+
+public class HiCommuLogService extends BaseService<CommuLog>
+{
+	public void saveCommuLog(String commuText,Long deviceId, Long personId)
+	{
+		CommuLog newCommuLog = new CommuLog();
+		newCommuLog.setCommuText(commuText);
+		newCommuLog.setPersonId(personId);
+		newCommuLog.setDeviceId(deviceId);
+		newCommuLog.setInputDate(new Date());
+		super.save(newCommuLog);
+	}
+	public void saveCommuLog(String commuText,Long deviceId, Long personId,Integer type1,Integer type2)
+	{
+		CommuLog newCommuLog = new CommuLog();
+		newCommuLog.setCommuText(commuText);
+		newCommuLog.setPersonId(personId);
+		newCommuLog.setDeviceId(deviceId);
+		newCommuLog.setInputDate(new Date());
+		newCommuLog.setType1(type1);
+		newCommuLog.setType2(type2);
+		super.save(newCommuLog);
+	}
+	public List<CommuLog> findPage(CommuLogVo commuLogVo,BasicScroll scroll)
+	{
+		return super.findPage(commuLogVo.getPersonId(), commuLogVo.getDeviceId(), commuLogVo.getQueryFlag(), "inputDate", scroll);
+	}
+	
+}

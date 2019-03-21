@@ -1,0 +1,940 @@
+package com.isurpass.service;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.ResourceBundle;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import com.isurpass.common.exception.BusinessException;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+import org.hibernate.transform.Transformers;
+import org.springframework.scheduling.annotation.Async;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.ant.business.Device;
+import com.ant.business.District;
+import com.ant.business.Gateway;
+import com.ant.business.LockPassword;
+import com.ant.business.Manager;
+import com.ant.business.Room;
+import com.ant.config.MjConfig;
+import com.ant.constant.CommonConstant;
+import com.ant.restful.service.RestfulUtil;
+import com.ant.util.Utils;
+import com.ant.vo.DeviceVo;
+import com.ant.vo.PersonVo;
+import com.ant.vo.PtDeviceVo;
+import com.ant.vo.PtGatewayVo;
+import com.isurpass.common.hibernate.BasicScroll;
+import com.isurpass.common.hibernate.CriteriaWrap;
+import com.isurpass.common.hibernate.ExpWrap;
+import com.isurpass.common.hibernate.HqlWrap;
+import com.isurpass.common.sms.AliSmsSender;
+import com.isurpass.common.sms.MessageParser;
+import com.isurpass.message.vo.Event;
+
+/**
+ * 设备service
+ *
+ */
+public class HiDeviceService extends BaseService<Device>
+{
+	@Resource
+	private HiOperateLogService hiOperateLogService;
+	@Resource
+	private HiOpenDeviceLogService hiOpenDeviceLogService ;
+	@Resource
+	private HiDeviceBatteryLogService hiDeviceBatteryLogService ;
+
+
+	/**
+	 * 保存设备信息
+	 * @param ptGatewayVo
+	 * @param dbManager
+	 * @param dbGateway
+	 */
+	public void saveDevice(PtGatewayVo ptGatewayVo,Manager dbManager,Gateway dbGateway)
+	{
+		/** 查询原有的设备信息,key为平台id，value为设备信息 */
+		Map<String, Device> oldDeviceMap = this.findMapByGatewayId(dbGateway.getId());
+		List<PtDeviceVo> newDeviceList = ptGatewayVo.getZwavedevice();
+		Map<String, PtDeviceVo> newDeviceMap = new HashMap<String, PtDeviceVo>();
+
+		/**
+		 * 按平台id循环新的，如果在数据库列表不存在则新增，如果 在数据库列表已存在则修改
+		 */
+		for (PtDeviceVo tempPtDeviceVo : newDeviceList)
+		{
+			Device oldDevice = oldDeviceMap.get(tempPtDeviceVo.getZwavedeviceid());
+			if (oldDevice == null)
+			{
+				/** 新增 */
+				Device newDevice = new Device();
+				if ("5".equals(tempPtDeviceVo.getDevicetype()))
+				{
+					newDevice.setBattery(100); // 默认电量100
+					newDevice.setDeviceType(0);
+				} 
+				else if ("15".equals(tempPtDeviceVo.getDevicetype()))
+				{
+					newDevice.setDeviceType(1);
+					newDevice.setCurrentDegrees(0f);
+					newDevice.setCurrentPower(0f);
+					newDevice.setBaseDegrees(0f);
+				} 
+				else if ("17".equals(tempPtDeviceVo.getDevicetype()))
+				{
+					newDevice.setDeviceType(17);
+					newDevice.setCurrentDegrees(0f);
+					newDevice.setCurrentPower(0f);
+					newDevice.setBaseDegrees(0f);
+				}else if ( StringUtils.isNotBlank(tempPtDeviceVo.getDevicetype())){
+					newDevice.setDeviceType(Integer.valueOf(tempPtDeviceVo.getDevicetype()));
+				}
+				newDevice.setBindStatus(0); // 未绑定
+				newDevice.setDeviceName(tempPtDeviceVo.getName());
+				newDevice.setDistrictId(dbGateway.getDistrictId());
+				newDevice.setGatewayId(dbGateway.getId());
+				newDevice.setInputDate(new Date());
+				newDevice.setManagerId(dbManager.getId());
+				newDevice.setOpenStatus(1); // 默认锁关闭
+				newDevice.setPersonId(dbGateway.getPersonId());
+				newDevice.setPtDeviceId(tempPtDeviceVo.getZwavedeviceid());
+				newDevice.setSignalFlag(0); // 默认设备在线
+				newDevice.setProductor(tempPtDeviceVo.getProductor());
+				super.save(newDevice);
+			} 
+			else
+			{
+				/** 修改 */
+				oldDevice.setPtDeviceId(tempPtDeviceVo.getZwavedeviceid());
+				oldDevice.setDeviceName(tempPtDeviceVo.getName());
+				oldDevice.setProductor(tempPtDeviceVo.getProductor());
+				super.update(oldDevice);
+			}
+			newDeviceMap.put(tempPtDeviceVo.getZwavedeviceid(), tempPtDeviceVo);
+		}
+
+		/** 循环数据库列表的，如果在新的列表不存在，则删除 */
+		for (Entry<String, Device> entry : oldDeviceMap.entrySet())
+		{
+			Device oldDevice = entry.getValue();
+			if (!newDeviceMap.containsKey(oldDevice.getPtDeviceId()))
+			{
+				super.delete(oldDevice);
+			}
+		}
+	}
+	
+	/**
+	 * 根据网关id查询设备信息
+	 * @param gatewayId
+	 * @return
+	 */
+	public List<Device> findByGatewayId(Long gatewayId)
+	{
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.add(ExpWrap.eq("gatewayId", gatewayId));
+		return cw.list();
+	}
+	
+	/**
+	 * 根据网关id查询设备信息
+	 * @param gatewayId
+	 * @return 平台设备id到设备信息的map
+	 */
+	public Map<String, Device> findMapByGatewayId(Long gatewayId)
+	{
+		List<Device> deviceList = this.findByGatewayId(gatewayId);
+		Map<String, Device> map = new HashMap<String, Device>();
+		for(Device tempDevice : deviceList){
+			map.put(tempDevice.getPtDeviceId(),tempDevice);
+		}
+		return map;
+	}
+	
+	/**
+	 * 查询未绑定的设备
+	 * @return
+	 */
+	public List<DeviceVo> findUnBindDevice(Long personId,Long roomId)
+	{
+		HiRoomService hiRoomService = super.createService(HiRoomService.class);
+		Room dbRoom = hiRoomService.findById(roomId);
+		
+		HqlWrap hw = new HqlWrap(super.sessionFactory);
+		
+		hw.add("select d , di , g  ");
+		hw.add("from Device d , Gateway g , District di ");
+		hw.add("where d.gatewayId = g.id and d.districtId = di.id and d.bindStatus = 0  ");
+		hw.add("and d.districtId = ? " , dbRoom.getDistrictId());
+		hw.add("and d.personId = ? " , personId);
+		//hw.setResultBeanClass(DeviceVo.class);
+		
+		List<Object[]> lst = hw.list();
+		List<DeviceVo> rl = createDeviceVoList(lst);
+		
+		return rl;
+		
+	}
+	
+
+	
+	/**
+	 * 查询绑定的设备
+	 * @param roomId
+	 * @return
+	 */
+	public  List<DeviceVo> findBindDeviceVo(Long roomId)
+	{
+		HqlWrap hw = new HqlWrap(super.sessionFactory);
+		hw.add("select d , di , g ,r  ");
+		hw.add("from Device d , District di , Gateway g , Room r ");
+		hw.add("where d.bindRoomId = r.id and d.districtId = di.id and d.gatewayId = g.id ");
+		hw.add("and r.id = ? " , roomId);
+	
+		List<Object[]> lst = hw.list();
+		List<DeviceVo> rl = createDeviceVoList(lst);
+		
+		return rl;
+		
+	}
+	
+	/**
+	 * 查询绑定的设备
+	 * @param roomId
+	 * @return
+	 */
+	public List<Device> findBindDevice(Long roomId)
+	{
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.add(ExpWrap.eq("bindRoomId", roomId));
+		return cw.list();
+	}
+	
+	/**
+	 * 根据id查询
+	 * @param id
+	 * @return
+	 */
+	public Device findById(Long id)
+	{
+		return super.query(id.intValue());
+	}
+	
+	/**
+	 * 解绑设备
+	 * @param sessionPersonVo
+	 * @param rb 
+	 */
+	public void unBind(Long roomId,Long deviceId,PersonVo sessionPersonVo, ResourceBundle rb)
+	{
+		HiRoomService hiRoomService = super.createService(HiRoomService.class);
+		Room dbRoom = hiRoomService.findById(roomId);
+		if (dbRoom.getGrantFlag() == 1)
+		{
+			/** 已授权 */
+			throw new BusinessException(rb.getString("roomhadauth"));
+		}
+
+		Device dbDevice = this.findById(deviceId);
+
+		Device.checkRole(dbDevice, sessionPersonVo);
+		dbDevice.setBindRoomId(null);
+		dbDevice.setBindStatus(0);
+		super.update(dbDevice);
+
+		/** 保存日志 */
+		HiDistrictService hiDistrictService = super.createService(HiDistrictService.class);
+		District dbDistrict = hiDistrictService.findById(dbRoom.getDistrictId());
+		hiOperateLogService.saveOperateLog(14,"将【"+ dbDevice.getDeviceName() + "】设备从【" + dbDistrict.getDistrictName() + "】小区下【"
+						+ dbRoom.getRoomName() + "】房间 解绑",sessionPersonVo.getRealName(), sessionPersonVo.getId(), 
+						sessionPersonVo.getIp(), dbDevice.getId(),dbDistrict.getDistrictName(),dbRoom.getRoomName(),dbDevice.getDeviceName());
+	}
+	
+	/**
+	 * 绑定房间设备
+	 * @param sessionPersonVo
+	 * @param rb 
+	 */
+	public void bind(Long roomId,String deviceIds,PersonVo sessionPersonVo, ResourceBundle rb)
+	{
+		String [] deviceIdArray = deviceIds.split("\\,");
+		
+		HiRoomService hiRoomService = super.createService(HiRoomService.class);
+		Room dbRoom = hiRoomService.findById(roomId);
+		if(dbRoom.getGrantFlag() == 1){
+			/**已授权*/
+			throw new BusinessException(rb.getString("roomhadauth2"));
+		}
+		List<Device> deviceList = new ArrayList<Device>();
+		int dbCount = 0;	//电表数量
+		List<Long> didlst = new ArrayList<Long>();
+		for(String temp : deviceIdArray){
+			Long deviceId = Long.parseLong(temp);
+			
+			Device dbDevice = this.findById(deviceId);
+			
+			Device.checkRole(dbDevice, sessionPersonVo);
+			dbDevice.setBindRoomId(roomId);
+			dbDevice.setBindStatus(1);
+			super.update(dbDevice);
+			if(dbDevice.getDeviceType() == 1)
+				dbCount ++;
+			deviceList.add(dbDevice);
+			didlst.add(deviceId);
+		}
+		dbCount = dbCount + this.findBindDeviceCount(roomId, 1,didlst);	//相加电表数
+		if(dbCount > 1){
+			throw new BusinessException(rb.getString("duodianbiao"));
+		}
+		
+		/**保存日志*/
+		HiDistrictService hiDistrictService = super.createService(HiDistrictService.class);
+		for(Device dbDevice : deviceList){
+			District dbDistrict = hiDistrictService.findById(dbRoom.getDistrictId());
+			hiOperateLogService.saveOperateLog(13, "将【" + dbDevice.getDeviceName() + "】设备绑定到【" + dbDistrict.getDistrictName() +
+					"】小区下【" + dbRoom.getRoomName() + "】房间" , 
+					sessionPersonVo.getRealName(), sessionPersonVo.getId(), 
+					sessionPersonVo.getIp(), dbDevice.getId(),dbDistrict.getDistrictName(),dbRoom.getRoomName(),dbDevice.getDeviceName());
+		}
+	}
+	
+	/**
+	 * 按房间统计设备数量
+	 * @param roomId
+	 * @return
+	 */
+	public List<Map> findBindDeviceCount(List<Long> roomIds)
+	{
+		if(roomIds == null || roomIds.size() == 0)
+			return new ArrayList<Map>();
+		
+		StringBuffer hql = new StringBuffer();
+		
+		hql.append("select bindRoomId as bindRoomId,count(*) as deviceCount ");
+		hql.append("from Device " );
+		hql.append("where bindRoomId in (:roomIds) ");
+		hql.append("group by bindRoomId ");
+		
+		Query query = super.sessionFactory.getCurrentSession().createQuery(hql.toString());    
+		query.setParameterList("roomIds", roomIds);  
+		
+		query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		
+		return query.list();
+	}
+	
+	/**
+	 * 按房间查询绑定设备数量
+	 * @param roomId
+	 * @return
+	 */
+	public int findBindDeviceCount(Long roomId,Integer deviceType , Collection<Long> notinids)
+	{
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.add(ExpWrap.eq("bindRoomId", roomId));
+		cw.addifNotNull(ExpWrap.eq("deviceType", deviceType));
+		cw.addifNotNull(ExpWrap.not(ExpWrap.in("id", notinids)));
+		return cw.count();
+		
+//		HqlWrap hql = new HqlWrap(super.sessionFactory);
+//		hql.add("select * from Device where bindRoomId = ? " , roomId);
+//		hql.addifnotnull("and deviceType = ? ", deviceType);
+//
+//		return hql.count();
+
+	}
+	
+	/**
+	 * 按房间统计设备数量
+	 * @param roomIds
+	 * @return
+	 */
+	public Map<Long, Integer> findMapBindDeviceCount(List<Long> roomIds)
+	{
+		List<Map> list = this.findBindDeviceCount(roomIds);
+		Map<Long, Integer> map = new HashMap<Long, Integer>();
+		for(Map tempMap : list)
+			map.put(Long.parseLong(tempMap.get("bindRoomId").toString()), Integer.parseInt(tempMap.get("deviceCount").toString()));
+
+		return map;
+	}
+
+	/**
+	 * 分页查询设备
+	 */
+	public List<DeviceVo> findPage(DeviceVo deviceVo,BasicScroll scroll)
+	{
+		HqlWrap hw = new HqlWrap(super.sessionFactory);
+		
+		if(StringUtils.isNotBlank(deviceVo.getGrantRealName()))
+		{
+			hw.add("select d , di , g ,r ");
+			hw.add("from Device d , District di , Gateway g , Room r , RoomPrivilege rp ");
+			hw.add("where d.bindRoomId = r.id and d.gatewayId = g.id and d.districtId = di.id " );
+		}
+		else
+		{
+			hw.add("select d , di , g ");
+			hw.add("from Device d , District di , Gateway g ");
+			hw.add("where d.gatewayId = g.id and d.districtId = di.id " );
+		}
+		hw.addifnotnull("and d.deviceType = ? ", deviceVo.getDeviceType());
+		hw.addifnotnull("and d.personId = ? ", deviceVo.getPersonId());
+		hw.addifnotnull("and d.districtId = ? ", deviceVo.getDistrictId());
+		hw.addifnotnull("and gatewayId = ? ", deviceVo.getGatewayId());
+		hw.addifnotnull("and di.address = ? ", deviceVo.getAddress());
+		hw.addifnotnull("and d.bindStatus = ? ", deviceVo.getBindStatus());
+		
+		if(deviceVo.getBatteryLowFlag() != null && deviceVo.getBatteryLowFlag() == 1)
+			hw.add("and d.battery <= 10 ");	//电量低于百分之10，电量低
+		else if(deviceVo.getBatteryLowFlag() != null && deviceVo.getBatteryLowFlag() == 0)
+			hw.add("and d.battery > 10 ");	//电量大于等于百分之10，电量整除
+		
+		if(deviceVo.getNoticeFlag() != null)
+		{
+			if ( deviceVo.getNoticeFlag() == 0 ) //0 所有异常
+				hw.add("and ( d.battery = 10 or g.signalFlag = 1 or d.signalFlag = 1 ) " );
+			else if ( deviceVo.getNoticeFlag() == 1 ) // 1 电量低
+				hw.add("and d.battery = 10 " );
+			else if ( deviceVo.getNoticeFlag() == 2 ) // 2 通讯异常
+				hw.add("and ( g.signalFlag = 1 or d.signalFlag = 1 ) " );
+		}
+		
+		hw.addifnotnull("and r.id = rp.roomId and rp.grantRealName = ? " , deviceVo.getGrantRealName());
+		
+		if(deviceVo.getSignalFlag() != null && deviceVo.getSignalFlag() == 0) /**在线*/
+			hw.add("and g.signalFlag = 0 and d.signalFlag = 0 ");
+		else if(deviceVo.getSignalFlag() != null && deviceVo.getSignalFlag() == 1) /**离线*/
+			hw.add("and ( g.signalFlag = 1 or d.signalFlag = 1 ) ");
+
+		hw.setScroll(scroll);
+		
+		List<Object[]> lst = hw.list();
+
+		return createDeviceVoList(lst);
+	}
+	
+	/**
+	 * 获取用户设备数量
+	 * @param personId
+	 * @return
+	 */
+	public Integer findDeviceCount(Long personId)
+	{
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.add(ExpWrap.eq("personId", personId));
+		return cw.count();
+	}
+	
+	/**
+	 * 初始化设备详情
+	 * @param id
+	 * @param personId
+	 * @return
+	 */
+	public DeviceVo initDevice(Long id)
+	{
+		HqlWrap hw = new HqlWrap(super.sessionFactory);
+		
+		hw.add("select g , d , di " );
+		hw.add("from Gateway g , Device d ,  District di ");
+		hw.add("where g.id = d.gatewayId and d.districtId = di.id ");
+		hw.add("and d.id = ? " , id );
+		
+		List<Object[]> lst = hw.list();
+		
+		if ( lst == null || lst.size() == 0 )
+			return null ;
+		
+		List<DeviceVo> dvl = createDeviceVoList(lst);
+		return dvl.get(0);
+	}
+	
+	/**
+	 * 更新密码
+	 * @param rb 
+	 */
+	public Device updatePassword(DeviceVo deviceVo,String phone,PersonVo sessionPersonVo, ResourceBundle rb )
+	{
+		/**更新锁密码*/
+		Device dbDevice = this.findById(deviceVo.getId());
+		Device.checkRole(dbDevice, sessionPersonVo);
+		dbDevice.setPwdBeginDate(deviceVo.getPwdBeginDate());
+		dbDevice.setPwdEndDate(deviceVo.getPwdEndDate());
+		if(deviceVo.getPasswordFlag() == 0){
+			/**手动录入*/
+			dbDevice.setPassword(deviceVo.getPassword());
+			super.update(dbDevice);
+		}else if(deviceVo.getPasswordFlag() == 1){
+			/**随机*/
+			String captcha = new SimpleDateFormat("HHmmss").format(new Date());
+			dbDevice.setPassword(captcha);
+			super.update(dbDevice);
+		}
+
+		/**同步密码*/
+		if(CommonConstant.restFlag == 1){
+			Map<String , Object> map = new HashMap<String , Object>();
+			map.put("zwavedeviceid", dbDevice.getPtDeviceId());
+			map.put("superpw", dbDevice.getPassword());
+			map.put("usercode", "1");
+			if(dbDevice.getPwdBeginDate() == null){
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.HOUR_OF_DAY, 0);
+				c.set(Calendar.MINUTE, 0);
+				c.set(Calendar.SECOND, 0);
+				dbDevice.setPwdBeginDate(c.getTime());
+			}
+			if(dbDevice.getPwdEndDate() == null){
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.HOUR_OF_DAY, 23);
+				c.set(Calendar.MINUTE, 59);
+				c.set(Calendar.SECOND, 59);
+				dbDevice.setPwdEndDate(c.getTime());
+			}
+			map.put("superpwtimes", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dbDevice.getPwdBeginDate()));
+			map.put("superpwtimee", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dbDevice.getPwdEndDate()));
+			
+			/**调用修改密码接口*/
+			if(!"FFFFFF".equals(deviceVo.getPassword())){
+				String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/setlockuserpassword", map,rb);
+				Utils.checkResult(str,rb);
+			}else{
+				String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/deletelockuserpassword", map,rb);
+				Utils.checkResult(str,rb);
+			}
+		}
+		
+		/**发送短信*/
+		this.sendSms(0, dbDevice.getPassword(),phone, dbDevice,rb);
+		
+		return dbDevice;
+	}
+
+	@Async
+	public void sendSms(int flag,String password,String phone,Device dbDevice, ResourceBundle rb){
+		if(phone == null || "".equals(phone))
+			return ;
+		
+//		Map<String , Object> pmap = new HashMap<String , Object>();
+//		pmap.put("countrycode", "86");
+//		if(StringUtil.checkNull(phone))
+//			pmap.put("phonenumber",dbRoom.getGrantUserName());
+//		else
+//			pmap.put("phonenumber",phone);
+		JSONObject json = new JSONObject();
+		
+		String templatecode = "SMS_36100250";
+		
+		String text = "";
+		if(dbDevice.getBindRoomId() != null){
+			HiRoomService hiRoomService = super.createService(HiRoomService.class);
+			Room dbRoom = hiRoomService.findById(dbDevice.getBindRoomId());
+			
+			HiDistrictService hiDistrictService = super.createService(HiDistrictService.class);
+			District dbDistrict = hiDistrictService.findById(dbRoom.getDistrictId());
+			text = rb.getString("sendsms1") + dbDistrict.getDistrictName() + rb.getString("sendsms2") + dbRoom.getBuild() + rb.getString("sendsms3") + dbRoom.getUnit() + 
+					rb.getString("sendsms4") + dbRoom.getFloor() + rb.getString("sendsms5") + dbRoom.getRoomName() + rb.getString("sendsms6")+ dbDevice.getDeviceName() + rb.getString("sendsms7");
+			
+			json.put("districtName", dbDistrict.getDistrictName());
+			json.put("build", dbRoom.getBuild());
+			json.put("unit", dbRoom.getUnit());
+			json.put("floor", dbRoom.getFloor());
+			json.put("roomName", dbRoom.getRoomName());
+		}else{
+			text = rb.getString("sendyour") + dbDevice.getDeviceName() + rb.getString("senddevice");
+			templatecode = "SMS_36110165";
+		}
+		
+		json.put("deviceName", dbDevice.getDeviceName());
+		json.put("password", password);
+		
+		if(!"FFFFFF".equals(password)){
+			if(flag == 0){
+//				text = text + "被设置用户密码为：" + password + "";
+				json.put("passwordtype", rb.getString("yonghu"));
+			}else{
+//				text = text + "被设置临时密码为：" + password + "";
+				json.put("passwordtype", rb.getString("linshi"));
+			}
+			
+			MessageParser mp = new MessageParser(null ,templatecode , json);
+			
+			AliSmsSender sender = new AliSmsSender();
+			sender.sendSMS("86", phone, mp);
+			
+		}else{
+			Map<String , Object> pmap = new HashMap<String , Object>();
+			pmap.put("countrycode", "86");
+			pmap.put("phonenumber",phone);
+			
+			if(flag == 0){
+				text = text + rb.getString("yonghuinvalid");
+			}else{
+				text = text + rb.getString("linshiinvalid");
+			}
+			pmap.put("message", text);
+			String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/sendsms", pmap,rb);
+			Utils.checkResult(str,rb);
+		}
+
+	}
+	
+	/**
+	 * 更新动态密码
+	 * @param rb 
+	 */
+	public Device updateTempPassword(DeviceVo deviceVo,String phone,PersonVo sessionPersonVo, ResourceBundle rb){
+		/**更新锁密码*/
+		Device dbDevice = this.findById(deviceVo.getId());
+		Device.checkRole(dbDevice, sessionPersonVo);
+		if(deviceVo.getTempPasswordFlag() == 0){
+			/**手动录入*/
+			dbDevice.setTempPassword(deviceVo.getTempPassword());
+			dbDevice.setTempPwdBeginDate(deviceVo.getTempPwdBeginDate());
+			dbDevice.setTempPwdEndDate(deviceVo.getTempPwdEndDate());
+			super.update(dbDevice);
+		}else{
+			String captcha = new SimpleDateFormat("HHmmss").format(new Date());
+			dbDevice.setTempPassword(captcha);
+			dbDevice.setTempPwdBeginDate(deviceVo.getTempPwdBeginDate());
+			dbDevice.setTempPwdEndDate(deviceVo.getTempPwdEndDate());
+			super.update(dbDevice);
+		}
+		
+		/**同步密码*/
+		if(CommonConstant.restFlag == 1){
+			Map<String , Object> map = new HashMap<String , Object>();
+			map.put("zwavedeviceid", dbDevice.getPtDeviceId());
+			map.put("usercode", "1");
+			map.put("superpw", dbDevice.getTempPassword());
+			if(dbDevice.getTempPwdBeginDate() == null){
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.HOUR_OF_DAY, 0);
+				c.set(Calendar.MINUTE, 0);
+				c.set(Calendar.SECOND, 0);
+				dbDevice.setTempPwdBeginDate(c.getTime());
+			}
+			if(dbDevice.getTempPwdEndDate() == null){
+				Calendar c = Calendar.getInstance();
+				c.set(Calendar.HOUR_OF_DAY, 23);
+				c.set(Calendar.MINUTE, 59);
+				c.set(Calendar.SECOND, 59);
+				dbDevice.setTempPwdEndDate(c.getTime());
+			}
+			map.put("superpwtimes", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dbDevice.getTempPwdBeginDate()));
+			map.put("superpwtimee", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(dbDevice.getTempPwdEndDate()));
+			
+			/**调用修改动态密码接口*/
+			if(!"FFFFFF".equals(deviceVo.getTempPassword())){
+				String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/setlockpassword", map,rb);
+				Utils.checkResult(str,rb);
+			}else{
+				String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/deletelockpassword", map,rb);
+				Utils.checkResult(str,rb);
+			}
+		}
+		
+		/**发送短信*/
+		this.sendSms(1, dbDevice.getTempPassword(),phone, dbDevice,rb);
+		return dbDevice;
+	}
+	
+	public void doorlockOpenEvent(Event event){
+		Device dbDevice = this.findByPtDeviceId(String.valueOf(event.getZwavedeviceid()));
+		dbDevice.setOpenStatus(0);
+		super.update(dbDevice);
+		
+		int usercode = event.getIntparam();
+		int usertype = 21; //password 
+		String username = null ;
+		if ( StringUtils.isNotBlank(event.getObjparam())  ){
+			JSONObject json = JSON.parseObject(event.getObjparam());
+			if ( json.containsKey("usertype"))
+				usertype = json.getIntValue("usertype");
+			username = json.getString("username");
+		}
+		
+		HiLockPasswordService hiLockPasswordService = super.createService(HiLockPasswordService.class);
+		LockPassword lpv = hiLockPasswordService.findByUsertypeUserCode(dbDevice.getId().intValue(), usertype, usercode);
+		
+		if ( lpv != null ){
+			if ( StringUtils.isNotBlank(lpv.getUsername()) )
+				username = lpv.getUsername();
+			else if ( StringUtils.isNotBlank(lpv.getPhonenumber()))
+				username = lpv.getPhonenumber();
+		}
+		
+		if ( StringUtils.isBlank(username)){
+			if("242".equals(event.getIntparam())){
+				username = "临时密码开门";
+				hiOpenDeviceLogService.saveOpenDeviceLog(username, dbDevice.getId(), dbDevice.getPersonId(),"打开设备成功" , event.getEventtime(),event.getType(),2,null);
+			}else if ( usercode != 0 ){
+				username = String.format("用户密码开门，密码编号%s",usercode );
+				hiOpenDeviceLogService.saveOpenDeviceLog(username, dbDevice.getId(), dbDevice.getPersonId(),"打开设备成功" , event.getEventtime(),event.getType(),3,usercode+"");
+			}else {
+				username = "网络开门";
+				hiOpenDeviceLogService.saveOpenDeviceLog(username, dbDevice.getId(), dbDevice.getPersonId(),"打开设备成功" , event.getEventtime(),event.getType(),4,null);
+			}
+		}else{
+			hiOpenDeviceLogService.saveOpenDeviceLog(username, dbDevice.getId(), dbDevice.getPersonId(),"打开设备成功" , event.getEventtime(),event.getType(),6,username);
+		}
+	}
+	
+	/**
+	 * 打开设备记录
+	 * @param deviceId
+	 * @param operateName
+	 * @param rb 
+	 */
+	public void saveOpenDevice(String ptDeviceId,String operateName, Date time, ResourceBundle rb){
+		Device dbDevice = this.findByPtDeviceId(ptDeviceId);
+		dbDevice.setOpenStatus(0);
+		super.update(dbDevice);
+		
+		/**保存开锁记录*/
+		
+		if ( StringUtils.isNumeric(operateName) && Integer.valueOf(operateName) != 0 )
+		{
+			if("242".equals(operateName)){
+				operateName = "临时密码开门";
+				hiOpenDeviceLogService.saveOpenDeviceLog(operateName, dbDevice.getId(), dbDevice.getPersonId(),"打开设备成功" , time,"doorlockopen",2,null);
+			}else{ 
+				operateName = String.format("用户密码开门，密码编号%s",operateName );
+				hiOpenDeviceLogService.saveOpenDeviceLog(operateName, dbDevice.getId(), dbDevice.getPersonId(),"打开设备成功" , time,"doorlockopen",3,operateName);
+			}
+		}
+		else
+		{
+			operateName = "网络开门";
+			hiOpenDeviceLogService.saveOpenDeviceLog(operateName, dbDevice.getId(), dbDevice.getPersonId(),"打开设备成功" , time,"doorlockopen",4,null);
+		}
+	}
+	
+	/**
+	 * 开门
+	 * @param deviceId
+	 * @param rb 
+	 */
+	public Device openDevice(Long deviceId,PersonVo sessionPersonVo, ResourceBundle rb){
+		Device dbDevice = this.findById(deviceId);
+		Device.checkRole(dbDevice, sessionPersonVo);
+		dbDevice.setOpenStatus(0);
+		super.update(dbDevice);
+		
+		/**调用打开门锁接口*/
+		if(CommonConstant.restFlag == 1){
+			Map<String , Object> map = new HashMap<String , Object>();
+			map.put("zwavedeviceid", dbDevice.getPtDeviceId());
+			
+			String str = "";
+			if(dbDevice.getDeviceType() == 0)
+				str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/unlock", map,rb);
+			else
+				/**电表*/
+				str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/opendevice", map,rb);
+			Utils.checkResult(str,rb);
+		}
+		return dbDevice;
+	}
+	
+	
+	/**
+	 * 关闭
+	 * @param deviceId
+	 * @param rb 
+	 */
+	public Device closeDevice(Long deviceId,PersonVo sessionPersonVo, ResourceBundle rb){
+		Device dbDevice = this.findById(deviceId);
+		Device.checkRole(dbDevice, sessionPersonVo);
+		dbDevice.setOpenStatus(1);
+		super.update(dbDevice);
+		
+		/**调用打开门锁接口*/
+		if(CommonConstant.restFlag == 1){
+			Map<String , Object> map = new HashMap<String , Object>();
+			map.put("zwavedeviceid", dbDevice.getPtDeviceId());
+			
+			String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/closedevice", map,rb);
+			Utils.checkResult(str,rb);
+		}
+		return dbDevice;
+	}
+	
+	/**
+	 * 更新开锁状态
+	 * @param ptDeviceId  平台设备id
+	 * @param openStatus 打开状态
+	 */
+	public void updateOpenStatus(String ptDeviceId,Integer openStatus, Date time){
+		Device dbDevice = this.findByPtDeviceId(ptDeviceId);
+		dbDevice.setOpenStatus(openStatus);
+		super.update(dbDevice);
+		
+		if(openStatus == 1){
+			hiOpenDeviceLogService.saveOpenDeviceLog("设备关闭", dbDevice.getId(), dbDevice.getPersonId(),"成功关闭设备" , time,"doorlockclose",5,null);
+		}
+	}
+
+	public void updateDeviceSubtype(Long id,Integer subtype){
+		Device dbDevice = this.findById(id);
+		dbDevice.setDevicesubtype(subtype);
+		super.update(dbDevice);
+	}
+	
+	/**
+	 * 根据平台id查询
+	 * @param ptDeviceId
+	 * @return
+	 */
+	public Device findByPtDeviceId(String ptDeviceId)
+	{
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.add(ExpWrap.eq("ptDeviceId", ptDeviceId));
+		return cw.uniqueResult();
+	}
+
+	/**
+	 * 更新电量信息
+	 * @param ptDeviceId
+	 * @param battery
+	 * @return
+	 */
+	public void updateBattery(String ptDeviceId,Integer battery){
+		Device dbDevice = this.findByPtDeviceId(ptDeviceId);
+		if(battery <= 10){
+			/**电量低,保存日志*/
+			hiOperateLogService.saveOperateLog(15, "【" + dbDevice.getDeviceName() + "】设备电量低","", dbDevice.getPersonId(), 
+					"", dbDevice.getId(),dbDevice.getDeviceName(),null,null);
+		}
+		if(dbDevice.getBattery() != null && dbDevice.getBattery() <= 10 && battery < 20){
+			/**以前电量低，且本次更新电量小于百分之20，则不更新电量*/
+			
+		}else{
+			dbDevice.setBattery(battery);
+			super.update(dbDevice);
+			/**保存日志信息*/
+			hiDeviceBatteryLogService.saveDeviceBatteryLog(dbDevice, battery);
+		}
+		
+	}
+	
+	/**
+	 * 更新信号状态
+	 * @param ptDeviceId
+	 * @param signFlag
+	 */
+	public void updateSingnalFlag(String ptDeviceId,Integer signalFlag){
+		Device dbDevice = this.findByPtDeviceId(ptDeviceId);
+		if(dbDevice != null){
+			dbDevice.setSignalFlag(signalFlag);
+			if(signalFlag == 1){
+				/**离线，保存日志*/
+				hiOperateLogService.saveOperateLog(16, "【" + dbDevice.getDeviceName() + "】设备离线" , 
+						"", dbDevice.getPersonId(), "" , dbDevice.getId(),dbDevice.getDeviceName(),null,null);
+			}else{
+				/**上线，保存日志*/
+				hiOperateLogService.saveOperateLog(20, "【" + dbDevice.getDeviceName() + "】设备上线" , 
+						"", dbDevice.getPersonId(), "" , dbDevice.getId(),dbDevice.getDeviceName(),null,null);
+			}
+			super.update(dbDevice);
+		}
+	}
+	
+	/**
+	 * 设备拆卸
+	 */
+	public void tampleralarm(String ptDeviceId){
+		Device dbDevice = this.findByPtDeviceId(ptDeviceId);
+		if(dbDevice != null){
+			dbDevice.setSignalFlag(1);
+			/**拆卸，保存日志*/
+			hiOperateLogService.saveOperateLog(17, "【" + dbDevice.getDeviceName() + "】设备被拆卸" , 
+					"", dbDevice.getPersonId(), "" , dbDevice.getId(),dbDevice.getDeviceName(),null,null);
+			super.update(dbDevice);
+		}
+	}
+	
+	/**
+	 * 解除拆卸告警
+	 */
+	public void unalarmtampleralarm(String ptDeviceId){
+		Device dbDevice = this.findByPtDeviceId(ptDeviceId);
+		if(dbDevice != null){
+			dbDevice.setSignalFlag(0);
+			/**拆卸，保存日志*/
+			hiOperateLogService.saveOperateLog(21, "【" + dbDevice.getDeviceName() + "】设备解除拆卸告警" , 
+					"", dbDevice.getPersonId(), "" , dbDevice.getId(),dbDevice.getDeviceName(),null,null);
+			super.update(dbDevice);
+		}
+	}
+	
+	
+	/**
+	 * 删除设备
+	 * @param ptDeviceId
+	 * @param signFlag
+	 */
+	public void deleteDevice(String ptDeviceId){
+		Device dbDevice = this.findByPtDeviceId(ptDeviceId);
+		super.delete(dbDevice);
+	}
+	
+	/**
+	 * 根据用户id查询数量
+	 * @param personId
+	 * @return
+	 */
+	public int findCountByPersonId(Long personId)
+	{
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.add(ExpWrap.eq("personId", personId));
+		return cw.count();
+	}
+	
+	/**
+	 * 更新当前功率
+	 * @param personId
+	 * @return
+	 */
+	public void updateCurrentPower(String ptDeviceId,Float currentPower){
+		Device dbDevice = this.findByPtDeviceId(ptDeviceId);
+		dbDevice.setCurrentPower(currentPower);
+		super.update(dbDevice);
+	}
+	
+	public List<DeviceVo> createDeviceVoList(List<Object[]> lst)
+	{
+		HiRoomService rs = super.createService(HiRoomService.class);
+		
+		List<DeviceVo> rl = new ArrayList<DeviceVo>();
+		for (  Object[] oa : lst  )
+		{
+			Device d = ServiceHelper.find(Device.class , oa);
+			District di = ServiceHelper.find(District.class , oa);
+			Gateway g = ServiceHelper.find(Gateway.class , oa);
+			Room r = ServiceHelper.find(Room.class , oa) ;
+			
+			if ( r == null && d.getBindRoomId() != null)
+				r = rs.findById(d.getBindRoomId());
+			rl.add(ServiceHelper.createDeviceVo(d,di , g ,r ));
+		}
+		return rl ;
+	}
+
+	
+}

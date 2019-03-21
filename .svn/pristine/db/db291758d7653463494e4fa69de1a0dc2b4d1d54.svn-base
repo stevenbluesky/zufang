@@ -1,0 +1,506 @@
+var $ = require('jquery'),
+	common = require('static/libs/util/common'),
+	laypage = require('static/libs/laypage/laypage'),
+	validate = require('static/libs/util/validate'),
+	Data = require('static/libs/util/data'),
+	tmpl = __inline('_equipment.tmpl');
+require('select2');
+require('select2/select2_locale_zh-CN');
+require('static/libs/laydate/laydate');
+var cellId = common.getUrlParm("id"),
+	roomId = common.getUrlParm("roomId"),
+	grantFlag = 0,
+	data = {
+		id: roomId
+	};
+init();
+
+function init() {
+	window.start = {
+		elem: '#startTime',
+		format: 'YYYY-MM-DD hh:mm:ss',
+		max: '2099-06-16 23:59:59', //最大日期
+		istime: true,
+		istoday: true,
+		choose: function(datas) {
+			end.min = datas; //开始日选好后，重置结束日的最小日期
+			end.start = datas //将结束日的初始值设定为开始日
+		}
+	};
+	window.end = {
+		elem: '#endTime',
+		format: 'YYYY-MM-DD hh:mm:ss',
+		min: laydate.now(),
+		max: '2099-06-16 23:59:59',
+		istime: true,
+		istoday: false,
+		choose: function(datas) {
+			start.max = datas; //结束日选好后，重置开始日的最大日期
+		}
+	};
+	load();
+	loadList();
+	$(document)
+		.on('click', '.form-box-ul li', function(event) {
+			event.preventDefault();
+			var index = $(this).index();
+			switch (index) {
+				case 0:
+					location.href = common.BASE_PATH + '/equipment.html?id=' + cellId +'&roomId=' + roomId;
+					break;
+				case 1:
+					location.href = common.BASE_PATH + '/roomprivilege.html?id=' + cellId +'&roomId=' + roomId;
+					break;
+				case 2:
+					location.href = common.BASE_PATH + '/roomfee.html?id=' + cellId +'&roomId=' + roomId;
+					break;
+			}
+		})
+		.on('click', '.btn-open-save', function(event) {
+			event.preventDefault();
+			findUnBindDevice(data, function(json) {
+				var _tmpl = $.trim(tmpl({
+					type: 0,
+					data: json.object
+				}));
+				common.open({
+					title: false,
+					closeBtn: false,
+					zIndex: 100,
+					content: _tmpl,
+					shadeClose: false,
+					scrollbar: false,
+					success: function(layero, index) {
+						$(layero).find('.btn-close').attr('data-index', index);
+
+					}
+				});
+			})
+		})
+		//新增
+		.on('click', '#btn-save', function(event) {
+			event.preventDefault();
+			saveAction();
+		})
+		.on('click', '#btn-open-grant', function(event) {
+			event.preventDefault();
+			var _tmpl = $.trim(tmpl({
+				type: 2
+			}));
+			common.open({
+				title: false,
+				closeBtn: false,
+				zIndex: 100,
+				content: _tmpl,
+				shadeClose: false,
+				scrollbar: false,
+				success: function(layero, index) {
+					$(layero).find('.btn-close').attr('data-index', index);
+				}
+			});
+		})
+		.on('click', '#btn-grant', function(event) {
+			event.preventDefault();
+			grantAction();
+		})
+		.on('click', '.fa-circle-o', function(event) {
+			event.preventDefault();
+			if ($(this).hasClass('fa-dot-circle-o'))
+				$(this).addClass('fa-circle-o').removeClass('fa-dot-circle-o');
+			else
+				$(this).addClass('fa-dot-circle-o').removeClass('fa-circle-o');
+		})
+		.on('click', '.fa-dot-circle-o', function(event) {
+			event.preventDefault();
+			if ($(this).hasClass('fa-dot-circle-o'))
+				$(this).addClass('fa-circle-o').removeClass('fa-dot-circle-o');
+			else
+				$(this).addClass('fa-dot-circle-o').removeClass('fa-circle-o');
+		})
+		//删除设备
+		.on('click', '.btn-delete', function(event) {
+			event.preventDefault();
+			var that = this;
+			common.confirm(label.deletedevice, function(index) {
+				deleteAction($(that).attr('data-id'));
+			});
+		})
+		//删除房间
+		.on('click', '#btn-delete-room', function(event) {
+			event.preventDefault();
+			var that = this;
+			common.confirm(label.deleteroom, function(index) {
+				deleteRoomAction($(that).attr('data-id'));
+			});
+		})
+		//删除授权
+		.on('click', '#btn-delete-grant', function(event) {
+			event.preventDefault();
+			var that = this;
+			common.confirm(label.deleteauth, function(index) {
+				deleteGrantAction();
+			});
+		})
+		//开锁
+		.on('click', '.btn-open-lock', function(event) {
+			event.preventDefault();
+			var that = this;
+			if ($(that).hasClass('z-dis')) return;
+			$(that).addClass('z-dis');
+			openDevice({
+				id: $(that).attr('data-id')
+			}, function(json) {
+				common.msg(json.message, function() {
+					loadList(1);
+					//location.reload() ;
+					var t1 = window.setTimeout("equipmentrefresh()",6000);//使用字符串执行方法  
+				})
+			}, function(json) {
+				$(that).removeClass('z-dis');
+			})
+		})
+		// 关锁
+		.on('click', '.btn-close-lock', function(event) {
+			event.preventDefault();
+			var that = this;
+			if ($(that).hasClass('z-dis')) return;
+			$(that).addClass('z-dis');
+			closeDevice({
+				id: $(that).attr('data-id')
+			}, function(json) {
+				common.msg(json.message, function() {
+					loadList(1);
+				})
+			}, function(json) {
+				$(that).removeClass('z-dis');
+			})
+		});;
+};
+function equipmentrefresh(){
+	location.reload();
+};
+//分页查询
+function loadList() {
+	findPage(data, function(json) {
+		var _tmpl = $.trim(tmpl({
+			type: 1,
+			data: json.object,
+			grantFlag: grantFlag,
+		}));
+		$("#list").html(_tmpl);
+	})
+};
+// 查询小区详细信息
+function load() {
+	findDistrictById({
+		id: cellId
+	}, function(json) {
+		$("#cellName").html("<i>&gt;</i>" + json.object.districtName + label.community);
+	});
+	findRoomById({
+		id: roomId
+	}, function(json) {
+		var href = $("#roomName").attr('href') + '?id=' + cellId;
+
+		$("#roomName").html("<i>&gt;</i>" + json.object.roomName + label.room).attr('href', href);
+		grantFlag = json.object.grantFlag;  
+	});
+};
+// 新增
+function saveAction() {
+	var that = '#btn-save',
+		id = [];
+	var wmid = [];
+	var wmtp = [];
+	for (var i = $(".fa-dot-circle-o").length - 1; i >= 0; i--) {
+		var did = $($(".fa-dot-circle-o")[i]).attr('data-id');
+		id.push(did);
+		if ( $($(".fa-dot-circle-o")[i]).attr('devicetype') == 17 )
+		{
+			wmid.push(did);
+			wmtp.push($("#subtypeselect-" + did).find("option:selected").val());
+		}
+	}
+	if ($(that).hasClass('z-dis')) return;
+	if (id && id.length > 0) {
+		$(that).addClass('z-dis');
+		bindDevice({
+				bindRoomId: roomId,
+				deviceIds: id.toString(),
+				watermeterid: '[' + wmid.toString() + ']',
+				watermetersubtype:'[' +wmtp.toString() + ']'  
+			},
+			function(json) {
+				common.msg(json.message, function() {
+					common.closeAll();
+					loadList(1);
+				})
+			},
+			function() {
+				$(that).removeClass('z-dis');
+			});
+	}
+};
+// 删除设备
+function deleteAction(id) {
+	if (id && id.length > 0) {
+		unBindDevice({
+				bindRoomId: roomId,
+				id: id
+			},
+			function(json) {
+				common.msg(json.message, function() {
+					common.closeAll();
+					loadList(1);
+				})
+			},
+			function() {});
+	}
+};
+// 删除设备 *** 废弃
+function deleteRoomAction() {
+	var that = '#btn-delete-room';
+	if ($(that).hasClass('z-dis')) return;
+	$(that).addClass('z-dis');
+	deleteRoom({
+			id: roomId
+		},
+		function(json) {
+			common.msg(json.message, function() {
+				common.closeAll();
+				location.href = common.BASE_PATH + '/room.html?id=' + cellId;
+			})
+		},
+		function() {
+			$(that).removeClass('z-dis');
+		});
+};
+//删除授权
+function deleteGrantAction(id) {
+	unGrant({
+			id: roomId
+		},
+		function(json) {
+			common.msg(json.message, function() {
+				common.closeAll();
+				location.reload(true);
+			})
+		},
+		function() {});
+};
+//授权
+function grantAction(id) {
+	var that = '#btn-save',
+		id = $(".fa-dot-circle-o").attr('data-id');
+	if ($(that).hasClass('z-dis')) return;
+	if (validate.check("#svaeCellForm")) {
+		$(that).addClass('z-dis');
+		var formData = $("#svaeCellForm").serializeJson();
+		formData.id = roomId;
+		grant(formData,
+			function(json) {
+				common.msg(json.message, function() {
+					common.closeAll();
+					location.reload(true);
+				})
+			},
+			function() {
+				$(that).removeClass('z-dis');
+			});
+	}
+};
+//新增
+function saveManager(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/manager/saveManager',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+// 修改
+function updateManager(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/manager/updateManager',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//分页查询
+function findPage(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/room/findBindDevice',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//查询房间详细信息
+function findRoomById(data, success, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/room/findRoomById',
+		data: data,
+		success: function(json) {
+			typeof success === 'function' && success(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json); 
+		}
+	})
+}
+//查询小区详细信息
+function findDistrictById(data, success, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/district/findDistrictById',
+		data: data,
+		success: function(json) {
+			typeof success === 'function' && success(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//查询未绑定的设备
+function findUnBindDevice(data, success, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/room/findUnBindDevice',
+		data: data,
+		success: function(json) {
+			typeof success === 'function' && success(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//绑定设备bindRoomId=1&id=5
+function bindDevice(data, success, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/room/bindDevice',
+		data: data,
+		success: function(json) {
+			typeof success === 'function' && success(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//解绑设备bindRoomId=1&id=5
+function unBindDevice(data, success, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/room/unBindDevice',
+		data: data,
+		success: function(json) {
+			typeof success === 'function' && success(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//授权 只能授权给一个租客，授权房间下的所有设备id=1&grantUserName=13233223322&grantRealName=realName
+function grant(data, success, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/room/grant',
+		data: data,
+		success: function(json) {
+			typeof success === 'function' && success(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//解除授权?id=1
+function unGrant(data, success, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/room/unGrant',
+		data: data,
+		success: function(json) {
+			typeof success === 'function' && success(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//删除房间
+function deleteRoom(data, success, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/room/deleteRoom',
+		data: data,
+		success: function(json) {
+			typeof success === 'function' && success(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//锁
+function openDevice(data, success, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/device/openDevice',
+		data: data,
+		success: function(json) {
+			typeof success === 'function' && success(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//关闸
+function closeDevice(data, success, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/device/closeDevice',
+		data: data,
+		success: function(json) {
+			typeof success === 'function' && success(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}

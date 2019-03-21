@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  xmlns="http://www.springframework.org/schema/beans"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		                    http://www.springframework.org/schema/context 
+		                    http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		                    http://www.springframework.org/schema/tx 
+		                    http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		                    http://www.springframework.org/schema/aop 
+		                    http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"> 
+
+    
+    <bean id="HiCommuLogService" class="com.isurpass.service.HiCommuLogService"/>
+    <bean id="HiDeviceBatteryLogService" class="com.isurpass.service.HiDeviceBatteryLogService"/>
+    <bean id="HiDeviceDegreesHourLogService" class="com.isurpass.service.HiDeviceDegreesHourLogService"/>
+    <bean id="HiDeviceDegreesLogService" class="com.isurpass.service.HiDeviceDegreesLogService"/>
+    <bean id="HiDeviceService" class="com.isurpass.service.HiDeviceService"/>
+    <bean id="HiDistrictService" class="com.isurpass.service.HiDistrictService"/>
+    <bean id="HiGatewayService" class="com.isurpass.service.HiGatewayService"/>
+    <bean id="HiLastTimeLogService" class="com.isurpass.service.HiLastTimeLogService"/>
+    <bean id="HiLockPasswordService" class="com.isurpass.service.HiLockPasswordService"/>
+    <bean id="HiManagerService" class="com.isurpass.service.HiManagerService"/>
+    <bean id="HiOpenDeviceLogService" class="com.isurpass.service.HiOpenDeviceLogService"/>
+    <bean id="HiOperateLogService" class="com.isurpass.service.HiOperateLogService"/>
+    <bean id="HiPersonService" class="com.isurpass.service.HiPersonService"/>
+    <bean id="HiPowerPriceLogService" class="com.isurpass.service.HiPowerPriceLogService"/>
+    <bean id="HiProvinceService" class="com.isurpass.service.HiProvinceService"/>
+    <bean id="HiRoomFeeService" class="com.isurpass.service.HiRoomFeeService"/>
+    <bean id="HiRoomPrivilegeService" class="com.isurpass.service.HiRoomPrivilegeService"/>
+    <bean id="HiRoomService" class="com.isurpass.service.HiRoomService"/>
+    <bean id="SmsHistoryService" class="com.isurpass.service.SmsHistoryService"/>
+    <bean id="RoomFeeCalculatorService" class="com.isurpass.service.RoomFeeCalculatorService"/>
+    <bean id="TransactionService" class="com.isurpass.service.TransactionService"/>
+    <bean id="DistrictPaymentSettingService" class="com.isurpass.service.DistrictPaymentSettingService"/>
+    <bean id="HiCustomerService" class="com.isurpass.service.HiCustomerService"></bean>
+	<bean id="SystemParameterService" class="com.isurpass.service.SystemParameterService"></bean>
+</beans>

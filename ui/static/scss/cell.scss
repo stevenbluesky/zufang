@@ -1,0 +1,43 @@
+@import "base";
+
+.m-demo {
+	margin: 0 0 20px;
+	line-height: 18px;
+
+	.scroll {
+		_height: 286px;
+		border: 1px solid #ddd;
+		border-top: 0;
+		overflow: hidden;
+		overflow-y: auto;
+	}
+	table {
+		width: 100%;
+		_width: auto;
+		table-layout: fixed;
+	}
+	th, td {
+		width: 100px;
+		padding: 10px;
+		border: 1px solid #ddd;
+	}
+	th {
+		font-weight: bold;
+		background: $color-bg-hover;
+	}
+	th.last, td.last {
+		width: auto;
+	}
+	tbody tr.first td {
+		border-top: 0;
+	}
+	tbody tr.last td {
+		border-bottom: 0;
+	}
+	tbody tr td.first {
+		border-left: 0;
+	}
+	tbody tr td.last {
+		border-right: 0;
+	}
+}

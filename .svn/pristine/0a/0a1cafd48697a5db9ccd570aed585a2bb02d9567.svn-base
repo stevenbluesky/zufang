@@ -1,0 +1,383 @@
+fis.require('jello')(fis);
+// 标记 staitc/libs 下面的 js 为模块化代码。
+fis.match('/static/libs/**.js', {
+	isMod: true
+});
+
+// jello 里面默认用的 commonjs 这里改成 amd 方案。
+fis.unhook('commonjs');
+fis.hook('amd', {
+	packages: [   
+
+		// 用来存放 libs 库
+		{
+			name: 'libs',
+			location: 'static/libs/',
+			main: 'index'
+		}
+	]
+});
+
+// 设置 *.scss 配置配置项
+fis.match('*.scss', {
+	parser: fis.plugin('node-sass', {
+		include_paths: [  
+			'./static/scss',
+			'./components/compass-mixins'
+		]
+	}),
+	rExt: '.css'
+});
+
+// 不启用 less
+fis.match('*.less', {
+	parser: null
+});
+fis.match('::packager', {
+	spriter: fis.plugin('csssprites')
+});
+// 对 SCSS 进行图片合并
+fis.match('*.scss', {
+	// 给匹配到的文件分配属性 `useSprite`
+	useSprite: true
+});
+// 解析 markdown，编译成 html
+fis.match('*.md', {
+	parser: fis.plugin('marked'),
+	rExt: '.html'
+});
+fis.media('local')
+	.match('*.conf', {
+		release: false
+	})
+	.match('test/**', {
+		release: false
+	})
+	.match('*.{js,css,scss}', {
+		domain: 'http://localhost:8080/mj'
+	})
+	.match('image', {
+		domain: 'http://localhost:8080/mj'
+	})
+	.match('*', {
+		deploy: fis.plugin('local-deliver', {
+			to: '../mj/WebRoot/'
+		})
+	})
+
+fis.media('dev')
+	.match('::package', {
+		// 关于打包配置，请参考：https://github.com/fex-team/fis3-packager-deps-pack
+		packager: fis.plugin('deps-pack', {
+			'pkg/base.css': [
+				'/static/libs/layer/skin/layer.css',
+				'/components/select2/select2.css',
+				'/components/font-awesome/css/font-awesome.css'
+			],
+			'pkg/common.js': [
+				'/static/libs/util/common.js',
+				'/static/libs/util/common.js:deps',
+				'/static/libs/util/common.js:deps', // 匹配依赖部分
+				'/components/select2/select2.js',
+				'/components/select2/select2_locale_zh-CN.js',
+				'/static/libs/util/data.js',
+				'/static/libs/imgLoader/imgLoader.js',
+				'/static/libs/util/validate.js',
+				'/static/libs/util/validate.js:deps',
+				'/static/libs/util/validate.js:deps' // 匹配依赖部分
+			],
+			'pkg/webuploader.js': [
+				'/components/webuploader/webuploader.js',
+				'/components/webuploader/webuploader.js:deps',
+				'/components/webuploader/webuploader.js:deps' // 匹配依赖部分
+			]
+		})
+	})
+	.match('*.conf', {
+		release: false
+	})
+	.match('test/**', {
+		release: false
+	})
+	.match('*.{js,css,scss}', {
+		domain: 'http://127.0.0.1:8080/mj',
+		// domain: 'http://112.74.106.193:8080/mj',
+		useHash: true
+	})    
+
+	.match('image', {
+		domain: 'http://127.0.0.1:8080/mj',
+		// domain: 'http://112.74.106.193:8080/mj',
+		useHash: true
+	})
+	.match('{no-user,no-cell,no-house,no-lock,no-iremote,no-electric,no-fingerreader,logo,watermeter,non-watermeter,hotwatermeter,man,enindexlogo,navlogo}.jpg', {
+		useHash: false
+	})
+	.match('*', {  
+		deploy: fis.plugin('local-deliver', {
+			to: 'E:/JavaeeDE/tomcat/apache-tomcat-7.0.52/webapps/mj'
+			/*to: 'D:/Eclipse/Eclipse32Bit/ws201803/zufang_platform_1.2.0/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/mj/'*/
+		})
+	})
+
+fis.media('test')
+	.match('::package', {
+		// 关于打包配置，请参考：https://github.com/fex-team/fis3-packager-deps-pack
+		packager: fis.plugin('deps-pack', {
+			'pkg/base.css': [
+				'/static/libs/layer/skin/layer.css',
+				'/components/select2/select2.css',
+				'/components/font-awesome/css/font-awesome.css'
+			],
+			'pkg/common.js': [
+				'/static/libs/util/common.js',
+				'/static/libs/util/common.js:deps',
+				'/static/libs/util/common.js:deps', // 匹配依赖部分
+				'/components/select2/select2.js',
+				'/components/select2/select2_locale_zh-CN.js',
+				'/static/libs/util/data.js',
+				'/static/libs/imgLoader/imgLoader.js',
+				'/static/libs/util/validate.js',
+				'/static/libs/util/validate.js:deps',
+				'/static/libs/util/validate.js:deps' // 匹配依赖部分
+			],
+			'pkg/webuploader.js': [
+				'/components/webuploader/webuploader.js',
+				'/components/webuploader/webuploader.js:deps',
+				'/components/webuploader/webuploader.js:deps' // 匹配依赖部分
+			]
+		})
+	})
+	.match('*.conf', {
+		release: false
+	})
+	.match('test/**', {
+		release: false
+	})
+	.match('*.{js,css,scss}', {
+		domain: 'http://dev.isurpass.com.cn/zufang',
+		// domain: 'http://112.74.106.193:8080/mj',
+		useHash: true
+	})
+
+	.match('image', {
+		domain: 'http://dev.isurpass.com.cn/zufang',
+		// domain: 'http://112.74.106.193:8080/mj',
+		useHash: true
+	})
+	.match('{no-user,no-cell,no-house,no-lock,no-iremote,no-electric,no-fingerreader,logo,watermeter,non-watermeter,hotwatermeter,man,enindexlogo,navlogo}.jpg', {
+		useHash: false
+	})
+	.match('*', {
+		deploy: fis.plugin('local-deliver', {
+			to: 'D:/iremote/source/zufang/release/testWebRoot'
+		})
+	})
+	
+fis.media('dorlink')
+	.match('::package', {
+		// 关于打包配置，请参考：https://github.com/fex-team/fis3-packager-deps-pack
+		packager: fis.plugin('deps-pack', {
+			'pkg/base.css': [
+				'/static/libs/layer/skin/layer.css',
+				'/components/select2/select2.css',
+				'/components/font-awesome/css/font-awesome.css'
+			],
+			'pkg/common.js': [
+				'/static/libs/util/common.js',
+				'/static/libs/util/common.js:deps',
+				'/static/libs/util/common.js:deps', // 匹配依赖部分
+				'/components/select2/select2.js',
+				'/components/select2/select2_locale_zh-CN.js',
+				'/static/libs/util/data.js',
+				'/static/libs/imgLoader/imgLoader.js',
+				'/static/libs/util/validate.js',
+				'/static/libs/util/validate.js:deps',
+				'/static/libs/util/validate.js:deps' // 匹配依赖部分
+			],
+			'pkg/webuploader.js': [
+				'/components/webuploader/webuploader.js',
+				'/components/webuploader/webuploader.js:deps',
+				'/components/webuploader/webuploader.js:deps' // 匹配依赖部分
+			]
+		})
+	})
+	.match('*.conf', {
+		release: false
+	})
+	.match('test/**', {
+		release: false
+	})
+	.match('*.{js,css,scss}', {
+		domain: 'http://cloud.dorlink.com.cn/dorlinkzf',
+		useHash: true
+	})
+
+	.match('image', {
+		domain: 'http://cloud.dorlink.com.cn/dorlinkzf',
+		useHash: true
+	})
+	.match('{no-user,no-cell,no-house,no-lock,no-iremote,no-electric,no-fingerreader,logo,watermeter,non-watermeter,hotwatermeter,man,enindexlogo,navlogo}.jpg', {
+		useHash: false
+	})
+	.match('*', {
+		deploy: fis.plugin('local-deliver', {
+			to: 'D:/iremote/source/zufang/release/server/WebRoot'
+		})
+	})
+	
+	
+fis.media('jwzh')
+	.match('::package', {
+		// 关于打包配置，请参考：https://github.com/fex-team/fis3-packager-deps-pack
+		packager: fis.plugin('deps-pack', {
+			'pkg/base.css': [
+				'/static/libs/layer/skin/layer.css',
+				'/components/select2/select2.css',
+				'/components/font-awesome/css/font-awesome.css'
+			],
+			'pkg/common.js': [
+				'/static/libs/util/common.js',
+				'/static/libs/util/common.js:deps',
+				'/static/libs/util/common.js:deps', // 匹配依赖部分
+				'/components/select2/select2.js',
+				'/components/select2/select2_locale_zh-CN.js',
+				'/static/libs/util/data.js',
+				'/static/libs/imgLoader/imgLoader.js',
+				'/static/libs/util/validate.js',
+				'/static/libs/util/validate.js:deps',
+				'/static/libs/util/validate.js:deps' // 匹配依赖部分
+			],
+			'pkg/webuploader.js': [
+				'/components/webuploader/webuploader.js',
+				'/components/webuploader/webuploader.js:deps',
+				'/components/webuploader/webuploader.js:deps' // 匹配依赖部分
+			]
+		})
+	})
+	.match('*.conf', {
+		release: false
+	})
+	.match('test/**', {
+		release: false
+	})
+	.match('*.{js,css,scss}', {
+		domain: 'http://zufang.isurpass.com.cn/zufang/',
+		useHash: true
+	})
+
+	.match('image', {
+		domain: 'http://zufang.isurpass.com.cn/zufang/',
+		useHash: true
+	})
+	.match('{no-user,no-cell,no-house,no-lock,no-iremote,no-electric,no-fingerreader,logo,watermeter,non-watermeter,hotwatermeter,man,enindexlogo,navlogo}.jpg', {
+		useHash: false
+	})
+	.match('*', {
+		deploy: fis.plugin('local-deliver', {
+			to: 'D:/iremote/source/zufang/release/jwzhWebRoot'
+		})
+	})
+	
+fis.media('isurpass')
+	.match('::package', {
+		// 关于打包配置，请参考：https://github.com/fex-team/fis3-packager-deps-pack
+		packager: fis.plugin('deps-pack', {
+			'pkg/base.css': [
+				'/static/libs/layer/skin/layer.css',
+				'/components/select2/select2.css',
+				'/components/font-awesome/css/font-awesome.css'
+			],
+			'pkg/common.js': [
+				'/static/libs/util/common.js',
+				'/static/libs/util/common.js:deps',
+				'/static/libs/util/common.js:deps', // 匹配依赖部分
+				'/components/select2/select2.js',
+				'/components/select2/select2_locale_zh-CN.js',
+				'/static/libs/util/data.js',
+				'/static/libs/imgLoader/imgLoader.js',
+				'/static/libs/util/validate.js',
+				'/static/libs/util/validate.js:deps',
+				'/static/libs/util/validate.js:deps' // 匹配依赖部分
+			],
+			'pkg/webuploader.js': [
+				'/components/webuploader/webuploader.js',
+				'/components/webuploader/webuploader.js:deps',
+				'/components/webuploader/webuploader.js:deps' // 匹配依赖部分
+			]
+		})
+	})
+	.match('*.conf', {
+		release: false
+	})
+	.match('test/**', {
+		release: false
+	})
+	.match('*.{js,css,scss}', {
+		domain: 'http://irtsg.isurpass.com.cn/zufang/',
+		useHash: true
+	})
+
+	.match('image', {
+		domain: 'http://irtsg.isurpass.com.cn/zufang/',
+		useHash: true
+	})
+	.match('{no-user,no-cell,no-house,no-lock,no-iremote,no-electric,no-fingerreader,logo,watermeter,non-watermeter,hotwatermeter,man,enindexlogo,navlogo}.jpg', {
+		useHash: false
+	})
+	.match('*', {
+		deploy: fis.plugin('local-deliver', {
+			to: 'D:/iremote/source/zufang/release/isurpassWebRoot'
+		})
+	})
+fis.media('chuangjia')
+	.match('::package', {
+		// 关于打包配置，请参考：https://github.com/fex-team/fis3-packager-deps-pack
+		packager: fis.plugin('deps-pack', {
+			'pkg/base.css': [
+				'/static/libs/layer/skin/layer.css',
+				'/components/select2/select2.css',
+				'/components/font-awesome/css/font-awesome.css'
+			],
+			'pkg/common.js': [
+				'/static/libs/util/common.js',
+				'/static/libs/util/common.js:deps',
+				'/static/libs/util/common.js:deps', // 匹配依赖部分
+				'/components/select2/select2.js',
+				'/components/select2/select2_locale_zh-CN.js',
+				'/static/libs/util/data.js',
+				'/static/libs/imgLoader/imgLoader.js',
+				'/static/libs/util/validate.js',
+				'/static/libs/util/validate.js:deps',
+				'/static/libs/util/validate.js:deps' // 匹配依赖部分
+			],
+			'pkg/webuploader.js': [
+				'/components/webuploader/webuploader.js',
+				'/components/webuploader/webuploader.js:deps',
+				'/components/webuploader/webuploader.js:deps' // 匹配依赖部分
+			]
+		})
+	})
+	.match('*.conf', {
+		release: false
+	})
+	.match('test/**', {
+		release: false
+	})
+	.match('*.{js,css,scss}', {
+		domain: 'http://zufang.isurpass.com.cn/chuangjiazf/',
+		useHash: true
+	})
+
+	.match('image', {
+		domain: 'http://zufang.isurpass.com.cn/chuangjiazf/',
+		useHash: true
+	})
+	.match('{no-user,no-cell,no-house,no-lock,no-iremote,no-electric,no-fingerreader,logo,watermeter,non-watermeter,hotwatermeter,man,enindexlogo,navlogo}.jpg', {
+		useHash: false
+	})
+	.match('*', {
+		deploy: fis.plugin('local-deliver', {
+			to: 'D:/iremote/source/zufang/release/chuangjiaWebRoot'
+		})
+	})

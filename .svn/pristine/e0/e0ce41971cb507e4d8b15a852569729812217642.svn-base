@@ -1,0 +1,57 @@
+#extends("page/include/base.vm") 
+	#require("static/scss/detail.scss") 
+	#block("content")
+		<div class="g-sd">
+			<div class="g-sdc">
+				#widget("widget/sidebarmenus/nav.vm" "var:type=2")
+			</div>
+		</div>
+		<div class="g-mn">
+			#block("header")
+				#widget("widget/header/header.vm")
+			#end
+			<div class="m-page-title">
+				<span><a href="$!{request.contextPath}$!{ns}/lock.html">设备</a></span>
+				<span><i>&gt;</i>设备详情</span>
+			</div>
+			<div class="g-mnc">
+				<div class="m-wifi-station">
+					
+				</div>
+				<ul class="form-box-ul">
+					<li>设备信息</li>
+					<li>通知及记录</li>
+				</ul>
+				<div class="show-box">
+					
+				</div>
+				<div class="show-box">
+					<div class="search-item f-cb search-type">
+						<ul class="f-cb f-fl">
+							<li class="show-item-1"><a >开合记录</a></li>
+							<li><a >设备读数</a></li>
+							<li class="show-item-1"><a >设备通知</a></li>
+						</ul>
+					</div>
+					<div class="search-item f-cb search-time">
+						<ul class="f-cb f-fl">
+							<li><a >当天记录</a></li>
+							<li><a >最近一周</a></li>
+							<li><a >最近一月</a></li>
+						</ul>
+					</div>
+					<div id="list" class="m-demo">
+					
+					</div>
+					<div class="page" id="page"></div>
+				</div>
+			</div>
+		</div>
+	#end 
+	#script()
+		require('static/libs/pro/index/electricDetail')
+	#end
+
+  ## auto inject by fis3-preprocess-extlang
+  #require("page/index/electricDetail.vm")
+#end

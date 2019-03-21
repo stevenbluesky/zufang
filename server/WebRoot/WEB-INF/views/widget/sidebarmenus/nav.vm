@@ -1,0 +1,15 @@
+<div class="m-logo">
+    <a href="cell.html">
+        <img src="http://127.0.0.1:8080/mj/static/img/main-logo_b4459c8.png" />
+    </a>
+</div>
+<ul>
+	<li class="#if($type == 6)z-sel#end"><a href="cell.html"><i class="fa fa-building"></i>小区</a><i class="caret"></i></li>
+	<li class="#if($type == 2)z-sel#end"><a href="lock.html"><i class="fa fa-lock"></i>设备</a><i class="caret"></i></li>
+	<li class="#if($type == 3)z-sel#end"><a href="wifi.html"><i class="fa fa-wifi"></i>网关</a><i class="caret"></i></li>
+	<li class="#if($type == 4)z-sel#end"><a href="user.html"><i class="fa fa-cogs"></i>个人中心</a><i class="caret"></i></li>
+	<li class="#if($type == 5)z-sel#end"><a href="chart.html"><i class="fa fa-info-circle"></i>故障告警</a><i class="caret"></i></li>
+	<li class="#if($type == 7)z-sel#end"><a href="log.html"><i class="fa fa-bar-chart"></i>系统日志</a><i class="caret"></i></li>
+	<li class="#if($type == 8)z-sel#end"><a href="electricityLog.html"><i class="fa fa-feed"></i>统计分析</a><i class="caret"></i></li>
+	<li class="#if($type == 9)z-sel#end"><a href="roombalance.html"><i class="fa fa-rmb"></i>房费统计</a><i class="caret"></i></li>
+</ul>

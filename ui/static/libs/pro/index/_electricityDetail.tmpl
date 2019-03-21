@@ -1,0 +1,179 @@
+<%if(type == 0){%>
+  <div class="m-form">
+    <div class="formitm">
+        <label class="lab ">
+           <%=label.dangqiandushu%>：
+        </label>
+        <div class="ipt">
+            <%=data.currentDegrees%>
+        </div>
+    </div>
+    <%if(data.devicetype == 1){%>
+	    <div class="formitm">
+	        <label class="lab ">
+	            <%=label.dangqiangonglv%>：
+	        </label>
+	        <div class="ipt">
+	            <%=data.currentPower%>
+	        </div>
+	    </div>
+    <%}%>
+    <div class="formitm">
+        <label class="lab ">
+            <%=label.biaodishu%>：
+        </label>
+        <div class="ipt">
+            <%=data.baseDegrees%>
+        </div>
+    </div>
+    
+    <div class="formitm">
+        <label class="lab ">
+            <%=label.devicestatus%>：
+        </label>
+        <div class="ipt">
+             <%if(data.signalFlag == 1){%>
+            	<font color="red"><%=label.offline%></font>
+            <%}else{%>
+            	<%=label.online%>
+            <%}%>
+        </div>
+    </div>
+    <div class="formitm">
+        <label class="lab ">
+            <%=label.anzhuangdizhi%>：
+        </label>
+        <div class="ipt">
+            <%=data.districtName%>
+            <%if(data.bindStatus == 1){%>
+                <%=data.build%><%=label.building%><%=data.unit%><%=label.unit%><%=data.floor%><%=label.floor%><%=data.roomName%>
+            <%}%>
+        </div>
+    </div>
+</div>
+<%}else if(type == 4){%>
+    <%if(flag == 0){%>
+        <table>
+            <thead>
+               <tr>
+                    <th><%=label.xuhao%></th>
+                    <th><%=label.operator%></th>
+                    <th><%=label.jieguo%></th>
+                    <th><%=label.caozuoshijian%></th>
+                </tr>
+            </thead>
+        </table>
+        <div class="scroll">
+            <table>
+                <%
+                    for (var i in data){
+                %>
+                <tr>
+                    <td><%=(parseInt(i,10)+1)%></td>
+                    <td><%=data[i].operateName%></td>
+                    <td><%=data[i].result%></td>
+                    <td><%=new Date(data[i].inputDate).Format('yyyy-MM-dd hh:mm:ss')%></td>
+                </tr>
+                <%}%>
+            </table>
+        </div>
+    <%}else if (flag == 1){%>
+        <table>
+            <thead>
+               <tr>
+                    <th><%=label.xuhao%></th>
+                    <th><%=label.reading%></th>
+                    <th><%=label.shangbaoshijian%></th>
+                </tr>
+            </thead>
+        </table>
+        <div class="scroll">
+            <table>
+                <%
+                    for (var i in data){
+                %>
+                <tr>
+                    <td><%=(parseInt(i,10)+1)%></td>
+                    <td><%=data[i].degrees%></td>
+                    <td><%=new Date(data[i].inputDate).Format('yyyy-MM-dd hh:mm:ss')%></td>
+                </tr>
+                <%}%>
+            </table>
+        </div>
+    <%}else if (flag == 2){%>
+        <table>
+            <thead>
+               <tr>
+                    <th><%=label.xuhao%></th>
+                    <th><%=label.tongxunneirong%></th>
+                    <th><%=label.shangbaoshijian%></th>
+                </tr>
+            </thead>
+        </table>
+        <div class="scroll">
+            <table>
+                <%
+                    for (var i in data){
+                %>
+                <tr>
+                    <td><%=(parseInt(i,10)+1)%></td>
+                    <td><%=data[i].commuText%></td>
+                    <td><%=new Date(data[i].inputDate).Format('yyyy-MM-dd hh:mm:ss')%></td>
+                </tr>
+                <%}%>
+            </table>
+        </div>
+    <%}%>
+<%}else if(type == 5){%>
+    <ul>
+        <li class="lock-number icon">
+            <span class="circle">
+                <i class=" fa fa-dashboard fa-2x"></i>
+            </span>
+            <span class="description">
+                <%=data.deviceName%>
+            </span>
+        </li>
+        <li class="li-hr1">
+            <hr>
+            <%if(data.signalFlag == 1){%>
+                <div class="special-block">
+                    <span class="fa-stack fa-lg">
+                      <i class="fa fa-circle fa-stack-2x"></i>
+                      <i class="fa fa-remove fa-stack-1x fa-inverse"></i>
+                    </span>
+                </div>
+            <%}%>
+        </li>
+        <li class="address icon">
+            <span class="circle">
+                <i class="fa fa-wifi fa-2x"></i>
+            </span>
+            <span class="description">
+                <a href="<%=common.BASE_PATH%>/wifiDetail.html?id=<%=data.gatewayId%>"><%=data.gatewayName%></a>
+            </span>
+        </li>
+        <li class="li-hr1">
+            <hr>
+            <%if(data.gatewaySignalFlag == 1){%>
+                <div class="special-block">
+                    <span class="fa-stack fa-lg">
+                      <i class="fa fa-circle fa-stack-2x"></i>
+                      <i class="fa fa-remove fa-stack-1x fa-inverse"></i>
+                    </span>                         
+                    <span class="info">
+                    <%=label.jiancha%>
+                    </span>
+                </div>
+            <%}%> 
+        </li>
+        <li class="server icon">
+            <span class="circle">
+                <i class="fa fa-cloud fa-2x"></i>
+            </span>
+            <span class="description">
+                <span><%=label.cloudserver%></span>
+            </span> 
+        </li>
+    </ul>    
+<%}%>

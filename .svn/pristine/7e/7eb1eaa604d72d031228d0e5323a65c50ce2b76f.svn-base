@@ -1,0 +1,39 @@
+<h1 id="contributing%20to%20select2">Contributing to Select2</h1>
+<p>Looking to contribute something to Select2? <strong>Here&#39;s how you can help.</strong></p>
+<p>Please take a moment to review this document in order to make the contribution<br>process easy and effective for everyone involved.</p>
+<p>Following these guidelines helps to communicate that you respect the time of<br>the developers managing and developing this open source project. In return,<br>they should reciprocate that respect in addressing your issue or assessing<br>patches and features.</p>
+<h2 id="using%20the%20issue%20tracker">Using the issue tracker</h2>
+<p>When <a href="#reporting-bugs-with-select2">reporting bugs</a> or<br><a href="#requesting-features-in-select2">requesting features</a>, the<br><a href="https://github.com/ivaynberg/select2/issues">issue tracker on GitHub</a> is the recommended channel to use.</p>
+<p>The issue tracker <strong>is not</strong> a place for support requests. The<br><a href="https://github.com/ivaynberg/select2#mailing-list">mailing list</a> or <a href="https://github.com/ivaynberg/select2#irc-channel">IRC channel</a> are better places to<br>get help.</p>
+<h2 id="reporting%20bugs%20with%20select2">Reporting bugs with Select2</h2>
+<p>We really appreciate clear bug reports that <em>consistently</em> show an issue<br><em>within Select2</em>.</p>
+<p>The ideal bug report follows these guidelines:</p>
+<ol>
+<li><strong>Use the <a href="https://github.com/ivaynberg/select2/search?q=&amp;type=Issues">GitHub issue search</a></strong>  &mdash; Check if the issue<br>has already been reported.</li>
+<li><strong>Check if the issue has been fixed</strong>  &mdash; Try to reproduce the problem<br>using the code in the <code>master</code> branch.</li>
+<li><strong>Isolate the problem</strong>  &mdash; Try to create an<br><a href="http://css-tricks.com/6263-reduced-test-cases/">isolated test case</a> that consistently reproduces the problem.</li>
+</ol>
+<p>Please try to be as detailed as possible in your bug report, especially if an<br>isolated test case cannot be made. Some useful questions to include the answer<br>to are:</p>
+<ul>
+<li>What steps can be used to reproduce the issue?</li>
+<li>What is the bug and what is the expected outcome?</li>
+<li>What browser(s) and Operating System have you tested with?</li>
+<li>Does the bug happen consistently across all tested browsers?</li>
+<li>What version of jQuery are you using? And what version of Select2?</li>
+<li>Are you using Select2 with other plugins?</li>
+</ul>
+<p>All of these questions will help people fix and identify any potential bugs.</p>
+<h2 id="requesting%20features%20in%20select2">Requesting features in Select2</h2>
+<p>Select2 is a large library that carries with it a lot of functionality. Because<br>of this, many feature requests will not be implemented in the core library.</p>
+<p>Before starting work on a major feature for Select2, <strong>contact the<br><a href="https://github.com/ivaynberg/select2#community">community</a> first</strong> or you may risk spending a considerable amount of<br>time on something which the project developers are not interested in bringing<br>into the project.</p>
+<h3 id="select2%204.0">Select2 4.0</h3>
+<p>Many feature requests will be closed off until 4.0, where Select2 plans to adopt<br>a more flexible API.  If you are interested in helping with the development of<br>the next major Select2 release, please send a message to the<br><a href="https://github.com/ivaynberg/select2#mailing-list">mailing list</a> or <a href="https://github.com/ivaynberg/select2#irc-channel">irc channel</a> for more information.</p>
+<h2 id="triaging%20issues%20and%20pull%20requests">Triaging issues and pull requests</h2>
+<p>Anyone can help the project maintainers triage issues and review pull requests.</p>
+<h3 id="handling%20new%20issues">Handling new issues</h3>
+<p>Select2 regularly receives new issues which need to be tested and organized.</p>
+<p>When a new issue that comes in that is similar to another existing issue, it<br>should be checked to make sure it is not a duplicate.  Duplicates issues should<br>be marked by replying to the issue with &quot;Duplicate of #[issue number]&quot; where<br><code>[issue number]</code> is the url or issue number for the existing issue.  This will<br>allow the project maintainers to quickly close off additional issues and keep<br>the discussion focused within a single issue.</p>
+<p>If you can test issues that are reported to Select2 that contain test cases and<br>confirm under what conditions bugs happen, that will allow others to identify<br>what causes a bug quicker.</p>
+<h3 id="reviewing%20pull%20requests">Reviewing pull requests</h3>
+<p>It is very common for pull requests to be opened for issues that contain a clear<br>solution to the problem.  These pull requests should be rigorously reviewed by<br>the community before being accepted.  If you are not sure about a piece of<br>submitted code, or know of a better way to do something, do not hesitate to make<br>a comment on the pull request.</p>
+<p>It should also be made clear that <strong>all code contributed to Select</strong> must be<br>licensable under the <a href="https://github.com/ivaynberg/select2#copyright-and-license">Apache 2 or GPL 2 licenses</a>.  Code that cannot<br>be released under either of these licenses <strong>cannot be accepted</strong> into the<br>project.</p>

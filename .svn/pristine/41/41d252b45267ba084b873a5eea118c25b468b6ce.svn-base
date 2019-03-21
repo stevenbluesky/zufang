@@ -1,0 +1,66 @@
+#extends("/page/include/base.vm") #require("/static/scss/base.scss") #block("content")
+<div class="g-sd">
+    <div class="g-sdc">
+        #widget("widget/sidebarmenus/nav.vm" "var:type=2")
+    </div>
+</div>
+<div class="g-mn">
+    #block("header") #widget("widget/header/header.vm") #end
+    <div class="m-page-title">
+        <span><i>&gt;</i>#springMessage('view.label.mydevice')</span>
+    </div>
+    <div class="g-mnc">
+        <div class="search-item f-cb">
+            <ul class="f-cb f-fl" id="search-sblx">
+                <li><i class="fa fa-bug fa-fw"></i>#springMessage('view.label.devicetype')：</li>
+                <li data-id="0" class="z-sel"><a>#springMessage('view.label.doorlock')</a></li>
+                <li data-id="1"><a>#springMessage('view.label.electricmeter')</a></li>
+                <li data-id="17"><a>#springMessage('view.label.watermeter')</a></li>
+                <li data-id="53"><a>#springMessage('view.label.fingerreader')</a></li>
+            </ul>
+        </div>
+        <div class="search-item f-cb">
+            <ul class="f-cb f-fl" id="search-signalFlag">
+                <li><i class="fa fa-wifi fa-fw"></i>#springMessage('view.label.contactstatus')：</li>
+                <li><a>#springMessage('view.label.all')</a></li>
+                <li data-id="0"><a>#springMessage('view.label.online')</a></li>
+                <li data-id="1"><a>#springMessage('view.label.offline')</a></li>
+            </ul>
+            <ul class="f-cb f-fl" id="search-bindStatus">
+                <li><i class="fa fa-unlock-alt fa-fw"></i>#springMessage('view.label.bindingstatus')：</li>
+                <li><a>#springMessage('view.label.bindingstatus')</a></li>
+                <li data-id="1"><a>#springMessage('view.label.binding')</a></li>
+                <li data-id="0"><a>#springMessage('view.label.free')</a></li>
+            </ul>
+            <ul class="f-cb f-fl lockStatus" id="search-batteryLowFlag">
+                <li><i class="fa fa-battery-full fa-fw"></i>#springMessage('view.label.battery')：</li>
+                <li><a>#springMessage('view.label.all')</a></li>
+                <li data-id="0"><a>#springMessage('view.label.normal')</a></li>
+                <li data-id="1"><a>#springMessage('view.label.lowpower')</a></li>
+            </ul>
+        </div>
+        <div class="search-item search-item-last">
+            <ul class="f-cb">
+                <li><i class="fa fa-map-marker fa-fw"></i>#springMessage('view.label.community')：</li>
+                <li>
+                    <input type="hidden" class="u-select" id="district-search" style="width:150px" />
+                </li>
+            </ul>
+        </div>
+        <div class="search-item search-item-last">
+            <ul class="f-cb">
+                <li><i class="fa fa-user-secret fa-fw"></i>#springMessage('view.label.authorized')：</li>
+                <li>
+                    <input type="hidden" id="grantRealName-search" class="u-select" style="width:150px"/>
+                </li>
+                <li>
+                    <button class="u-btn gray" id="btn-search">#springMessage('view.label.search')</button>
+                </li>
+            </ul>
+        </div>
+        <ul class="cell-list" id="list">
+        </ul>
+        <div class="page" id="page"></div>
+    </div>
+</div>
+#end #script() require('/static/libs/pro/index/lock') #end #end

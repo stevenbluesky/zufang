@@ -1,0 +1,2156 @@
+{
+    "res": {
+        "components/detector/detector.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/detector/detector_e4437cb.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/detector/detector"
+            }
+        },
+        "components/echarts/echarts.min.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/echarts/echarts.min_da507d7.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/echarts/echarts.min"
+            }
+        },
+        "components/font-awesome/css/font-awesome.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/font-awesome/css/font-awesome_284b4ce.css",
+            "type": "css",
+            "pkg": "p0"
+        },
+        "components/font-awesome/css/font-awesome.min.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/font-awesome/css/font-awesome.min_30e94ae.css",
+            "type": "css"
+        },
+        "components/font-awesome/less/animated.less": {
+            "uri": "/static/components/font-awesome/less/animated.css",
+            "type": "css"
+        },
+        "components/font-awesome/less/bordered-pulled.less": {
+            "uri": "/static/components/font-awesome/less/bordered-pulled.css",
+            "type": "css"
+        },
+        "components/font-awesome/less/core.less": {
+            "uri": "/static/components/font-awesome/less/core.css",
+            "type": "css"
+        },
+        "components/font-awesome/less/extras.less": {
+            "uri": "/static/components/font-awesome/less/extras.css",
+            "type": "css"
+        },
+        "components/font-awesome/less/fixed-width.less": {
+            "uri": "/static/components/font-awesome/less/fixed-width.css",
+            "type": "css"
+        },
+        "components/font-awesome/less/font-awesome.less": {
+            "uri": "/static/components/font-awesome/less/font-awesome.css",
+            "type": "css"
+        },
+        "components/font-awesome/less/icons.less": {
+            "uri": "/static/components/font-awesome/less/icons.css",
+            "type": "css"
+        },
+        "components/font-awesome/less/larger.less": {
+            "uri": "/static/components/font-awesome/less/larger.css",
+            "type": "css"
+        },
+        "components/font-awesome/less/list.less": {
+            "uri": "/static/components/font-awesome/less/list.css",
+            "type": "css"
+        },
+        "components/font-awesome/less/mixins.less": {
+            "uri": "/static/components/font-awesome/less/mixins.css",
+            "type": "css"
+        },
+        "components/font-awesome/less/path.less": {
+            "uri": "/static/components/font-awesome/less/path.css",
+            "type": "css"
+        },
+        "components/font-awesome/less/rotated-flipped.less": {
+            "uri": "/static/components/font-awesome/less/rotated-flipped.css",
+            "type": "css"
+        },
+        "components/font-awesome/less/spinning.less": {
+            "uri": "/static/components/font-awesome/less/spinning.css",
+            "type": "css"
+        },
+        "components/font-awesome/less/stacked.less": {
+            "uri": "/static/components/font-awesome/less/stacked.css",
+            "type": "css"
+        },
+        "components/font-awesome/less/variables.less": {
+            "uri": "/static/components/font-awesome/less/variables.css",
+            "type": "css"
+        },
+        "components/font-awesome/scss/font-awesome.scss": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/font-awesome/scss/font-awesome_1b6cfb9.css",
+            "type": "css"
+        },
+        "components/jquery-placeholder/jquery.placeholder.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/jquery-placeholder/jquery.placeholder_81e8557.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/jquery-placeholder/jquery.placeholder"
+            },
+            "deps": [
+                "components/jquery/jquery.js"
+            ],
+            "pkg": "p1"
+        },
+        "components/jquery-raty/jquery.raty.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/jquery-raty/jquery.raty_26ea765.css",
+            "type": "css"
+        },
+        "components/jquery-raty/jquery.raty.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/jquery-raty/jquery.raty_eddaa32.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/jquery-raty/jquery.raty"
+            }
+        },
+        "components/jquery/jquery.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/jquery/jquery_a230cbf.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/jquery/jquery"
+            },
+            "pkg": "p1"
+        },
+        "components/kindeditor/kindeditor.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/kindeditor/kindeditor_d432f4a.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/kindeditor/kindeditor"
+            }
+        },
+        "components/kindeditor/lang/ar.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/kindeditor/lang/ar_08edc4c.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/kindeditor/lang/ar"
+            }
+        },
+        "components/kindeditor/lang/en.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/kindeditor/lang/en_00eb31b.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/kindeditor/lang/en"
+            }
+        },
+        "components/kindeditor/lang/ko.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/kindeditor/lang/ko_fc69d4a.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/kindeditor/lang/ko"
+            }
+        },
+        "components/kindeditor/lang/ru.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/kindeditor/lang/ru_ef3b07c.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/kindeditor/lang/ru"
+            }
+        },
+        "components/kindeditor/lang/zh-CN.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/kindeditor/lang/zh-CN_ef96d81.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/kindeditor/lang/zh-CN"
+            }
+        },
+        "components/kindeditor/lang/zh-TW.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/kindeditor/lang/zh-TW_7f77ab0.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/kindeditor/lang/zh-TW"
+            }
+        },
+        "components/kindeditor/themes/default/default.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/kindeditor/themes/default/default_0f1e1fb.css",
+            "type": "css"
+        },
+        "components/kindeditor/themes/qq/qq.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/kindeditor/themes/qq/qq_e47fa49.css",
+            "type": "css"
+        },
+        "components/kindeditor/themes/simple/simple.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/kindeditor/themes/simple/simple_9d68331.css",
+            "type": "css"
+        },
+        "components/moment/moment.min.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/moment/moment.min_bee0d68.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/moment/moment.min"
+            }
+        },
+        "components/nprogress/nprogress.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/nprogress/nprogress_a615d55.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/nprogress/nprogress"
+            },
+            "pkg": "p1"
+        },
+        "components/select2/select2_locale_ar.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_ar_e438af6.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_ar"
+            }
+        },
+        "components/select2/select2_locale_az.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_az_a714cb1.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_az"
+            }
+        },
+        "components/select2/select2_locale_bg.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_bg_1eeec25.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_bg"
+            }
+        },
+        "components/select2/select2_locale_ca.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_ca_463f562.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_ca"
+            }
+        },
+        "components/select2/select2_locale_cs.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_cs_6e5be24.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_cs"
+            }
+        },
+        "components/select2/select2_locale_da.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_da_deddbbc.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_da"
+            }
+        },
+        "components/select2/select2_locale_de.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_de_500d7ea.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_de"
+            }
+        },
+        "components/select2/select2_locale_el.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_el_0e9d3fe.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_el"
+            }
+        },
+        "components/select2/select2_locale_es.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_es_7a874b6.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_es"
+            }
+        },
+        "components/select2/select2_locale_et.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_et_d00fd2d.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_et"
+            }
+        },
+        "components/select2/select2_locale_eu.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_eu_9a7906e.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_eu"
+            }
+        },
+        "components/select2/select2_locale_fa.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_fa_69dcb0c.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_fa"
+            }
+        },
+        "components/select2/select2_locale_fi.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_fi_38a9585.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_fi"
+            }
+        },
+        "components/select2/select2_locale_fr.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_fr_3be8b57.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_fr"
+            }
+        },
+        "components/select2/select2_locale_gl.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_gl_c705c51.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_gl"
+            }
+        },
+        "components/select2/select2_locale_he.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_he_24f8434.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_he"
+            }
+        },
+        "components/select2/select2_locale_hr.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_hr_f473080.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_hr"
+            }
+        },
+        "components/select2/select2_locale_hu.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_hu_c8594db.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_hu"
+            }
+        },
+        "components/select2/select2_locale_id.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_id_ef118dc.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_id"
+            }
+        },
+        "components/select2/select2_locale_is.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_is_3af3741.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_is"
+            }
+        },
+        "components/select2/select2_locale_it.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_it_fe2f052.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_it"
+            }
+        },
+        "components/select2/select2_locale_ja.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_ja_f7e5581.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_ja"
+            }
+        },
+        "components/select2/select2_locale_ka.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_ka_4511e6f.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_ka"
+            }
+        },
+        "components/select2/select2_locale_ko.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_ko_4b563db.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_ko"
+            }
+        },
+        "components/select2/select2_locale_lt.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_lt_43444a0.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_lt"
+            }
+        },
+        "components/select2/select2_locale_lv.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_lv_cfcf83f.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_lv"
+            }
+        },
+        "components/select2/select2_locale_mk.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_mk_ca2fd18.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_mk"
+            }
+        },
+        "components/select2/select2_locale_ms.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_ms_6f91a69.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_ms"
+            }
+        },
+        "components/select2/select2_locale_nb.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_nb_d3bc65d.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_nb"
+            }
+        },
+        "components/select2/select2_locale_nl.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_nl_31d7406.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_nl"
+            }
+        },
+        "components/select2/select2_locale_pl.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_pl_2f55eda.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_pl"
+            }
+        },
+        "components/select2/select2_locale_pt-BR.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_pt-BR_03566c8.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_pt-BR"
+            }
+        },
+        "components/select2/select2_locale_pt-PT.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_pt-PT_3aef08c.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_pt-PT"
+            }
+        },
+        "components/select2/select2_locale_ro.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_ro_212571a.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_ro"
+            }
+        },
+        "components/select2/select2_locale_rs.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_rs_7cc8395.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_rs"
+            }
+        },
+        "components/select2/select2_locale_ru.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_ru_c5765fd.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_ru"
+            }
+        },
+        "components/select2/select2_locale_sk.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_sk_8def217.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_sk"
+            }
+        },
+        "components/select2/select2_locale_sv.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_sv_f4e7e7b.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_sv"
+            }
+        },
+        "components/select2/select2_locale_th.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_th_f5c2a08.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_th"
+            }
+        },
+        "components/select2/select2_locale_tr.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_tr_7be58bf.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_tr"
+            }
+        },
+        "components/select2/select2_locale_ug-CN.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_ug-CN_ad32727.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_ug-CN"
+            }
+        },
+        "components/select2/select2_locale_uk.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_uk_d60e7a1.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_uk"
+            }
+        },
+        "components/select2/select2_locale_vi.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_vi_f98ebc1.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_vi"
+            }
+        },
+        "components/select2/select2_locale_zh-CN.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_zh-CN_fe1f4ed.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_zh-CN"
+            },
+            "pkg": "p1"
+        },
+        "components/select2/select2_locale_zh-TW.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_locale_zh-TW_08e3bae.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2_locale_zh-TW"
+            }
+        },
+        "components/select2/select2-bootstrap.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2-bootstrap_0fe870d.css",
+            "type": "css"
+        },
+        "components/select2/select2.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_11800ce.css",
+            "type": "css",
+            "pkg": "p0"
+        },
+        "components/select2/select2.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2_49a7c9f.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2"
+            },
+            "deps": [
+                "components/jquery/jquery.js"
+            ],
+            "pkg": "p1"
+        },
+        "components/select2/select2.min.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/select2/select2.min_16a9452.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/select2/select2.min"
+            }
+        },
+        "components/sinaEmotion/sinaEmotion.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/sinaEmotion/sinaEmotion_b4ab5e8.css",
+            "type": "css"
+        },
+        "components/sinaEmotion/sinaEmotion.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/sinaEmotion/sinaEmotion_f1e687b.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/sinaEmotion/sinaEmotion"
+            },
+            "deps": [
+                "components/jquery/jquery.js"
+            ]
+        },
+        "components/sticky/sticky.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/sticky/sticky_3217067.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/sticky/sticky"
+            },
+            "deps": [
+                "components/jquery/jquery.js"
+            ]
+        },
+        "components/underscore/underscore.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/underscore/underscore_82d94d0.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/underscore/underscore"
+            }
+        },
+        "components/waypoints/infinite.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/waypoints/infinite_90ce678.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/waypoints/infinite"
+            },
+            "deps": [
+                "components/jquery/jquery.js"
+            ]
+        },
+        "components/waypoints/waypoints.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/waypoints/waypoints_120e53b.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/waypoints/waypoints"
+            },
+            "deps": [
+                "components/jquery/jquery.js"
+            ]
+        },
+        "components/webuploader/base.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/base_d8abc6e.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/base"
+            },
+            "deps": [
+                "components/webuploader/dollar.js",
+                "components/webuploader/promise.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/dollar-builtin.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/dollar-builtin_a45e1f1.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/dollar-builtin"
+            }
+        },
+        "components/webuploader/dollar-third.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/dollar-third_b4885da.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/dollar-third"
+            },
+            "pkg": "p2"
+        },
+        "components/webuploader/dollar.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/dollar_a5852c9.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/dollar"
+            },
+            "deps": [
+                "components/webuploader/dollar-third.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/file.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/file_9e64872.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/file"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/mediator.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/lib/blob.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/lib/blob_d0b88db.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/lib/blob"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/runtime/client.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/lib/dnd.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/lib/dnd_e043476.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/lib/dnd"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/mediator.js",
+                "components/webuploader/runtime/client.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/lib/file.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/lib/file_2b63373.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/lib/file"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/lib/blob.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/lib/filepaste.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/lib/filepaste_1fc9f4f.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/lib/filepaste"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/mediator.js",
+                "components/webuploader/runtime/client.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/lib/filepicker.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/lib/filepicker_d2c4a49.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/lib/filepicker"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/runtime/client.js",
+                "components/webuploader/lib/file.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/lib/image.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/lib/image_f74f01a.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/lib/image"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/runtime/client.js",
+                "components/webuploader/lib/blob.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/lib/md5.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/lib/md5_54efdf4.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/lib/md5"
+            },
+            "deps": [
+                "components/webuploader/runtime/client.js",
+                "components/webuploader/mediator.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/lib/transport.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/lib/transport_10a11c9.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/lib/transport"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/runtime/client.js",
+                "components/webuploader/mediator.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/mediator.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/mediator_2de8d39.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/mediator"
+            },
+            "deps": [
+                "components/webuploader/base.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/preset/all.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/preset/all_7d14515.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/preset/all"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/widgets/filednd.js",
+                "components/webuploader/widgets/filepaste.js",
+                "components/webuploader/widgets/filepicker.js",
+                "components/webuploader/widgets/image.js",
+                "components/webuploader/widgets/queue.js",
+                "components/webuploader/widgets/runtime.js",
+                "components/webuploader/widgets/upload.js",
+                "components/webuploader/widgets/validator.js",
+                "components/webuploader/widgets/md5.js",
+                "components/webuploader/runtime/html5/blob.js",
+                "components/webuploader/runtime/html5/dnd.js",
+                "components/webuploader/runtime/html5/filepaste.js",
+                "components/webuploader/runtime/html5/filepicker.js",
+                "components/webuploader/runtime/html5/imagemeta/exif.js",
+                "components/webuploader/runtime/html5/androidpatch.js",
+                "components/webuploader/runtime/html5/image.js",
+                "components/webuploader/runtime/html5/transport.js",
+                "components/webuploader/runtime/html5/md5.js",
+                "components/webuploader/runtime/flash/filepicker.js",
+                "components/webuploader/runtime/flash/image.js",
+                "components/webuploader/runtime/flash/transport.js",
+                "components/webuploader/runtime/flash/blob.js",
+                "components/webuploader/runtime/flash/md5.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/preset/flashonly.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/preset/flashonly_a4ddd1c.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/preset/flashonly"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/widgets/filepicker.js",
+                "components/webuploader/widgets/image.js",
+                "components/webuploader/widgets/queue.js",
+                "components/webuploader/widgets/runtime.js",
+                "components/webuploader/widgets/upload.js",
+                "components/webuploader/widgets/validator.js",
+                "components/webuploader/runtime/flash/filepicker.js",
+                "components/webuploader/runtime/flash/image.js",
+                "components/webuploader/runtime/flash/blob.js",
+                "components/webuploader/runtime/flash/transport.js"
+            ]
+        },
+        "components/webuploader/preset/html5only.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/preset/html5only_9a58562.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/preset/html5only"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/widgets/filednd.js",
+                "components/webuploader/widgets/filepaste.js",
+                "components/webuploader/widgets/filepicker.js",
+                "components/webuploader/widgets/image.js",
+                "components/webuploader/widgets/queue.js",
+                "components/webuploader/widgets/runtime.js",
+                "components/webuploader/widgets/upload.js",
+                "components/webuploader/widgets/validator.js",
+                "components/webuploader/runtime/html5/blob.js",
+                "components/webuploader/runtime/html5/dnd.js",
+                "components/webuploader/runtime/html5/filepaste.js",
+                "components/webuploader/runtime/html5/filepicker.js",
+                "components/webuploader/runtime/html5/imagemeta/exif.js",
+                "components/webuploader/runtime/html5/image.js",
+                "components/webuploader/runtime/html5/transport.js"
+            ]
+        },
+        "components/webuploader/preset/withoutimage.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/preset/withoutimage_a5f07b9.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/preset/withoutimage"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/widgets/filednd.js",
+                "components/webuploader/widgets/filepaste.js",
+                "components/webuploader/widgets/filepicker.js",
+                "components/webuploader/widgets/queue.js",
+                "components/webuploader/widgets/runtime.js",
+                "components/webuploader/widgets/upload.js",
+                "components/webuploader/widgets/validator.js",
+                "components/webuploader/runtime/html5/blob.js",
+                "components/webuploader/runtime/html5/dnd.js",
+                "components/webuploader/runtime/html5/filepaste.js",
+                "components/webuploader/runtime/html5/filepicker.js",
+                "components/webuploader/runtime/html5/transport.js",
+                "components/webuploader/runtime/flash/filepicker.js",
+                "components/webuploader/runtime/flash/transport.js",
+                "components/webuploader/runtime/flash/blob.js"
+            ]
+        },
+        "components/webuploader/promise-builtin.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/promise-builtin_57170a4.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/promise-builtin"
+            },
+            "deps": [
+                "components/webuploader/dollar.js"
+            ]
+        },
+        "components/webuploader/promise-third.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/promise-third_37223bf.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/promise-third"
+            },
+            "deps": [
+                "components/webuploader/dollar.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/promise.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/promise_e57d7f6.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/promise"
+            },
+            "deps": [
+                "components/webuploader/promise-third.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/queue.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/queue_56632dc.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/queue"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/mediator.js",
+                "components/webuploader/file.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/client.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/client_44e8375.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/client"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/mediator.js",
+                "components/webuploader/runtime/runtime.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/compbase.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/compbase_2673bce.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/compbase"
+            },
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/flash/blob.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/flash/blob_9d66ce9.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/flash/blob"
+            },
+            "deps": [
+                "components/webuploader/runtime/flash/runtime.js",
+                "components/webuploader/lib/blob.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/flash/filepicker.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/flash/filepicker_0a4050c.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/flash/filepicker"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/runtime/flash/runtime.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/flash/image.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/flash/image_8eb4d6d.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/flash/image"
+            },
+            "deps": [
+                "components/webuploader/runtime/flash/runtime.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/flash/md5.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/flash/md5_bb0a4f7.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/flash/md5"
+            },
+            "deps": [
+                "components/webuploader/runtime/flash/runtime.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/flash/runtime.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/flash/runtime_543691f.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/flash/runtime"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/runtime/runtime.js",
+                "components/webuploader/runtime/compbase.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/flash/transport.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/flash/transport_3a68e2b.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/flash/transport"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/runtime/flash/runtime.js",
+                "components/webuploader/runtime/client.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/html5/androidpatch.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/html5/androidpatch_e462e77.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/html5/androidpatch"
+            },
+            "deps": [
+                "components/webuploader/runtime/html5/util.js",
+                "components/webuploader/runtime/html5/jpegencoder.js",
+                "components/webuploader/base.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/html5/blob.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/html5/blob_29aba91.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/html5/blob"
+            },
+            "deps": [
+                "components/webuploader/runtime/html5/runtime.js",
+                "components/webuploader/lib/blob.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/html5/dnd.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/html5/dnd_4ea3bc7.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/html5/dnd"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/runtime/html5/runtime.js",
+                "components/webuploader/lib/file.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/html5/filepaste.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/html5/filepaste_b454662.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/html5/filepaste"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/runtime/html5/runtime.js",
+                "components/webuploader/lib/file.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/html5/filepicker.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/html5/filepicker_4d4922b.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/html5/filepicker"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/runtime/html5/runtime.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/html5/image.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/html5/image_8633dab.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/html5/image"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/runtime/html5/runtime.js",
+                "components/webuploader/runtime/html5/util.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/html5/imagemeta.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/html5/imagemeta_4e2c00f.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/html5/imagemeta"
+            },
+            "deps": [
+                "components/webuploader/runtime/html5/util.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/html5/imagemeta/exif.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/html5/imagemeta/exif_7e7c3c3.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/html5/imagemeta/exif"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/runtime/html5/imagemeta.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/html5/jpegencoder.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/html5/jpegencoder_437a9e7.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/html5/jpegencoder"
+            },
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/html5/md5.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/html5/md5_b8b7a71.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/html5/md5"
+            },
+            "deps": [
+                "components/webuploader/runtime/html5/runtime.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/html5/runtime.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/html5/runtime_e74ab21.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/html5/runtime"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/runtime/runtime.js",
+                "components/webuploader/runtime/compbase.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/html5/transport.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/html5/transport_4e95a90.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/html5/transport"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/runtime/html5/runtime.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/html5/util.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/html5/util_ce54c31.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/html5/util"
+            },
+            "deps": [
+                "components/webuploader/base.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/runtime/runtime.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/runtime/runtime_ba21667.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/runtime/runtime"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/mediator.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/uploader.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/uploader_5bda1a0.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/uploader"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/mediator.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/webuploader.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/webuploader_ad01cfd.css",
+            "type": "css"
+        },
+        "components/webuploader/webuploader.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/webuploader_0ea4965.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/webuploader"
+            },
+            "deps": [
+                "components/webuploader/preset/all.js",
+                "components/webuploader/widgets/log.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/widgets/filednd.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/widgets/filednd_3d38ca3.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/widgets/filednd"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/uploader.js",
+                "components/webuploader/lib/dnd.js",
+                "components/webuploader/widgets/widget.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/widgets/filepaste.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/widgets/filepaste_53994db.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/widgets/filepaste"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/uploader.js",
+                "components/webuploader/lib/filepaste.js",
+                "components/webuploader/widgets/widget.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/widgets/filepicker.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/widgets/filepicker_3f3e6a9.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/widgets/filepicker"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/uploader.js",
+                "components/webuploader/lib/filepicker.js",
+                "components/webuploader/widgets/widget.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/widgets/image.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/widgets/image_86aaddb.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/widgets/image"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/uploader.js",
+                "components/webuploader/lib/image.js",
+                "components/webuploader/widgets/widget.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/widgets/log.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/widgets/log_c16cf66.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/widgets/log"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/uploader.js",
+                "components/webuploader/widgets/widget.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/widgets/md5.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/widgets/md5_9748b94.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/widgets/md5"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/uploader.js",
+                "components/webuploader/lib/md5.js",
+                "components/webuploader/lib/blob.js",
+                "components/webuploader/widgets/widget.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/widgets/queue.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/widgets/queue_fbafed7.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/widgets/queue"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/uploader.js",
+                "components/webuploader/queue.js",
+                "components/webuploader/file.js",
+                "components/webuploader/lib/file.js",
+                "components/webuploader/runtime/client.js",
+                "components/webuploader/widgets/widget.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/widgets/runtime.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/widgets/runtime_bdd55e1.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/widgets/runtime"
+            },
+            "deps": [
+                "components/webuploader/uploader.js",
+                "components/webuploader/runtime/runtime.js",
+                "components/webuploader/widgets/widget.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/widgets/upload.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/widgets/upload_1ac10bd.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/widgets/upload"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/uploader.js",
+                "components/webuploader/file.js",
+                "components/webuploader/lib/transport.js",
+                "components/webuploader/widgets/widget.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/widgets/validator.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/widgets/validator_1193e86.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/widgets/validator"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/uploader.js",
+                "components/webuploader/file.js",
+                "components/webuploader/widgets/widget.js"
+            ],
+            "pkg": "p2"
+        },
+        "components/webuploader/widgets/widget.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/components/webuploader/widgets/widget_6db8c53.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "components/webuploader/widgets/widget"
+            },
+            "deps": [
+                "components/webuploader/base.js",
+                "components/webuploader/uploader.js"
+            ],
+            "pkg": "p2"
+        },
+        "page/include/base.vm": {
+            "uri": "/page/include/base.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            }
+        },
+        "page/index/cell.vm": {
+            "uri": "/page/index/cell.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/cell.js"
+            ]
+        },
+        "page/index/chart.vm": {
+            "uri": "/page/index/chart.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/chat.js"
+            ]
+        },
+        "page/index/electricDetail.vm": {
+            "uri": "/page/index/electricDetail.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/electricDetail.js"
+            ]
+        },
+        "page/index/electricityLog.vm": {
+            "uri": "/page/index/electricityLog.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/electricityLog.js"
+            ]
+        },
+        "page/index/equipment.vm": {
+            "uri": "/page/index/equipment.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/equipment.js"
+            ]
+        },
+        "page/index/index.vm": {
+            "uri": "/page/index/index.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/index.js"
+            ]
+        },
+        "page/index/lock.vm": {
+            "uri": "/page/index/lock.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/lock.js"
+            ]
+        },
+        "page/index/admin.vm": {
+            "uri": "/page/index/admin.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/admin.js"
+            ]
+        },
+        "page/index/lockDetail.vm": {
+            "uri": "/page/index/lockDetail.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/lockDetail.js"
+            ]
+        },
+        "page/index/log.vm": {
+            "uri": "/page/index/log.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/log.js"
+            ]
+        },
+        "page/index/manager.vm": {
+            "uri": "/page/index/manager.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/manager.js"
+            ]
+        },
+        "page/index/room.vm": {
+            "uri": "/page/index/room.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/room.js"
+            ]
+        },
+        "page/index/roomfee.vm": {
+            "uri": "/page/index/roomfee.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/roomrentfee.js"
+            ]
+        },
+        "page/index/roomprivilege.vm": {
+            "uri": "/page/index/roomprivilege.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/roomprivilege.js"
+            ]
+        },
+        "page/index/user.vm": {
+            "uri": "/page/index/user.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/user.js"
+            ]
+        },
+        "page/index/wifi.vm": {
+            "uri": "/page/index/wifi.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/wifi.js"
+            ]
+        },
+        "page/index/wifiDetail.vm": {
+            "uri": "/page/index/wifiDetail.vm",
+            "type": "vm",
+            "extras": {
+                "isPage": true
+            },
+            "deps": [
+                "static/libs/pro/index/wifiDetail.js"
+            ]
+        },
+        "static/js/mod-amd.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/js/mod-amd_029eccd.js",
+            "type": "js"
+        },
+        "static/js/require.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/js/require_def23df.js",
+            "type": "js"
+        },
+        "static/libs/audio/audio.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/audio/audio_5edb7ed.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/audio/audio"
+            }
+        },
+        "static/libs/blocksit/blocksit.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/blocksit/blocksit_6782949.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/blocksit/blocksit"
+            },
+            "deps": [
+                "components/jquery/jquery.js"
+            ]
+        },
+        "static/libs/imgLoader/imgLoader.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/imgLoader/imgLoader_6766723.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/imgLoader/imgLoader"
+            },
+            "pkg": "p1"
+        },
+        "static/libs/laydate/laydate.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/laydate/laydate_a6cca24.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/laydate/laydate"
+            }
+        },
+        "static/libs/laydate/need/laydate.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/laydate/need/laydate_cd3add4.css",
+            "type": "css"
+        },
+        "static/libs/laydate/skins/dahong/laydate.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/laydate/skins/dahong/laydate_11cfca4.css",
+            "type": "css"
+        },
+        "static/libs/laydate/skins/default/laydate.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/laydate/skins/default/laydate_474e92b.css",
+            "type": "css"
+        },
+        "static/libs/laydate/skins/molv/laydate.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/laydate/skins/molv/laydate_79e9546.css",
+            "type": "css"
+        },
+        "static/libs/layer/extend/layer.ext.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/layer/extend/layer.ext_c2d186b.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/layer/extend/layer.ext"
+            },
+            "deps": [
+                "static/libs/layer/layer.js"
+            ]
+        },
+        "static/libs/layer/layer.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/layer/layer_aa198c7.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/layer/layer"
+            },
+            "pkg": "p1"
+        },
+        "static/libs/layer/skin/layer.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/layer/skin/layer_20df7a7.css",
+            "type": "css",
+            "pkg": "p0"
+        },
+        "static/libs/layer/skin/layer.ext.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/layer/skin/layer.ext_3094bd0.css",
+            "type": "css"
+        },
+        "static/libs/laypage/laypage.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/laypage/laypage_c52c265.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/laypage/laypage"
+            }
+        },
+        "static/libs/laypage/skin/laypage.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/laypage/skin/laypage_9df24bb.css",
+            "type": "css"
+        },
+        "static/libs/noUiSlider/noUiSlider.css": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/noUiSlider/noUiSlider_85acea9.css",
+            "type": "css"
+        },
+        "static/libs/noUiSlider/noUiSlider.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/noUiSlider/noUiSlider_acf67c5.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/noUiSlider/noUiSlider"
+            }
+        },
+        "static/libs/pro/index/cell.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/cell_0c4cb35.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/cell"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/laypage/laypage.js",
+                "static/libs/util/validate.js",
+                "static/libs/util/upload.js",
+                "components/select2/select2.js",
+                "components/select2/select2_locale_zh-CN.js"
+            ]
+        },
+         "static/libs/pro/index/admin.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/admin.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/admin"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/laypage/laypage.js",
+                "static/libs/util/validate.js",
+                "static/libs/util/upload.js",
+                "components/select2/select2.js",
+                "components/select2/select2_locale_zh-CN.js"
+            ]
+        },
+        "static/libs/pro/index/chat.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/chat_899c423.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/chat"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/laypage/laypage.js",
+                "static/libs/util/validate.js"
+            ]
+        },
+        "static/libs/pro/index/electricDetail.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/electricDetail_453bd56.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/electricDetail"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/laypage/laypage.js",
+                "static/libs/util/validate.js",
+                "components/select2/select2.js",
+                "components/select2/select2_locale_zh-CN.js",
+                "static/libs/laydate/laydate.js"
+            ]
+        },
+        "static/libs/pro/index/electricityLog.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/electricityLog_99c2aa9.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/electricityLog"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/laypage/laypage.js",
+                "static/libs/util/validate.js",
+                "components/echarts/echarts.min.js",
+                "components/moment/moment.min.js",
+                "static/libs/laydate/laydate.js",
+                "components/select2/select2.js",
+                "components/select2/select2_locale_zh-CN.js",
+                "components/underscore/underscore.js"
+            ]
+        },
+        "static/libs/pro/index/equipment.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/equipment_f71c2e4.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/equipment"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/laypage/laypage.js",
+                "static/libs/util/validate.js",
+                "static/libs/util/data.js",
+                "components/select2/select2.js",
+                "components/select2/select2_locale_zh-CN.js",
+                "static/libs/laydate/laydate.js"
+            ]
+        },
+        "static/libs/pro/index/index.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/index_317e9a9.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/index"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/util/validate.js"
+            ]
+        },
+        "static/libs/pro/index/lock.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/lock_51d3366.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/lock"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/laypage/laypage.js",
+                "static/libs/util/validate.js",
+                "static/libs/util/upload.js",
+                "components/select2/select2.js",
+                "components/select2/select2_locale_zh-CN.js"
+            ]
+        },
+        "static/libs/pro/index/lockDetail.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/lockDetail_81d44b8.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/lockDetail"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/laypage/laypage.js",
+                "static/libs/util/validate.js",
+                "components/select2/select2.js",
+                "components/select2/select2_locale_zh-CN.js",
+                "static/libs/laydate/laydate.js"
+            ]
+        },
+        "static/libs/pro/index/log.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/log_0b8c53f.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/log"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/laypage/laypage.js",
+                "static/libs/util/upload.js",
+                "static/libs/laydate/laydate.js"
+            ]
+        },
+        "static/libs/pro/index/manager.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/manager_6332f69.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/manager"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/laypage/laypage.js",
+                "static/libs/util/validate.js",
+                "static/libs/util/data.js",
+                "components/select2/select2.js",
+                "components/select2/select2_locale_zh-CN.js"
+            ]
+        },
+        "static/libs/pro/index/room.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/room_77eee54.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/room"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/laypage/laypage.js",
+                "static/libs/util/validate.js",
+                "static/libs/util/data.js",
+                "static/libs/util/upload.js",
+                "components/moment/moment.min.js",
+                "components/select2/select2.js",
+                "components/select2/select2_locale_zh-CN.js"
+            ]
+        },
+        "static/libs/pro/index/roomprivilege.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/roomprivilege_0743694.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/roomprivilege"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/laypage/laypage.js",
+                "static/libs/util/validate.js",
+                "static/libs/util/data.js",
+                "static/libs/util/upload.js",
+                "components/moment/moment.min.js",
+                "components/select2/select2.js",
+                "components/select2/select2_locale_zh-CN.js",
+                "static/libs/laydate/laydate.js"
+            ]
+        },
+        "static/libs/pro/index/roomrentfee.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/roomrentfee_21ddd5c.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/roomrentfee"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/laypage/laypage.js",
+                "static/libs/util/validate.js",
+                "static/libs/util/data.js",
+                "static/libs/util/upload.js",
+                "components/moment/moment.min.js",
+                "components/select2/select2.js",
+                "components/select2/select2_locale_zh-CN.js",
+                "static/libs/laydate/laydate.js"
+            ]
+        },
+        "static/libs/pro/index/user.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/user_e66e304.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/user"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/util/validate.js",
+                "static/libs/util/upload.js"
+            ]
+        },
+        "static/libs/pro/index/wifi.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/wifi_dc151ad.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/wifi"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/laypage/laypage.js",
+                "static/libs/util/validate.js",
+                "static/libs/util/upload.js",
+                "components/select2/select2.js",
+                "components/select2/select2_locale_zh-CN.js"
+            ]
+        },
+        "static/libs/pro/index/wifiDetail.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/pro/index/wifiDetail_19ee1bb.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/pro/index/wifiDetail"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "static/libs/laypage/laypage.js",
+                "static/libs/util/validate.js",
+                "components/select2/select2.js",
+                "components/select2/select2_locale_zh-CN.js"
+            ]
+        },
+        "static/libs/unslider/unslider.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/unslider/unslider_3345ed4.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/unslider/unslider"
+            },
+            "deps": [
+                "components/jquery/jquery.js"
+            ]
+        },
+        "static/libs/util/common.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/util/common_5b923a1.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/util/common"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/config.js",
+                "static/libs/util/cookie.js",
+                "static/libs/layer/layer.js",
+                "components/nprogress/nprogress.js",
+                "components/jquery-placeholder/jquery.placeholder.js"
+            ],
+            "pkg": "p1"
+        },
+        "static/libs/util/config.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/util/config_cb4470e.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/util/config"
+            },
+            "pkg": "p1"
+        },
+        "static/libs/util/cookie.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/util/cookie_c797d2c.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/util/cookie"
+            },
+            "pkg": "p1"
+        },
+        "static/libs/util/data.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/util/data_0d97f9f.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/util/data"
+            },
+            "pkg": "p1"
+        },
+        "static/libs/util/jquery.form.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/util/jquery.form_b739f18.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/util/jquery.form"
+            },
+            "deps": [
+                "components/jquery/jquery.js"
+            ]
+        },
+        "static/libs/util/jquery.maxLength.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/util/jquery.maxLength_c9948ab.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/util/jquery.maxLength"
+            },
+            "deps": [
+                "components/jquery/jquery.js"
+            ]
+        },
+        "static/libs/util/json2.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/util/json2_7d31c70.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/util/json2"
+            }
+        },
+        "static/libs/util/select.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/util/select_583aa60.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/util/select"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js"
+            ]
+        },
+        "static/libs/util/upload.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/util/upload_5464531.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/util/upload"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/util/common.js",
+                "components/webuploader/webuploader.js"
+            ]
+        },
+        "static/libs/util/validate.js": {
+            "uri": "http://127.0.0.1:8080/mj/static/libs/util/validate_e53e9b5.js",
+            "type": "js",
+            "extras": {
+                "moduleId": "static/libs/util/validate"
+            },
+            "deps": [
+                "components/jquery/jquery.js",
+                "static/libs/layer/layer.js"
+            ],
+            "pkg": "p1"
+        },
+        "static/scss/base.scss": {
+            "uri": "http://127.0.0.1:8080/mj/static/scss/base_eb3ffbc.css",
+            "type": "css"
+        },
+        "static/scss/cell.scss": {
+            "uri": "http://127.0.0.1:8080/mj/static/scss/cell_eb3ffbc.css",
+            "type": "css"
+        },
+        "static/scss/color.scss": {
+            "uri": "http://127.0.0.1:8080/mj/static/scss/color_d41d8cd.css",
+            "type": "css"
+        },
+        "static/scss/detail.scss": {
+            "uri": "http://127.0.0.1:8080/mj/static/scss/detail_2e395d4.css",
+            "type": "css"
+        },
+        "static/scss/equipment.scss": {
+            "uri": "http://127.0.0.1:8080/mj/static/scss/equipment_97e6a63.css",
+            "type": "css"
+        },
+        "static/scss/global.scss": {
+            "uri": "http://127.0.0.1:8080/mj/static/scss/global_5dd329d.css",
+            "type": "css"
+        },
+        "static/scss/index.scss": {
+            "uri": "http://127.0.0.1:8080/mj/static/scss/index_555a69f.css",
+            "type": "css"
+        },
+        "static/scss/lock.scss": {
+            "uri": "http://127.0.0.1:8080/mj/static/scss/lock_eb3ffbc.css",
+            "type": "css"
+        },
+        "static/scss/log.scss": {
+            "uri": "http://127.0.0.1:8080/mj/static/scss/log_f5e1e1b.css",
+            "type": "css"
+        },
+        "static/scss/nprogres.scss": {
+            "uri": "http://127.0.0.1:8080/mj/static/scss/nprogres_4332820.css",
+            "type": "css"
+        },
+        "static/scss/reset.scss": {
+            "uri": "http://127.0.0.1:8080/mj/static/scss/reset_36d1aa8.css",
+            "type": "css"
+        },
+        "static/scss/user.scss": {
+            "uri": "http://127.0.0.1:8080/mj/static/scss/user_a4f35d0.css",
+            "type": "css"
+        },
+        "widget/footer/footer.vm": {
+            "uri": "/widget/footer/footer.vm",
+            "type": "vm"
+        },
+        "widget/header/header.vm": {
+            "uri": "/widget/header/header.vm",
+            "type": "vm"
+        },
+        "widget/sidebarmenus/nav.vm": {
+            "uri": "/widget/sidebarmenus/nav.vm",
+            "type": "vm"
+        }
+    },
+    "pkg": {
+        "p0": {
+            "uri": "http://127.0.0.1:8080/mj/static/pkg/base_1d13511.css",
+            "type": "css",
+            "has": [
+                "static/libs/layer/skin/layer.css",
+                "components/select2/select2.css",
+                "components/font-awesome/css/font-awesome.css"
+            ]
+        },
+        "p1": {
+            "uri": "http://127.0.0.1:8080/mj/static/pkg/common_1e4ff4f.js",
+            "type": "js",
+            "has": [
+                "components/jquery/jquery.js",
+                "static/libs/util/config.js",
+                "static/libs/util/cookie.js",
+                "static/libs/layer/layer.js",
+                "components/nprogress/nprogress.js",
+                "components/jquery-placeholder/jquery.placeholder.js",
+                "static/libs/util/common.js",
+                "components/select2/select2.js",
+                "components/select2/select2_locale_zh-CN.js",
+                "static/libs/util/data.js",
+                "static/libs/imgLoader/imgLoader.js",
+                "static/libs/util/validate.js"
+            ]
+        },
+        "p2": {
+            "uri": "http://127.0.0.1:8080/mj/static/pkg/webuploader_6305239.js",
+            "type": "js",
+            "has": [
+                "components/webuploader/dollar-third.js",
+                "components/webuploader/dollar.js",
+                "components/webuploader/promise-third.js",
+                "components/webuploader/promise.js",
+                "components/webuploader/base.js",
+                "components/webuploader/mediator.js",
+                "components/webuploader/uploader.js",
+                "components/webuploader/runtime/runtime.js",
+                "components/webuploader/runtime/client.js",
+                "components/webuploader/lib/dnd.js",
+                "components/webuploader/widgets/widget.js",
+                "components/webuploader/widgets/filednd.js",
+                "components/webuploader/lib/filepaste.js",
+                "components/webuploader/widgets/filepaste.js",
+                "components/webuploader/lib/blob.js",
+                "components/webuploader/lib/file.js",
+                "components/webuploader/lib/filepicker.js",
+                "components/webuploader/widgets/filepicker.js",
+                "components/webuploader/lib/image.js",
+                "components/webuploader/widgets/image.js",
+                "components/webuploader/file.js",
+                "components/webuploader/queue.js",
+                "components/webuploader/widgets/queue.js",
+                "components/webuploader/widgets/runtime.js",
+                "components/webuploader/lib/transport.js",
+                "components/webuploader/widgets/upload.js",
+                "components/webuploader/widgets/validator.js",
+                "components/webuploader/lib/md5.js",
+                "components/webuploader/widgets/md5.js",
+                "components/webuploader/runtime/compbase.js",
+                "components/webuploader/runtime/html5/runtime.js",
+                "components/webuploader/runtime/html5/blob.js",
+                "components/webuploader/runtime/html5/dnd.js",
+                "components/webuploader/runtime/html5/filepaste.js",
+                "components/webuploader/runtime/html5/filepicker.js",
+                "components/webuploader/runtime/html5/util.js",
+                "components/webuploader/runtime/html5/imagemeta.js",
+                "components/webuploader/runtime/html5/imagemeta/exif.js",
+                "components/webuploader/runtime/html5/jpegencoder.js",
+                "components/webuploader/runtime/html5/androidpatch.js",
+                "components/webuploader/runtime/html5/image.js",
+                "components/webuploader/runtime/html5/transport.js",
+                "components/webuploader/runtime/html5/md5.js",
+                "components/webuploader/runtime/flash/runtime.js",
+                "components/webuploader/runtime/flash/filepicker.js",
+                "components/webuploader/runtime/flash/image.js",
+                "components/webuploader/runtime/flash/transport.js",
+                "components/webuploader/runtime/flash/blob.js",
+                "components/webuploader/runtime/flash/md5.js",
+                "components/webuploader/preset/all.js",
+                "components/webuploader/widgets/log.js",
+                "components/webuploader/webuploader.js"
+            ]
+        }
+    }
+}

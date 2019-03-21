@@ -1,0 +1,28 @@
+<%if(type==1){%>
+    <table>
+        <thead>
+           <tr>
+                <th><%=label.sn%></th>
+                <th><%=label.operator%></th>
+                <th><%=label.jieguo%></th>
+                <th><%=label.time%></th>
+                <th>IP</th>
+            </tr>
+        </thead>
+        </table>
+        <div class="scroll">
+        <table>
+            <%
+                for (var i in data){
+            %>
+            <tr>
+                <td><%=(parseInt(i,10)+1)%></td>
+                <td><%=data[i].operateName%></td>
+                <td><%=data[i].title%></td>
+                <td><%=new Date(data[i].inputDate).Format('yyyy-MM-dd hh:mm:ss')%></td>
+                <td><%=data[i].ip%></td>
+            </tr>
+            <%}%>
+        </table>
+    </div>
+<%}%>

@@ -1,0 +1,39 @@
+#extends("page/include/base.vm") #require("static/scss/base.scss") #block("content")
+<div class="g-sd">
+    <div class="g-sdc">
+        #widget("widget/sidebarmenus/nav.vm" "var:type=5")
+    </div>
+</div>
+<div class="g-mn">
+    #block("header") #widget("widget/header/header.vm") #end
+    <div class="m-page-title">
+        <span><i>&gt;</i>异常提醒</span>
+    </div>
+    <div class="g-mnc">
+        <ul class="form-box-ul">
+            <li>设备<span id="lock-count"></span></li>
+            <li>网关<span id="wifi-count"></span></li>
+        </ul>
+        <div class="show-box">
+            <div class="search-item f-cb search-type">
+                <ul class="f-cb f-fl">
+                    <li class="z-sel"><a>全部</a></li>
+                    <li><a>电量低</a></li>
+                    <li><a>通讯异常</a></li>
+                </ul>
+            </div>
+            <ul class="cell-list" id="lock-list">
+            </ul>
+            <div class="page" id="lock-page"></div>
+        </div>
+        <div class="show-box">
+            <ul class="cell-list" id="wifi-list">
+            </ul>
+            <div class="page" id="wifi-page"></div>
+        </div>
+    </div>
+</div>
+#end #script() require('static/libs/pro/index/chat') #end 
+  ## auto inject by fis3-preprocess-extlang
+  #require("page/index/chart.vm")
+#end

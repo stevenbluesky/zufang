@@ -1,0 +1,24 @@
+#extends("/page/include/base.vm") 
+	#require("/static/scss/user.scss") 
+	#block("content")
+		<div class="g-sd">
+			<div class="g-sdc">
+				#widget("widget/sidebarmenus/nav.vm" "var:type=4")
+			</div>
+		</div>
+		<div class="g-mn">
+			#block("header")
+				#widget("widget/header/header.vm")
+			#end
+			<div class="m-page-title">
+				<span><i>&gt;</i>#springMessage('view.label.usercenter')</span>
+			</div>
+			<div class="g-mnc" id="main-materials">
+				
+			</div>
+		</div>
+	#end 
+	#script()
+		require('/static/libs/pro/index/user')
+	#end
+#end

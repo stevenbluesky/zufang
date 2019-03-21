@@ -1,0 +1,246 @@
+package com.ant.controller;
+
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import com.isurpass.common.exception.BusinessException;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.ant.business.LockPassword;
+import com.ant.vo.LockPasswordVo;
+import com.ant.vo.PersonVo;
+import com.isurpass.common.hibernate.BasicScroll;
+import com.isurpass.service.HiCommuLogService;
+import com.isurpass.service.HiLockPasswordService;
+
+
+@Controller
+@RequestMapping(value="/service/lockpassword")
+@Scope(value = "prototype")
+public class LockPasswordController extends BaseController{
+
+	@Resource
+	private HiLockPasswordService hiLockpasswordservice;
+	@Resource
+	private HiCommuLogService hiCommuLogService;
+	
+	@RequestMapping(value="/findPage")
+	public @ResponseBody Map<String , Object> findPage(@ModelAttribute("lockpasswordvo")LockPasswordVo lockpasswordvo)
+	{
+		if  ( lockpasswordvo.getPage() == null || lockpasswordvo.getRows() == null )
+			throw new BusinessException(getRB().getString("pagerows"));
+		
+		BasicScroll scroll = new BasicScroll(lockpasswordvo.getPage(), lockpasswordvo.getRows());
+		List<LockPassword> lst = hiLockpasswordservice.findPage(lockpasswordvo.getDvcid(),scroll);
+		/*for(LockPassword l:lst){
+			int weekday = l.getWeekday();
+			String bs = Integer.toBinaryString(weekday);
+			l.setWeekday(Integer.parseInt(bs));
+		}*/
+		
+		return createResponse(1 , getRB().getString("jquerysuccess") , scroll.getRows() , lst);
+	}
+	
+	@RequestMapping(value="/saveLockPassword")
+	public @ResponseBody Map<String , Object> saveLockPassword(@ModelAttribute("lockpasswordvo")LockPasswordVo lockpasswordvo)
+	{
+		PersonVo sessionPersonVo = super.getCurrentUser();
+		try
+		{
+			if(lockpasswordvo.getValidfrom().getTime()>lockpasswordvo.getValidthrough().getTime()){
+				throw new BusinessException(getRB().getString("timeerror"));
+			}
+			String week1 = request.getParameter("week1");
+			String week2 = request.getParameter("week2");
+			String week3 = request.getParameter("week3");
+			String week4 = request.getParameter("week4");
+			String week5 = request.getParameter("week5");
+			String week6 = request.getParameter("week6");
+			String week7 = request.getParameter("week7");
+			String starthour = request.getParameter("starthour");
+			String startmin = request.getParameter("startmin");
+			String endhour = request.getParameter("endhour");
+			String endmin = request.getParameter("endmin");
+			if(starthour!=null&&starthour.length()<2){
+				starthour = "0" + starthour;
+			}
+			if(startmin!=null&&startmin.length()<2){
+				startmin = "0" + startmin;
+			}
+			if(endhour!=null&&endhour.length()<2){
+				endhour = "0" + endhour;
+			}
+			if(endmin!=null&&endmin.length()<2){
+				endmin = "0" + endmin;
+			}
+			String starttime = starthour+":"+startmin;
+			String endtime = endhour + ":"+ endmin;
+			lockpasswordvo.setStarttime(starttime);
+			lockpasswordvo.setEndtime(endtime);
+			int week = 0;
+			if(week1!=null){week += Integer.parseInt(week1);}
+			if(week2!=null){week += Integer.parseInt(week2);}
+			if(week3!=null){week += Integer.parseInt(week3);}
+			if(week4!=null){week += Integer.parseInt(week4);}
+			if(week5!=null){week += Integer.parseInt(week5);}
+			if(week6!=null){week += Integer.parseInt(week6);}
+			if(week7!=null){week += Integer.parseInt(week7);}
+			lockpasswordvo.setWeekday(week);	
+			hiLockpasswordservice.save(lockpasswordvo,getRB());
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+ "设置密码成功" , new Long(lockpasswordvo.getDvcid()), sessionPersonVo.getId(),9,1);
+			return createResponse(1 , getRB().getString("jsave"),null);
+		}
+		catch (Exception e) 
+		{
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+ "设置密码失败" , new Long(lockpasswordvo.getDvcid()), sessionPersonVo.getId(),9,0);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/saveLockCardUser")
+	public @ResponseBody Map<String , Object> saveLockCardUser(@ModelAttribute("lockpasswordvo")LockPasswordVo lockpasswordvo)
+	{
+		PersonVo sessionPersonVo = super.getCurrentUser();
+		
+		try
+		{
+			if(lockpasswordvo.getValidfrom().getTime()>lockpasswordvo.getValidthrough().getTime()){
+				throw new BusinessException(getRB().getString("timeerror"));
+			}
+			String week1 = request.getParameter("week1");
+			String week2 = request.getParameter("week2");
+			String week3 = request.getParameter("week3");
+			String week4 = request.getParameter("week4");
+			String week5 = request.getParameter("week5");
+			String week6 = request.getParameter("week6");
+			String week7 = request.getParameter("week7");
+			String starthour = request.getParameter("starthour");
+			String startmin = request.getParameter("startmin");
+			String endhour = request.getParameter("endhour");
+			String endmin = request.getParameter("endmin");
+			if(starthour!=null&&starthour.length()<2){
+				starthour = "0" + starthour;
+			}
+			if(startmin!=null&&startmin.length()<2){
+				startmin = "0" + startmin;
+			}
+			if(endhour!=null&&endhour.length()<2){
+				endhour = "0" + endhour;
+			}
+			if(endmin!=null&&endmin.length()<2){
+				endmin = "0" + endmin;
+			}
+			String starttime = starthour+":"+startmin;
+			String endtime = endhour + ":"+ endmin;
+			lockpasswordvo.setStarttime(starttime);
+			lockpasswordvo.setEndtime(endtime);
+			int week = 0;
+			if(week1!=null){week += Integer.parseInt(week1);}
+			if(week2!=null){week += Integer.parseInt(week2);}
+			if(week3!=null){week += Integer.parseInt(week3);}
+			if(week4!=null){week += Integer.parseInt(week4);}
+			if(week5!=null){week += Integer.parseInt(week5);}
+			if(week6!=null){week += Integer.parseInt(week6);}
+			if(week7!=null){week += Integer.parseInt(week7);}
+			lockpasswordvo.setWeekday(week);
+			hiLockpasswordservice.saveLockCardUser(lockpasswordvo,getRB());
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+  "设置卡用户成功" , new Long(lockpasswordvo.getDvcid()), sessionPersonVo.getId(),10,1);
+			return createResponse(1 , getRB().getString("jsave"),null);
+		}
+		catch (Exception e) 
+		{
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+ "设置卡用户失败"  , new Long(lockpasswordvo.getDvcid()), sessionPersonVo.getId(),10,0);
+			return super.createErrorResponse(-1, e.getMessage());
+
+		}
+	}
+	@RequestMapping(value="/saveFingerprintUser")
+	public @ResponseBody Map<String , Object> saveFingerprintUser(@ModelAttribute("lockpasswordvo")LockPasswordVo lockpasswordvo){
+		PersonVo sessionPersonVo = super.getCurrentUser();
+		try{
+			if(lockpasswordvo.getValidfrom().getTime()>lockpasswordvo.getValidthrough().getTime()){
+				throw new BusinessException(getRB().getString("timeerror"));
+			}
+			String week1 = request.getParameter("week1");
+			String week2 = request.getParameter("week2");
+			String week3 = request.getParameter("week3");
+			String week4 = request.getParameter("week4");
+			String week5 = request.getParameter("week5");
+			String week6 = request.getParameter("week6");
+			String week7 = request.getParameter("week7");
+			String starthour = request.getParameter("starthour");
+			String startmin = request.getParameter("startmin");
+			String endhour = request.getParameter("endhour");
+			String endmin = request.getParameter("endmin");
+			if(starthour!=null&&starthour.length()<2){
+				starthour = "0" + starthour;
+			}
+			if(startmin!=null&&startmin.length()<2){
+				startmin = "0" + startmin;
+			}
+			if(endhour!=null&&endhour.length()<2){
+				endhour = "0" + endhour;
+			}
+			if(endmin!=null&&endmin.length()<2){
+				endmin = "0" + endmin;
+			}
+			String starttime = starthour+":"+startmin;
+			String endtime = endhour + ":"+ endmin;
+			lockpasswordvo.setStarttime(starttime);
+			lockpasswordvo.setEndtime(endtime);
+			int week = 0;
+			if(week1!=null){week += Integer.parseInt(week1);}
+			if(week2!=null){week += Integer.parseInt(week2);}
+			if(week3!=null){week += Integer.parseInt(week3);}
+			if(week4!=null){week += Integer.parseInt(week4);}
+			if(week5!=null){week += Integer.parseInt(week5);}
+			if(week6!=null){week += Integer.parseInt(week6);}
+			if(week7!=null){week += Integer.parseInt(week7);}
+			lockpasswordvo.setWeekday(week);
+			hiLockpasswordservice.saveFingerprintUser(lockpasswordvo,getRB());
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+ "设置指纹用户成功" , new Long(lockpasswordvo.getDvcid()), sessionPersonVo.getId(),12,1);
+			return createResponse(1 , getRB().getString("jsave"),null);
+		}
+		catch (Exception e) 
+		{
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+ "设置指纹用户失败" , new Long(lockpasswordvo.getDvcid()), sessionPersonVo.getId(),12,0);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+	@RequestMapping(value="/deleteLockPassword")
+	public @ResponseBody Map<String , Object> deleteLockPassword(@ModelAttribute("lockpassword")LockPassword lockpassword)
+	{
+		PersonVo sessionPersonVo = super.getCurrentUser();
+
+		try
+		{
+			hiLockpasswordservice.delete(lockpassword.getLockpasswordid(),getRB());
+			
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+ "删除用户成功" , new Long(lockpassword.getDvcid()), sessionPersonVo.getId(),11,1);
+			return createResponse(1 , getRB().getString("jdelete"),null);
+		}
+		catch (Exception e) 
+		{
+			hiCommuLogService.saveCommuLog("您于" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) 
+					+ "删除用户失败" , new Long(lockpassword.getDvcid()), sessionPersonVo.getId(),11,0);
+			return super.createErrorResponse(0, e.getMessage());
+		}
+	}
+
+}

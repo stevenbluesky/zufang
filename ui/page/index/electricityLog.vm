@@ -1,0 +1,100 @@
+#extends("/page/include/base.vm") #require("/static/scss/log.scss") #block("content")
+<div class="g-sd">
+    <div class="g-sdc">
+        #widget("widget/sidebarmenus/nav.vm" "var:type=8")
+    </div>
+</div>
+<div class="g-mn">
+    #block("header") #widget("widget/header/header.vm") #end
+    <div class="m-page-title">
+        <span><i>&gt;</i>#springMessage('view.label.statistic')</span>
+    </div>
+    <div class="g-mnc">
+        <ul class="form-box-ul">
+            <li class="z-sel">#springMessage('view.label.powerstatistic')</li>
+            <li>#springMessage('view.label.powercoststatistic')</li>
+            <li>#springMessage('view.label.waterstatistic')</li>
+            <li>#springMessage('view.label.hotwaterstatistic')</li>
+            <li>#springMessage('view.label.totalchargesstatistic')</li>
+        </ul>
+        <div class="show-box">
+            <div class="search-item f-cb">
+                <ul class="f-cb f-fl" id="search-type">
+                    <li><i class="fa fa-bar-chart fa-fw"></i>#springMessage('view.label.by')：</li>
+                    <li class="item" data-id="0"><a>#springMessage('view.label.monthly')</a></li>
+                    <li class="item" data-id="1"><a>#springMessage('view.label.daily')</a></li>
+                    <li class="item" data-id="2"><a>#springMessage('view.label.hourly')</a></li>
+                </ul>
+            </div>
+            <div class="search-item f-cb">
+                <ul class="f-cb">
+                    <li><i class="fa fa-map-marker fa-fw"></i>#springMessage('view.label.conditions')：</li>
+                    <li>
+                        <input type="hidden" class="u-select" id="district-search" style="width:150px"/>
+                        <input type="hidden" class="u-select" id="build-search" />
+                        <input type="hidden" class="u-select" id="unit-search" />
+                        <input type="hidden" class="u-select" id="floor-search" />
+                        <input type="hidden" class="u-select" id="room-search" />
+                    </li>
+                </ul>
+            </div>
+            <div class="search-item search-item-last">
+                <ul class="f-cb">
+                    <li><i class="fa fa-clock-o fa-fw"></i>#springMessage('view.label.date')：</li>
+                    <li class="month-box time f-dn">
+                        <input type="text" class="u-ipt" id="search-monthStart" placeholder="#springMessage('view.label.startdate')" onfocus="this.blur()" onclick="laydate(monthStart);" />
+                    </li>
+                    <li class="month-box time f-dn">
+                        <input type="text" class="u-ipt" id="search-monthEnd" placeholder="#springMessage('view.label.enddate')" onfocus="this.blur()" onclick="laydate(monthEnd);" />
+                    </li>
+                    <li class="date-box time f-dn">
+                        <input type="text" class="u-ipt" id="search-dateStart" placeholder="#springMessage('view.label.startdate')" onfocus="this.blur()" onclick="laydate(dateStart);" />
+                    </li>
+                    <li class="date-box time f-dn">
+                        <input type="text" class="u-ipt" id="search-dateEnd" placeholder="#springMessage('view.label.enddate')" onfocus="this.blur()" onclick="laydate(dateEnd);" />
+                    </li>
+                    <li class="hour-box time f-dn">
+                        <input type="text" class="u-ipt" id="search-hourStart" placeholder="#springMessage('view.label.startdate')" onfocus="this.blur()" onclick="laydate(hourStart);" />
+                    </li>
+                    <li class="hour-box time f-dn">
+                        <input type="text" class="u-ipt" id="search-hourEnd" placeholder="#springMessage('view.label.enddate')" onfocus="this.blur()" onclick="laydate(hourEnd);" />
+                    </li>
+                    <li>
+                        <button class="u-btn gray" id="btn-search">#springMessage('view.label.search')</button>
+                    </li>
+                </ul>
+            </div>
+            <div id="chart" style="height:400px;width:100%;margin:15px 0;">
+            </div>
+        </div>
+        <div class="show-box f-dn">
+            <div class="search-item f-cb">
+                <ul class="f-cb">
+                    <li><i class="fa fa-map-marker fa-fw"></i>#springMessage('view.label.conditions')：</li>
+                    <li>
+                        <input type="hidden" class="u-select" id="district-list" style="width:150px"/>
+                        <input type="hidden" class="u-select" id="build-list" />
+                        <input type="hidden" class="u-select" id="unit-list" />
+                        <input type="hidden" class="u-select" id="floor-list" />
+                        <input type="hidden" class="u-select" id="room-list" />
+                    </li>
+                </ul>
+            </div>
+            <div class="search-item search-item-last">
+                <ul class="f-cb">
+                    <li><i class="fa fa-clock-o fa-fw"></i>#springMessage('view.label.date')：</li>
+                    <li class="month-box time f-dn">
+                        <input type="hidden" class="u-select" id="search-month" placeholder="#springMessage('view.label.startdate')" style="width:130px"/>
+                    </li>
+                    <li>
+                        <button class="u-btn gray" id="btn-search-list">#springMessage('view.label.search')</button>
+                    </li>
+                </ul>
+            </div>
+            <div id="list" class="m-demo" style="margin-top:20px;">
+            </div>
+            <div class="page" id="page"></div>
+        </div>
+    </div>
+</div>
+#end #script() require('/static/libs/pro/index/electricityLog') #end #end

@@ -1,0 +1,50 @@
+#extends("page/include/base.vm") 
+	#require("static/scss/base.scss") 
+	#block("content")
+		<div class="g-sd">
+			<div class="g-sdc">
+				#widget("widget/sidebarmenus/nav.vm" "var:type=3")
+			</div>
+		</div>
+		<div class="g-mn">
+			#block("header")
+				#widget("widget/header/header.vm")
+			#end
+			<div class="m-page-title">
+				<span><i>&gt;</i>我的网关</span>
+			</div>
+			<div class="g-mnc">
+				<div class="search-item f-cb">
+					<ul class="f-cb f-fl" id="search-signalFlag">
+						<li><i class="fa fa-wifi fa-fw"></i>通讯状态：</li>
+						<li><a >全部</a></li>
+						<li data-id="0"><a >在线</a></li>
+						<li data-id="1"><a >离线</a></li>
+					</ul>
+				</div>
+				<div class="search-item search-item-last">
+					<ul class="f-cb">
+						<li><i class="fa fa-map-marker fa-fw"></i>小区：</li>
+						<li>
+							<input type="hidden" class="u-select" id="district-search"/>
+						</li>
+						<li>
+							<button class="u-btn gray" id="btn-search">搜索</button>
+						</li>
+					</ul>
+				</div>
+				<ul class="cell-list" id="list">
+					
+					
+				</ul>
+				<div class="page" id="page"></div>
+			</div>
+		</div>
+	#end 
+	#script()
+		require('static/libs/pro/index/wifi')
+	#end
+
+  ## auto inject by fis3-preprocess-extlang
+  #require("page/index/wifi.vm")
+#end

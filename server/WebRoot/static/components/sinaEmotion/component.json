@@ -1,0 +1,6 @@
+{
+    "repos": "https://github.com/itcyh/jquery.sinaEmotion.git",
+    "version": "1.0",
+    "name": "sinaEmotion",
+    "main": "sinaEmotion.js"
+}

@@ -1,0 +1,235 @@
+package com.ant.restful.service;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
+import javax.net.ssl.HttpsURLConnection;
+import com.ant.util.AES;
+import com.ant.util.StringUtil;
+import com.isurpass.common.exception.BusinessException;
+import com.isurpass.service.SystemParameterService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import com.alibaba.fastjson.JSON;
+import com.ant.business.SystemParameter;
+import com.ant.config.MjConfig;
+@Component
+public class RestfulUtil {
+	
+	private static Log log = LogFactory.getLog(RestfulUtil.class);
+	private static RestfulUtil instance = new RestfulUtil();
+	private static String dbtoken = "";
+	private static final String dbkey = "zufang_key";
+	private String token = "";
+	private static SystemParameterService sps ;
+	
+
+	public static RestfulUtil getInstance(){
+		return instance ;
+	}
+
+	public static String getToken(){
+		SystemParameter systemparameter = sps.findByStrkey(dbkey);
+		if(StringUtil.checkNull(systemparameter)||StringUtil.checkNull(systemparameter.getStrvalue())){
+			/**token为空，则登录获取token*/
+			instance.login();
+		}else{
+			dbtoken = AES.decrypt2Str(systemparameter.getStrvalue());
+			if(dbtoken==null){
+				instance.login();
+			}
+		}
+		return RestfulUtil.dbtoken;
+	}
+	
+	/**
+	 * 调用接口
+	 * @param url
+	 * @param pmap
+	 * @return
+	 */
+	@Transactional
+	public static String postToServerHttps(String url,Map pmap){
+		String token = /*getToken()*/"ab25887738ce4caf8ba97802f66768ae799772";
+		pmap.put("token", token);
+		String str = HttpUtil.httprequest(url, pmap);
+		log.info(str);
+		Map map = null;
+		try {
+			map = JSON.parseObject(str,HashMap.class);
+		} catch (Exception e) {
+			throw new BusinessException("Server connection failed");
+		}
+		if(StringUtil.checkNull(map.get("resultCode"))){
+			throw new BusinessException("System error, error code is blank");
+		}
+		int resultCode = Integer.parseInt(map.get("resultCode").toString());
+		if(resultCode == 30300){
+			/**无效的token，重新登录*/
+			instance.login();
+			SystemParameter systemparameter = sps.findByStrkey(dbkey);
+			if(systemparameter!=null&&!StringUtils.isEmpty(systemparameter.getStrvalue())){
+				systemparameter.setStrvalue(AES.encrypt2Str(dbtoken));
+				sps.update(systemparameter);
+			}else{
+				SystemParameter sp = new SystemParameter(dbkey,AES.encrypt2Str(dbtoken));
+				sps.save(sp);
+			}
+			/*SystemParameter s = new SystemParameter(dbkey,AES.encrypt2Str(dbtoken));
+			sps.saveOrUpdate(s);*/
+			pmap.put("token", dbtoken);
+			str =postToServerHttps(url, pmap);
+		}
+		return str;
+	}
+	/**
+	 * 调用接口,支持国际化输出异常提示
+	 * @param url
+	 * @param pmap
+	 * @return
+	 */
+	@Transactional
+	public static String postToServerHttps(String url,Map pmap,ResourceBundle rb){
+		String token = getToken();
+		pmap.put("token", token);
+		String str = HttpUtil.httprequest(url, pmap);
+		log.info(str);
+		Map map = null;
+		try {
+			map = JSON.parseObject(str,HashMap.class);
+		} catch (Exception e) {
+			throw new BusinessException(rb.getString("scf"));
+		}
+		if(StringUtil.checkNull(map.get("resultCode"))){
+			throw new BusinessException(rb.getString("seecib"));
+		}
+		int resultCode = Integer.parseInt(map.get("resultCode").toString());
+		if(resultCode == 30300){
+			/**无效的token，重新登录*/
+			instance.login();
+			SystemParameter systemparameter = sps.findByStrkey(dbkey);
+			if(systemparameter!=null&&!StringUtils.isEmpty(systemparameter.getStrvalue())){
+				systemparameter.setStrvalue(AES.encrypt2Str(dbtoken));
+				sps.update(systemparameter);
+			}else{
+				SystemParameter sp = new SystemParameter(dbkey,AES.encrypt2Str(dbtoken));
+				sps.save(sp);
+			}
+			/*SystemParameter s = new SystemParameter(dbkey,dbtoken);
+			sps.saveOrUpdate(s);*/
+			pmap.put("token", dbtoken);
+			str =postToServerHttps(url, pmap);
+		}
+		return str;
+	}
+	/**
+	 * 登录
+	 * @return
+	 */
+	@Transactional
+	public synchronized void login(){
+		String code = MjConfig.get("restCode");
+		String password = MjConfig.get("restPassword");
+		
+		Map<String , Object> pmap = new HashMap<String , Object>();
+		pmap.put("code", code);
+		pmap.put("password", password);
+//		log.info(MjConfig.get("restUrl") + "thirdpart/login");
+//		String str = RestfulClient.postToServer(MjConfig.get("restUrl") + "thirdpart/login", 
+//				JSON.toJSONString(pmap));
+//		
+//		Map pmap = new HashMap();
+//		pmap.put("code", "thirdparter_zufang");
+//		pmap.put("password", "a4eed9981e2e4df0821376d395f69a6f119915");
+		String str = HttpUtil.httprequest(MjConfig.get("restUrl") + "thirdpart/login", pmap);
+		
+		Map map = null;
+		try {
+			map = JSON.parseObject(str,HashMap.class);
+		} catch (Exception e) {
+			throw new BusinessException("Server connection failed");
+		}
+		if(StringUtil.checkNull(map.get("resultCode")) || StringUtil.checkNull(map.get("token"))){
+			throw new BusinessException("Login to third-party platform failed");
+		}
+		int resultCode = Integer.parseInt(map.get("resultCode").toString());
+		if(resultCode != 0){
+			throw new BusinessException("Login to third-party platform failed");
+		}
+		dbtoken = map.get("token").toString();
+		SystemParameter systemparameter = sps.findByStrkey(dbkey);
+		if(systemparameter!=null&&!StringUtils.isEmpty(systemparameter.getStrvalue())){
+			systemparameter.setStrvalue(AES.encrypt2Str(dbtoken));
+			sps.update(systemparameter);
+		}else{
+			SystemParameter sp = new SystemParameter(dbkey,AES.encrypt2Str(dbtoken));
+			sps.save(sp);
+		}
+		//instance.token = map.get("token").toString();
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(AES.encrypt2Str("ab25887738ce4caf8ba97802f66768ae799772"));
+		if(2>1)
+			return;
+		Map<String , Object> pmap = new HashMap<String , Object>();
+//		pmap.put("code", "1");
+//		pmap.put("password", "2");
+//		String str = new RestfulClient().postToServer("https://iremote.isurpass.com.cn:2443/iremote/thirdpart/login?code=thirdparter_zufang&password=a4eed9981e2e4df0821376d395f69a6f119915", JSON.toJSONString(pmap));
+		try{
+			String str = "https://iremote.isurpass.com.cn:2443/iremote/thirdpart/login?code=thirdparter_zufang&password=a4eed9981e2e4df0821376d395f69a6f119915";
+			str = new RestfulUtil().postHttps("https://iremote.isurpass.com.cn:2443/iremote/thirdpart/login?code=thirdparter_zufang&password=a4eed9981e2e4df0821376d395f69a6f119915",
+					pmap);
+			log.info(str);
+	//		log.info(str);
+//			HttpsURLConnection urlCon = (HttpsURLConnection)(new URL(str)).openConnection();
+//			urlCon.setDoInput(true);
+//			urlCon.setDoOutput(true);
+//			urlCon.setRequestMethod("POST");
+//			urlCon.setUseCaches(false);
+//			urlCon.setRequestProperty("Content-Length", value)
+		}catch (Exception e) {
+			log.error(e.getMessage() , e);
+			// TODO: handle exception
+		}
+	}
+	
+	public String postHttps(String url,Map pmap){
+		String str = JSON.toJSONString(pmap);
+		String result = "";
+		try{
+	//		log.info(str);
+			HttpsURLConnection urlCon = (HttpsURLConnection)(new URL(url)).openConnection();
+			urlCon.setDoInput(true);
+			urlCon.setDoOutput(true);
+			urlCon.setRequestMethod("POST");
+			urlCon.setUseCaches(false);
+			urlCon.setRequestProperty("Content-Length", str.length() + "");
+			urlCon.getOutputStream().write(str.getBytes("utf-8"));
+			urlCon.getOutputStream().flush();
+			urlCon.getOutputStream().close();
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					urlCon.getInputStream()));
+			String line;
+			while((line = in.readLine()) != null){
+				result += line;
+			}
+		}catch (Exception e) {
+			log.error(e.getMessage() , e);
+		}
+		return result;
+	}
+	@Autowired
+	public  void setSps(SystemParameterService sps) {
+		RestfulUtil.sps = sps;
+	}
+	
+}

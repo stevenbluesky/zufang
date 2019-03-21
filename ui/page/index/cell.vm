@@ -1,0 +1,48 @@
+#extends("/page/include/base.vm") 
+	#require("/static/scss/cell.scss") 
+	#block("content")
+		<div class="g-sd">
+			<div class="g-sdc">
+				#widget("widget/sidebarmenus/nav.vm" "var:type=6")
+			</div>
+		</div>  
+		<div class="g-mn">
+			#block("header")
+				#widget("widget/header/header.vm")
+			#end
+			<div class="m-page-title">
+				<span><i>&gt;</i>#springMessage('view.label.navcommunity')</span>
+			</div>
+			<div class="g-mnc"> 
+				<div class="search-item search-item-last">
+					<ul class="f-cb">
+						<li><i class="fa fa-map-marker fa-fw"></i>#springMessage('view.label.caddress'):</li>
+						<li class="enhide">
+							<input type="hidden" id="provinceCode-search" class="u-select" style="width:130px"/>
+						</li>
+						<li class="enhide">
+							<input type="hidden" id="cityCode-search" class="u-select" style="width:130px"/>
+						</li>
+						<li class="enhide">
+							<input type="hidden" id="areasCode-search" class="u-select" style="width:130px"/>
+						</li>
+						<li>
+							<input type="text" placeholder="#springMessage('view.label.ccummunityname')" class="u-ipt" id="districtName-search"/>
+						</li>
+						<li>
+							<button class="u-btn gray" id="btn-search">#springMessage('view.label.search')</button>
+						</li>
+					</ul>
+				</div>	
+				<ul class="cell-list" id="list">
+					
+					
+				</ul>
+				<div class="page" id="page"></div>
+			</div>
+		</div>
+	#end 
+	#script()
+		require('/static/libs/pro/index/cell')
+	#end
+#end

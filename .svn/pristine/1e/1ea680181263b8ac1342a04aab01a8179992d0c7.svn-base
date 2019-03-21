@@ -1,0 +1,57 @@
+#guzz app config file.
+ 
+#master db
+[dbtest_1]
+guzz.identifer=defaultMasterDB3
+guzz.IP=112.74.106.193
+guzz.maxLoad=120
+pool=org.ant.util.datasource.DruidDataSourceProvider
+minIdle=1
+initialSize=1
+maxWait=60000
+timeBetweenEvictionRunsMillis=60000
+minEvictableIdleTimeMillis=300000
+validationQuery=SELECT 'x'
+testWhileIdle=true
+testOnBorrow=false
+testOnReturn=false
+poolPreparedStatements=false
+connectionProperties=config.decrypt=false
+filters=stat,config
+driverClassName=com.mysql.jdbc.Driver
+url=jdbc:mysql://112.74.106.193:3306/mj?useUnicode=true&characterEncoding=utf-8
+username=root
+#password=Longcredit@3306
+password=asdf1234
+
+[guzzSlowUpdate]
+#max size of cached queue
+queueSize=20480
+batchSize=50
+
+[guzzSuperSlowUpdate]
+updateInterval=1000
+
+[guzzSlowUpdateServer]
+pageSize=40
+combinePageCount=10
+
+[guzzDBLogServiceClient]
+#max size of cached queue
+commitSize=2048
+ 
+#debug settings
+[guzzDebug]
+runMode=debug
+#onError=halt/log/ignore
+onError=halt
+printSQL=true
+printSQLParams=true
+ignoreDemonThreadSQL=true
+#print out how many nano-seconds a sql takes to execute.
+measureTime=true
+#only print out slow sqls that takes over xxx mill-seconds to execute. 0 means print out all.
+onlySlowSQLInMillSeconds=0
+
+
+############################### fundamental services #####################

@@ -1,0 +1,25 @@
+<!--[if lte IE 8]>
+<div style="color:#B94A48;text-align:center;font-size:13px;border:1px solid #dedede;background:#FCF8E3;height:24px;line-height:24px;">
+    您的浏览器版本过低，经纬纵横暂不支持，经纬纵横推荐您升级到
+    <a href="http://windows.microsoft.com/zh-CN/internet-explorer/products/ie/home" target="_blank">IE9</a>
+    以上或者使用
+    <a href="http://rj.baidu.com/soft/detail/14744.jsp?ald" target="_blank">谷歌浏览器</a>
+</div>
+<![endif]-->
+<div class="g-hd">
+	<div class="f-cb m-gray">
+		<div class="f-fr f-cb">
+			## <div class="m-nav-search f-fl ">
+			## 	<input type="text" class="u-ipt" placeHolder="关键字查找"/><i class="fa fa-search fa-lg f-csp"></i>
+			## </div>
+			<div class="line f-fl"></div>
+			<div class="m-logout f-fr">
+				<a href="$!{request.contextPath}$!{ns}/index.html?type=logout"><i class="fa fa-sign-out fa-fw"></i>#springMessage('view.label.logout')</a>
+			</div>
+		</div>
+	</div>
+</div>
+#script()
+		var fileInternet = '$!fileInternet';
+		var serviceId = '$!serviceId';
+#end

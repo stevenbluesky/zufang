@@ -1,0 +1,470 @@
+package com.ant.controller;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ResourceBundle;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.ant.config.MjConfig;
+import com.ant.util.CookiesUtils;
+import com.ant.util.PwdCrypt;
+import com.ant.vo.PersonVo;
+
+/**
+ * 前端路径转发控制器
+ * 
+ * @author libiqi
+ */
+@Controller
+@Scope(value = "prototype")
+public class UrlController extends BaseController
+{
+	/**
+	 * 检测是否登陆
+	 * 
+	 * @param modelMap
+	 * @return
+	 */
+	private boolean checkLogin(ModelMap modelMap)
+	{
+		PersonVo personVo = this.getCurrentUser();
+		String fbUserName = CookiesUtils.getCookieValueByName(request, "fbUserName");
+		String fbUserPassword = CookiesUtils.getCookieValueByName(request, "fbUserPassword");
+		if (StringUtils.isNotBlank(fbUserName) && StringUtils.isNotBlank(fbUserPassword))
+		{
+			modelMap.put("remeberMe", "checked=checked");
+			try
+			{
+				modelMap.put("fbUserName", URLDecoder.decode(fbUserName, "UTF-8"));
+				modelMap.put("fbUserPassword",
+						PwdCrypt.getInstance().decrypt(URLDecoder.decode(fbUserPassword, "UTF-8")));
+			} 
+			catch (UnsupportedEncodingException e)
+			{
+				return false;
+			}
+		}
+		if (personVo == null)
+		{
+			return true;
+		}
+		modelMap.put("person", personVo);
+		modelMap.put("isLogin", true);
+		return false;
+	}
+	/**
+	 * 检查是否有一级管理员权限
+	 * @param modelMap
+	 * @return
+	 */
+	private boolean checkPrivilege(){
+		PersonVo personVo = this.getCurrentUser();
+		if (personVo.getType()!=0){
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 退出登录
+	 * 
+	 * @param modelMap
+	 * @return
+	 */
+	private ModelAndView logout(ModelMap modelMap)
+	{
+		request.getSession().removeAttribute("user");
+		addDefaultParam(modelMap);
+		try {
+			modelMap.put("title", getRB().getString("view.label.login"));
+			//modelMap.put("title", getRB().getString("urlzssy"));
+		} catch (Exception e1) {
+			
+		}
+		modelMap.put("isLogin", false);
+		ModelAndView veiwHtml = new ModelAndView("page/index/index", modelMap);
+		String fbUserName = CookiesUtils.getCookieValueByName(request, "fbUserName");
+		String fbUserPassword = CookiesUtils.getCookieValueByName(request, "fbUserPassword");
+		if (StringUtils.isNotBlank(fbUserName) && StringUtils.isNotBlank(fbUserPassword))
+		{
+			modelMap.put("remeberMe", "checked=checked");
+			try
+			{
+				modelMap.put("fbUserName", URLDecoder.decode(fbUserName, "UTF-8"));
+				modelMap.put("fbUserPassword",
+						PwdCrypt.getInstance().decrypt(URLDecoder.decode(fbUserPassword, "UTF-8")));
+			} 
+			catch (UnsupportedEncodingException e)
+			{
+				return veiwHtml;
+			}
+		}
+		return veiwHtml;
+	}
+
+	/**
+	 * 展示首页
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/")
+	public ModelAndView siteIndex(ModelMap modelMap)
+	{
+		return homeAction(modelMap);
+	}
+
+	/**
+	 * 展示首页
+	 * 
+	 * @param modelMap
+	 * @return
+	 */
+	@RequestMapping(value = "/index.html")
+	public ModelAndView index(ModelMap modelMap)
+	{
+		return homeAction(modelMap);
+	}
+
+	private ModelAndView homeAction(ModelMap modelMap)
+	{
+		ModelAndView veiwHtml = new ModelAndView("page/index/index", modelMap);
+		// 退出
+		if ("logout".equals(request.getParameter("type")))
+		{
+			return logout(modelMap);
+		} 
+		else
+		{
+			checkLogin(modelMap);
+			addDefaultParam(modelMap);
+			modelMap.put("title", getRB().getString("view.label.login"));
+		}
+		return veiwHtml;
+	}
+
+	/**
+	 * 添加默认
+	 * 
+	 * @param modelMap
+	 */
+	private void addDefaultParam(ModelMap modelMap)
+	{
+		modelMap.put("ns", MjConfig.get("namespace"));
+		modelMap.put("fileInternet", MjConfig.get("fileInternet"));
+		modelMap.put("serviceId", MjConfig.get("serviceId"));
+		modelMap.put("titleAffix", getRB().getString("urljwzh"));
+	}
+
+	/**
+	 * 门锁
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/lock.html")
+	public ModelAndView lock(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap))
+		{
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlsb"));
+		return new ModelAndView("page/index/lock", modelMap);
+	}
+
+	/**
+	 * 小区
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/cell.html")
+	public ModelAndView cell(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap))
+		{
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlxq"));
+		return new ModelAndView("page/index/cell", modelMap);
+	}
+	/**
+	 * 二级管理员
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/admin.html")
+	public ModelAndView admin(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap)||checkPrivilege())
+		{
+			return logout(modelMap);
+		}
+
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("secondadmin"));
+		return new ModelAndView("page/index/admin", modelMap);
+	}
+
+	/**
+	 * 网关
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/wifi.html")
+	public ModelAndView wifi(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap))
+		{
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlwg"));
+		return new ModelAndView("page/index/wifi", modelMap);
+	}
+
+	/**
+	 * 个人中心
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/user.html")
+	public ModelAndView user(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap))
+		{
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlgrzx"));
+		return new ModelAndView("page/index/user", modelMap);
+	}
+
+	/**
+	 * 故障告警
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/chart.html")
+	public ModelAndView chart(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap))
+		{
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlgzgj"));
+		return new ModelAndView("page/index/chart", modelMap);
+	}
+
+	/**
+	 * 门锁详情
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/lockDetail.html")
+	public ModelAndView lockDetail(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap))
+		{
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlmsxq"));
+		return new ModelAndView("page/index/lockDetail", modelMap);
+	}
+
+	/**
+	 * 房间列表
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/room.html")
+	public ModelAndView room(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap))
+		{
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlfjlb"));
+		return new ModelAndView("page/index/room", modelMap);
+	}
+
+	/**
+	 * 管理员列表
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/manager.html")
+	public ModelAndView manager(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap))
+		{
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlglylb"));
+		return new ModelAndView("page/index/manager", modelMap);
+	}
+
+	/**
+	 * 密码生成规则
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/pwdgenerationrule.html")
+	public ModelAndView pwdgenerationrule(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap))
+		{
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlmmscgz"));
+		return new ModelAndView("page/index/pwdgenerationrule", modelMap);
+	}
+	/**
+	 * 设备列表
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/equipment.html")
+	public ModelAndView equipment(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap))
+		{
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlsblb"));
+		return new ModelAndView("page/index/equipment", modelMap);
+	}
+
+	@RequestMapping(value = "/roomprivilege.html")
+	public ModelAndView roomprivilege(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap))
+		{
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlsqlb"));
+		return new ModelAndView("page/index/roomprivilege", modelMap);
+	}
+
+	@RequestMapping(value = "/roomfee.html")
+	public ModelAndView roomfee(ModelMap modelMap) {
+		if (checkLogin(modelMap)) {
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urljf")); 
+		return new ModelAndView("page/index/roomfee", modelMap);
+	}
+	/**
+	 * 房费统计
+	 * @param modelMap
+	 * @return
+	 */
+	@RequestMapping(value = "/roombalance.html")
+	public ModelAndView roombalance(ModelMap modelMap) {
+		if (checkLogin(modelMap)||checkPrivilege()) {
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlfjye")); 
+		return new ModelAndView("fee/roomfee/queryroombalance", modelMap);
+	}
+	
+	@RequestMapping(value = "/smshistory.html")
+	public ModelAndView smshistory(ModelMap modelMap) {
+		if (checkLogin(modelMap)) {
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urldxls")); 
+		return new ModelAndView("sms/querysmshistory", modelMap);
+	}
+	
+	@RequestMapping(value = "/selfcharge.html")
+	public String selfcharge(ModelMap modelMap) 
+	{
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlzzjf")); 
+		//return new ModelAndView("page/index/selfcharge", modelMap);
+		return "fee/selfcharge/inputphonenumber";
+	}
+	/**
+	 * 网关详情
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/wifiDetail.html")
+	public ModelAndView wifiDetail(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap))
+		{
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlwgxq"));
+		return new ModelAndView("page/index/wifiDetail", modelMap);
+	}
+
+	/**
+	 * 系统日志
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/log.html")
+	public ModelAndView log(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap)||checkPrivilege())
+		{
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlxtrz"));
+		return new ModelAndView("page/index/log", modelMap);
+	}
+
+	/**
+	 * 电表详情
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/electricDetail.html")
+	public ModelAndView electricDetail(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap))
+		{
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urlsbxq"));
+		return new ModelAndView("page/index/electricDetail", modelMap);
+	}
+
+	/**
+	 * 统计分析
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/electricityLog.html")
+	public ModelAndView electricityLog(ModelMap modelMap)
+	{
+		if (checkLogin(modelMap)||checkPrivilege())
+		{
+			return logout(modelMap);
+		}
+		addDefaultParam(modelMap);
+		modelMap.put("title", getRB().getString("urltjfx"));
+		return new ModelAndView("page/index/electricityLog", modelMap);
+	}
+}

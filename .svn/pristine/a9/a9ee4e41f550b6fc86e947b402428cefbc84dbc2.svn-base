@@ -1,0 +1,23 @@
+package com.ant.vo;
+
+public class LockUserResultVo {
+
+	private int resultCode;
+	private String tid;
+
+	
+	public int getResultCode() {
+		return resultCode;
+	}
+	public void setResultCode(int resultCode) {
+		this.resultCode = resultCode;
+	}
+	public String getTid() {
+		return tid;
+	}
+	public void setTid(String tid) {
+		this.tid = tid;
+	}
+	
+	
+}

@@ -1,0 +1,17 @@
+filePath=J\:\\soft\\study\\apache-tomcat-7.0.52\\webapps\\fileTemp\\
+fileInternet=http\://localhost\:8080/fileTemp/
+mjIntranet=http\://localhost\:8080/mj/
+mjInternet=http\://localhost\:8080/mj/
+personDefaultImgUrl=no-user.jpg
+districtDefaultImgUrl=no-cell.jpg
+roomDefaultImgUrl=no-house.jpg
+equipmentDefaultImgUrl=no-lock.jpg
+wifiDefaultImgUrl=no-iremote.jpg
+restCode=thirdparter_zufang
+restPassword=a4eed9981e2e4df0821376d395f69a6f119915
+restUrl=https://iremote.isurpass.com.cn:2443/iremote/
+tcpHost=iremote.isurpass.com.cn
+tcpPort=8000
+tcpPreFix=#@@#
+serviceId=001
+namespace=/mj

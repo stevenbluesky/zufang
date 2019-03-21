@@ -1,0 +1,15 @@
+<div class="m-logo">
+    <a href="cell.html">
+        <img src="static/img/#springMessage('navlogo')" />
+    </a>
+</div>
+<ul>
+	<li class="#if($type==6)z-sel#end" id="menudistrict"><a href="cell.html"><i class="fa fa-building"></i>#springMessage('view.label.navcommunity')</a><i class="caret"></i></li>
+	<li class="#if($type==2)z-sel#end"><a href="lock.html"><i class="fa fa-lock"></i>#springMessage('view.label.navdevice')</a><i class="caret"></i></li>
+	<li class="#if($type==3)z-sel#end"><a href="wifi.html"><i class="fa fa-wifi"></i>#springMessage('view.label.navgateway')</a><i class="caret"></i></li>
+	<li class="#if($type==4)z-sel#end"><a href="user.html"><i class="fa fa-cogs"></i>#springMessage('view.label.navusercenter')</a><i class="caret"></i></li>
+	<li class="#if($type==5)z-sel#end"><a href="chart.html"><i class="fa fa-info-circle"></i>#springMessage('view.label.navfaultwarning')</a><i class="caret"></i></li>
+	<li class="#if($type==7)z-sel#end"><a href="log.html"><i class="fa fa-bar-chart"></i>#springMessage('view.label.navsystemlog')</a><i class="caret"></i></li>
+	<li class="#if($type==8)z-sel#end"><a href="electricityLog.html"><i class="fa fa-feed"></i>#springMessage('view.label.navanalysis')</a><i class="caret"></i></li>
+	<li class="#if($type==9)z-sel#end"><a href="roombalance.html"><i class="fa fa-rmb"></i>#springMessage('view.label.navcost')</a><i class="caret"></i></li>
+</ul>

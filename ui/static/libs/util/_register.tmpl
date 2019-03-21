@@ -1,0 +1,87 @@
+<script type="text/javascript">
+var Data = require('static/libs/util/data');
+require('components/select2/select2');
+require('components/select2/select2_locale_zh-CN');
+$("#scountrycode").val(86);
+$("#scountrycode").change( function() {
+  var result = $('#scountrycode').val();
+	switch (parseInt(result, 10)) {
+		case 86:
+			$("#phone").attr({datatype:"m"});
+			break;
+		default :
+			$("#phone").attr({datatype:"n"});
+	}
+});
+</script>
+<div class="layer-box f-cb " id="js-register-form">
+    <div class="box-title"><%=label.register%><div class="btn-close"><i></i></div></div>
+    <div class="box-bd">
+        <div class="m-form">
+            <form id="register-form" class="m-plane-bd">
+                <div class="formitm">
+	                <label class="lab"><%=label.countrycode%><font>*</font></label>
+	                <div  class="ipt">
+	                	<input datatype="*" type="hidden" id="scountrycode" name="countrycode" class="u-select" style="width:300px"/>
+	                </div>
+	            </div>
+                <div class="formitm">
+                    <label class="lab"><%=label.account1%><font>*</font></label>
+                    <div class="ipt">
+                        <input type="text" class="u-ipt"  datatype="*{1,20}" name="personCode" placeholder="<%=label.account1%>"  id="personCode" autocomplete="off"/>
+                    </div>
+                </div>
+                <div class="formitm">
+                    <label class="lab"><%=label.truename%></label>
+                    <div class="ipt">
+                        <input type="text" class="u-ipt" id="real-name" datatype="*{2,30}" name="realName" placeholder="<%=label.truename%>" nocheck="nocheck" autocomplete="off"/>
+                    </div>
+                </div>
+                
+                <div class="formitm">
+                    <label class="lab"><%=label.password1%><font>*</font></label>
+                    <div class="ipt">
+                        <input type="password" class="u-ipt" id="password"  datatype="up" placeholder="<%=label.setpassword%>"  name="personPassword" autocomplete="off"/>
+                    </div>
+                </div>
+                <div class="formitm">
+                    <label class="lab"><%=label.confirmpassword%><font>*</font></label>
+                    <div class="ipt">
+                        <input type="password" class="u-ipt"  datatype="up|tobe(password)" placeholder="<%=label.repeatpassword%>" autocomplete="off"/>
+                    </div>
+                </div>
+                <div class="formitm">
+                    <label class="lab"><%=label.phonenumber%><font>*</font></label>
+                    <div class="ipt">
+                        <input type="text" class="u-ipt" id="phone"  datatype="m" name="phone" placeholder="<%=label.phonenumber%>" autocomplete="off"/>
+                    </div>
+                </div>
+                <div class="formitm">
+                    <label class="lab"><%=label.verificationcode%><font>*</font></label>
+                    <div class="ipt">
+                        <input type="text" class="u-ipt u-ipt-1"  datatype="yzm" name="captcha" placeholder="<%=label.verificationcode%>" id="captcha" maxlength="6" autocomplete="off"/>
+                        <a class="u-btn normal" id="btn-get-captcha"><%=label.getverificationcode%></a>
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+    <div class="box-ft">
+        <div class="btns">
+            <button class="u-btn btn-close gray"><%=label.cancel%></button>
+            <button class="u-btn red" id="registerBtn"><%=label.confirm%></button>
+        </div>
+    </div>
+</div>
+<div class="layer-box f-cb f-dn " id="js-register-success">
+    <div class="box-title"><%=label.registsuccess%><div class="btn-close"><i></i></div></div>
+    <div class="box-bd">
+        <div class="box-bd-content"><%=label.registsuccess%></div>
+    </div>
+    <div class="box-ft">
+        <div class="btns">
+            <button class="u-btn red btn-close"><%=label.confirm%></button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+#extends("/page/include/base.vm") 
+	#require("/static/scss/base.scss") 
+	#block("content")
+		<div class="g-sd">
+			<div class="g-sdc">
+				#widget("widget/sidebarmenus/nav.vm" "var:type=3")
+			</div>
+		</div>
+		<div class="g-mn">
+			#block("header")
+				#widget("widget/header/header.vm")
+			#end
+			<div class="m-page-title">
+				<span><i>&gt;</i>#springMessage('view.label.mygateway')</span>
+			</div>
+			<div class="g-mnc">
+				<div class="search-item f-cb">
+					<ul class="f-cb f-fl" id="search-signalFlag">
+						<li><i class="fa fa-wifi fa-fw"></i>#springMessage('view.label.contactstatus')：</li>
+						<li><a >#springMessage('view.label.all')</a></li>
+						<li data-id="0"><a >#springMessage('view.label.online')</a></li>
+						<li data-id="1"><a >#springMessage('view.label.offline')</a></li>
+					</ul>
+				</div>
+				<div class="search-item search-item-last">
+					<ul class="f-cb">
+						<li><i class="fa fa-map-marker fa-fw"></i>#springMessage('view.label.community')：</li>
+						<li>
+							<input type="hidden" class="u-select" id="district-search" style="width:150px"/>
+						</li>
+						<li>
+							<button class="u-btn gray" id="btn-search">#springMessage('view.label.search')</button>
+						</li>
+					</ul>
+				</div>
+				<ul class="cell-list" id="list">
+					
+					
+				</ul>
+				<div class="page" id="page"></div>
+			</div>
+		</div>
+	#end 
+	#script()
+		require('/static/libs/pro/index/wifi')
+	#end
+#end

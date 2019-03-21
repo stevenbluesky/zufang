@@ -1,0 +1,409 @@
+var $ = require('jquery'),
+	common = require('static/libs/util/common'),
+	laypage = require('static/libs/laypage/laypage'),
+	upload = require('static/libs/util/upload'),
+	tmpl = __inline('_pwdgenerationrule.tmpl');
+var cellId = common.getUrlParm("id");
+var districtId=cellId;
+var data = {
+	districtId: cellId,
+	page: 1,
+	rows: 10
+};
+var doorlockpasswordruleid = 0;
+init();
+
+function init() {
+	load();
+	loadList(1);
+	$(document)
+		.on('click', '.form-box-ul li', function(event) {
+				event.preventDefault();
+				var index = $(this).index();
+				switch (index) {
+					case 0:
+						location.href = common.BASE_PATH + '/room.html?id=' + cellId;
+						break;
+					case 1:
+						location.href = common.BASE_PATH + '/manager.html?id=' + cellId;
+						break;
+					case 2:
+						location.href = common.BASE_PATH + '/service/district/paymentsetting?districtid=' + cellId;
+						break;
+					case 3:
+						location.href = common.BASE_PATH + '/pwdgenerationrule.html?id=' + cellId;
+						break;
+				}
+			})
+		// 新增页面
+		.on('click', '#btn-add', function(event) {
+			event.preventDefault();
+			var _tmpl = $.trim(tmpl({
+				type: 2,
+			}));
+			common.open({
+				title: false,
+				closeBtn: false,
+				zIndex: 100,
+				content: _tmpl,
+				shadeClose: false,
+				scrollbar: false,
+				success: function(layero, index) {
+					$(layero).find('.btn-close').attr('data-index', index);
+					
+				}
+			});
+		})
+		// 打开修改页面
+		.on('click', '#btn-edit', function(event) {
+			event.preventDefault();
+			var ids = [];
+			var ci = document.getElementsByName("no");
+			//遍历复选框数组  如果被选中ci[i].checked的值就是true
+			for(var i = 0;i < ci.length;i++){
+				if(ci[i].checked==true){
+					ids.push(ci[i].value);
+				}
+			}
+			if(ids.length!=1){
+				common.msg(label.choosearecord);
+				return ;
+			}
+			$.ajax({
+				type:"post",
+				dataType: "json",
+				url: common.BASE_PATH + '/service/passwordrule/getdoorlockpasswordruledtl',
+				data: {"doorlockpasswordruledtlid":ids[0]},
+				success: function(json) {
+					typeof success === 'function' && success(json);
+					var _tmpl = $.trim(tmpl({
+						type: 3,
+						data: json.object
+					}));
+					common.open({
+						title: false,
+						closeBtn: false,
+						zIndex: 100,
+						content: _tmpl,
+						shadeClose: false,
+						scrollbar: false,
+						success: function(layero, index) {
+							$(layero).find('.btn-close').attr('data-index', index);
+						}
+					});
+				},
+				failure: function(json) {
+					typeof failure === 'function' && failure(json);
+				}
+			})
+		})
+		//btn-genenow btn-geneafter
+		.on('click', '#btn-genenow', function(event) {
+			event.preventDefault();
+			var that = '#btn-genenow';
+			if ($(that).hasClass('z-dis')) return;
+			$(that).addClass('z-dis');
+			$.ajax({
+				type:"post",
+				url: common.BASE_PATH + '/service/lockpassword/generatenowbydistrict',
+				data: {"districtId":districtId},
+				dataType: "json",
+				success: function(json) {
+					typeof callback === 'function' && callback(json);
+					loadList(1);
+					common.msg(json.message);
+				},
+				failure: function(json) {
+					typeof failure === 'function' && failure(json);
+				}
+			})
+		})
+		.on('click', '#btn-geneafter', function(event) {
+			event.preventDefault();
+			common.confirm(label.doyouconfirmtoregenerate, function(index) {
+				$.ajax({
+					type:"post",
+					url: common.BASE_PATH + '/service/lockpassword/generateafterbydistrict',
+					data: {"districtId":districtId},
+					dataType: "json",
+					success: function(json) {
+						typeof callback === 'function' && callback(json);
+						loadList(1);
+						common.msg(json.message);
+					},
+					failure: function(json) {
+						typeof failure === 'function' && failure(json);
+					}
+				})
+			});
+		})
+		//新增界面保存操作
+		.on('click', '#btn-save-add', function(event) {
+			event.preventDefault();
+			saveAction(2);
+		})
+		//修改界面保存操作
+		.on('click', '#btn-save-modify', function(event) {
+			event.preventDefault();
+			saveAction(3);
+		})
+		//修改启用标志
+		.on('change', '#autoflag', function(event) {
+			event.preventDefault();
+			if ( $("#autoflag").is(':checked')){
+				changeIsuse(1);
+			}else{
+				changeIsuse(0);
+			}
+		})
+		//点击删除按钮btn-delete
+		.on('click', '#btn-delete', function(event) {
+			event.preventDefault();
+			
+			var ids = [];
+			var ci = document.getElementsByName("no");
+			//遍历复选框数组  如果被选中ci[i].checked的值就是true
+			for(var i = 0;i < ci.length;i++){
+				if(ci[i].checked==true){
+					ids.push(ci[i].value);
+				}
+			}
+			if(ids.length<1){
+				var mess = label.choosearecord;
+				common.msg(mess);
+				return ;
+			}
+			common.confirm(label.doyouconfirmtodeleterule, function(index) {
+				deleteDtl();
+			});
+
+		})
+}
+function deleteDtl(){
+	var ids = [];
+	var ci = document.getElementsByName("no");
+	//遍历复选框数组  如果被选中ci[i].checked的值就是true
+	for(var i = 0;i < ci.length;i++){
+		if(ci[i].checked==true){
+			ids.push(ci[i].value);
+		}
+	}
+	if(ids.length<1){
+		common.msg(label.choosearecord);
+		return ;
+	}
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/passwordrule/deletedoorlockpasswordruledtls',
+		data: {"ids":ids},
+		success: function(json) {
+			typeof success === 'function' && success(json);
+			loadList(1);
+			common.msg(label.operatesuccess);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//根据doorlockpasswordruleid获取明细
+function getdoorlockpasswordruledtl(obj,callback, failure){
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/passwordrule/getdoorlockpasswordruledtl',
+		data: {"doorlockpasswordruledtlid":obj},
+		success: function(json) {
+			typeof success === 'function' && success(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//异步修改规则生效状态
+function changeIsuse(obj){
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/passwordrule/changeIsuse',
+		data: {"isuse":obj,"districtId":districtId},
+		success: function(json) {
+			typeof success === 'function' && success(json);
+			common.msg(json.message,function(){
+			})
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//分页查询
+function loadList(cur) {
+	data.page = cur;
+	data.districtid = districtId;
+	findPage(data, function(json) {
+		var _tmpl = $.trim(tmpl({
+			type: 1,
+			data: json.object.list
+		}));
+		$("#list").html(_tmpl);
+		if (json.object.count > 0) {
+			laypage({
+				cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+				pages: Math.ceil(json.object.count / data.rows), //总页数
+				curr: cur, //当前页
+				jump: function(e, first) { //触发分页后的回调
+					if (!first) {
+						loadList(e.curr);
+					}
+				}
+			});
+			$("#page").show();
+		} else {
+			$("#page").hide();
+		}
+	})
+};
+//查询小区详细信息
+function load() {
+	findDistrictById({
+		id: cellId
+	}, function(json) {
+		$("#cellName").html("<i>&gt;</i>" + json.object.districtName + label.community);
+	});
+};
+//查询小区详细信息
+function findDistrictById(data, success, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/district/findDistrictById',
+		data: data,
+		success: function(json) {
+			typeof success === 'function' && success(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//分页查询小区
+function findPage(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		url: common.BASE_PATH + '/service/passwordrule/findPage',
+		data: data,
+		dataType: "json",
+		success: function(json) {
+			doorlockpasswordruleid = json.doorlockpasswordruleid;
+			typeof callback === 'function' && callback(json);
+			if(json.use==1){
+				$("#autoflag").attr("checked","checked");
+			}
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//修改
+function saveAction(type) {
+	var that = '#btn-save-add';
+	if ($(that).hasClass('z-dis')) return;
+	if (validatedata()) {
+		$(that).addClass('z-dis');
+		var formData = $("#svaeCellForm").serializeJson();
+		formData.doorlockpasswordruleid = doorlockpasswordruleid;
+		formData.districtId = districtId;
+		if(type==2){
+			savepasswordruledtl(formData,
+					function(json){
+				common.msg(json.message,function(){
+					common.closeAll();
+				})
+			}
+			);
+		}else if(type==3){
+			var obj = $("#doorlockpasswordruledtlid").val();
+			formData.doorlockpasswordruledtlid = obj;
+			updatepasswordruledtl(formData,
+					function(json){
+				common.msg(json.message,function(){
+					common.closeAll();
+				})
+			}
+			);
+		}
+	}
+};
+function savepasswordruledtl(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/passwordrule/savepasswordruledtl',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+			loadList(1);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+function updatepasswordruledtl(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/passwordrule/updatepasswordruledtl',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+			loadList(1);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+function validatedata(){
+	var starttime = $("#starttime").val();
+	var hour = $("#hour").val();
+	var min = $("#min").val();
+	starttime = starttime.replace(/：/g, ":");
+	$("#starttime").val(starttime);
+	if(starttime.indexOf(":") != -1){
+		var index  = starttime.indexOf(":");
+		var starthour = starttime.substring(0,index);
+		var startmin = starttime.substring(index+1);
+		if(starthour.length==1){
+			starthour = "0"+starthour;
+			$("#starttime").val(starthour+":"+startmin);
+		}
+		if(starttime==""||starthour.length!=2||startmin.length!=2||parseInt(starthour)>24||parseInt(starthour)<0||
+				parseInt(startmin)>60||parseInt(startmin)<0||isNaN(parseInt(starthour))||isNaN(parseInt(startmin))){
+			common.msg(label.formatofvalidfromerror);
+			return false;
+		}
+	}else{
+		common.msg(label.formatofvalidfromerror);
+		return false;
+	}
+	if(hour==""){
+		hour=0;
+		$("#hour").val(hour);
+	}
+	if(min==""){
+		min=0;
+		$("#min").val(min);
+	}
+ 
+	if(hour.match(/\D/)!=null||min.match(/\D/)!=null||isNaN(parseInt(hour))||isNaN(parseInt(min))||parseInt(hour)<0||parseInt(hour)>24||
+			parseInt(min)<0||parseInt(min)>60||(parseInt(hour)==24&&parseInt(min)!=0)||(parseInt(hour)==0&&parseInt(min)==0)){
+		common.msg(label.formatofvalidtimeerror);
+		return false;
+	}
+	return true;
+}

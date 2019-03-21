@@ -1,0 +1,294 @@
+<%if(type == 0){%>
+   
+<%}else if(type == 1){%>
+   <!--  <%if(data.length == 0){%>
+        <div class="no_list"><%=label.nodata%></div>
+    <%}%> -->
+    <%
+        for (var i in data){
+    %>
+        <li>
+            <%if(data[i].deviceType == 0){%>
+                <a href="<%=common.BASE_PATH%>/lockDetail.html?id=<%=data[i].id%>">
+                    <div class="list-wrap f-cb">
+                        <h3 class="cell-name"><%=data[i].deviceName%></h3> 
+                        <div class="cell-details f-cb">
+                            <div class="f-fl">
+                                <%
+                                    var imgPath = common.BASE_PATH + '/static/img/no-lock.jpg';
+                                %>
+                                <img src="<%=imgPath%>" alt="<%=label.photo%>">
+                            </div>
+                            <ul class="f-fl">
+                                <li><%=label.devicestatus%>： <%if(data[i].signalFlag == 1){%>
+												            	<font color="red"><%=label.offline%></font>
+												            <%}else{%>
+												            	<%=label.online%>
+												            <%}%></li>
+                                <li><%=label.battery%>：
+                                    <%if(data[i].battery <= 10){%>
+                                        <font color="red"><%=data[i].battery%>%</font>
+                                    <%}else{%>
+                                        <%=data[i].battery%>%
+                                    <%}%>&nbsp;&nbsp;<%if(data[i].signalstrength > 0){%><%=label.signalstrength%>：<%=data[i].signalstrength%>%<%}%>
+                                </li>
+                                <li><%=label.status%>：<%if(data[i].openStatus == 1){%>
+												            	<%=label.off%>
+												            <%}else{%>
+												            	<%=label.on%>
+												            <%}%></li>
+                                <li><%=label.bindingstatus%>：<%if(data[i].bindStatus == 1){%>
+												            	<%=label.binding%>
+												            <%}else{%>
+												            	<%=label.free%>
+												            <%}%></li>
+                                <li class="f-toe" title="<%=data[i].districtName%> <%=data[i].build%> <%=label.building%>,<%=data[i].unit%> <%=label.unit%>,<%=data[i].floor%> <%=label.floor%>,<%=data[i].roomName%>"> <%=label.trueposition%>：<%=data[i].districtName%>
+                                <%if(data[i].bindStatus == 1){%>
+                                                <%=data[i].build%> <%=label.building%>,<%=data[i].unit%> <%=label.unit%>,<%=data[i].floor%> <%=label.floor%>,<%=data[i].roomName%>
+                                            <%}%></li>
+                                <!-- <%if(data[i].openStatus == 1){%> -->
+                                <!-- <%}%> -->
+                                <li>
+                                    <button class="u-btn gray btn-open-lock"
+                                            data-id="<%=data[i].id%>"
+                                            ><%=label.unlock%></button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+            <%}else if(data[i].deviceType == 53){%>
+            	        <a>
+                    <div class="list-wrap f-cb">
+                        <h3 class="cell-name"><%=data[i].deviceName%></h3> 
+                        <div class="cell-details f-cb">
+                            <div class="f-fl">
+                                <%
+                                    var imgPath = common.BASE_PATH + '/static/img/no-fingerreader.jpg';
+                                %>
+                                <img src="<%=imgPath%>" alt="<%=label.photo%>">
+                            </div>
+                            <ul class="f-fl">
+                                <li><%=label.devicestatus%>： <%if(data[i].signalFlag == 1){%>
+												            	<font color="red"><%=label.offline%></font>
+												            <%}else{%>
+												            	<%=label.online%>
+												            <%}%></li>
+
+                                <li><%=label.bindingstatus%>：<%if(data[i].bindStatus == 1){%>
+												            	<%=label.binding%>
+												            <%}else{%>
+												            	<%=label.free%>
+												            <%}%></li>
+                                <li class="f-toe" title="<%=data[i].districtName%> <%=data[i].build%> <%=label.building%>,<%=data[i].unit%> <%=label.unit%>,<%=data[i].floor%> <%=label.floor%>,<%=data[i].roomName%>"> <%=label.trueposition%>：<%=data[i].districtName%>
+                                <%if(data[i].bindStatus == 1){%>
+                                                <%=data[i].build%> <%=label.building%>,<%=data[i].unit%> <%=label.unit%>,<%=data[i].floor%> <%=label.floor%>,<%=data[i].roomName%>
+                                            <%}%></li>
+                            </ul>
+                        </div>
+                    </div>
+            <%}else if(data[i].deviceType == 1 || data[i].deviceType == 17){%>
+                <a href="<%=common.BASE_PATH%>/electricDetail.html?id=<%=data[i].id%>">
+                    <div class="list-wrap f-cb">
+                        <h3 class="cell-name"><%=data[i].deviceName%></h3>
+                        <div class="cell-details f-cb">
+                            <div class="f-fl">
+                                <%if(data[i].deviceType == 1 ){%>
+                                <%
+                                    var imgPath = common.BASE_PATH + '/static/img/no-electric.jpg';
+                                    var power = 0;
+                                    if(data[i].openStatus == 0 && data[i].signalFlag == 0){
+                                        power = data[i].currentPower;
+                                    }
+                                %>
+                               	 <img src="<%=imgPath%>" alt="<%=label.dianbiaotu%>">
+                                <%}else if(data[i].deviceType == 17){%>
+                                	<%if(data[i].devicesubtype == 1){%>
+                                		<% var imgPath = common.BASE_PATH + '/static/img/watermeter.jpg';%>
+                                		<img src='<%=imgPath%>' alt="<%=label.lengshuibiaotu%>">
+                                	<%}else if(data[i].devicesubtype == 2){%>
+                                		<% var imgPath = common.BASE_PATH + '/static/img/hotwatermeter.jpg';%>
+                                		<img src='<%=imgPath%>' alt="<%=label.reshuibiaotu%>">
+                                	<%}else{%>
+                                		<% var imgPath = common.BASE_PATH + '/static/img/non-watermeter.jpg';%>
+                                		<img src='<%=imgPath%>' alt="<%=label.shuibiaotu%>">
+                                	<%}%>
+                                <%}%>
+                            </div>
+                            <ul class="f-fl">
+                                <li><%=label.devicestatus%>：<%if(data[i].signalFlag == 1){%>
+												            	<font color="red"><%=label.offline%></font>
+												            <%}else{%>
+												            	<%=label.online%>
+												            <%}%></li>
+                                <li><%=label.bindingstatus%>：<%if(data[i].bindStatus == 1){%>
+												            	<%=label.binding%>
+												            <%}else{%>
+												            	<%=label.free%>
+												            <%}%></li>
+                                <li><%=label.currentreading%>：
+                                    <%=data[i].currentDegrees%>
+                                    <%if(data[i].deviceType == 1){%>
+                                    &nbsp;
+                                    	<%=label.currentpower%>：
+                                    <%=power%>
+                                    <%}%>
+                                </li>
+                                 <%if(data[i].deviceType != 17){%>
+                                	<li><%=label.status%>：<%if(data[i].openStatus == 1){%>
+												            	<%=label.off%>
+												            <%}else{%>
+												            	<%=label.on%>
+												            <%}%></li>
+                                <%}%>
+                                <li class="f-toe" title="<%=data[i].districtName%> <%=data[i].build%> <%=label.building%>,<%=data[i].unit%> <%=label.unit%>,<%=data[i].floor%> <%=label.floor%>,<%=data[i].roomName%>"> <%=label.anzhuangposition%>：<%=data[i].districtName%>
+                                <%if(data[i].bindStatus == 1){%>
+                                    <%=data[i].build%> <%=label.building%>,<%=data[i].unit%> <%=label.unit%>,<%=data[i].floor%> <%=label.floor%>,<%=data[i].roomName%>
+                                <%}%>
+                                </li>
+                                <%if(data[i].deviceType == 1){%>
+	                                <%if(data[i].openStatus == 1){%>
+	                                    <li>
+	                                        <button class="u-btn gray btn-open-lock" data-id="<%=data[i].id%>"><%=label.kaizha%></button>
+	                                    </li>
+	                                <%}else{%>
+	                                    <li>
+	                                        <button class="u-btn gray btn-close-lock" data-id="<%=data[i].id%>" ><%=label.guanzha%></button>
+	                                    </li>
+	                                <%}%>
+	                             <%}%>
+                            </ul>
+                        </div>
+                    </div>
+                <%}%>
+            </a>
+        </li>
+    <%}%>
+<%}else if(type == 2){%>
+   <%
+        for (var i in data){
+    %>
+        
+            <%if(data[i].deviceType == 0){%>
+            <li>
+                <a href="<%=common.BASE_PATH%>/lockDetail.html?id=<%=data[i].id%>">
+                    <div class="list-wrap f-cb">
+                        <h3 class="cell-name"><%=data[i].deviceName%></h3>
+                        <div class="cell-details f-cb">
+                            <div class="f-fl">
+                                <%
+                                    var imgPath = common.BASE_PATH + '/static/img/no-lock.jpg';
+                                %>
+                                <img src="<%=imgPath%>" alt="<%=label.photo%>">
+                            </div>
+                            <ul class="f-fl">
+                                <li><%=label.devicestatus%>：<%if(data[i].signalFlag == 1){%>
+												            	<font color="red"><%=label.offline%></font>
+												            <%}else{%>
+												            	<%=label.online%>
+												            <%}%></li>
+                                <li><%=label.battery%>：
+                                <%if(data[i].battery <= 10){%>
+                                    <font color="red"><%=data[i].battery%>%</font>
+                                <%}else{%>
+                                    <%=data[i].battery%>%
+                                <%}%>
+                                </li>
+                                <li><%=label.status%>：<%if(data[i].openStatus == 1){%>
+												            	<%=label.off%>
+												            <%}else{%>
+												            	<%=label.on%>
+												            <%}%></li>
+                                <li><%=label.bindingstatus%>：<%if(data[i].bindStatus == 1){%>
+												            	<%=label.binding%>
+												            <%}else{%>
+												            	<%=label.free%>
+												            <%}%></li>
+                                <li class="f-toe" title="<%=data[i].districtName%> <%=data[i].build%> <%=label.building%>,<%=data[i].unit%> <%=label.unit%>,<%=data[i].floor%> <%=label.floor%>,<%=data[i].roomName%>"> <%=label.trueposition%>：<%=data[i].districtName%> <%=data[i].build%> <%=label.building%>,<%=data[i].unit%> <%=label.unit%>,<%=data[i].floor%> <%=label.floor%>,<%=data[i].roomName%></li>
+                            </ul>
+                        </div>
+                    </div>
+                     </a>
+                    </li>
+            <%}else if(data[i].deviceType == 53 ){%>
+            	<li>
+	                <a>
+                    <div class="list-wrap f-cb">
+                        <h3 class="cell-name"><%=data[i].deviceName%></h3>
+                        <div class="cell-details f-cb">
+                            <div class="f-fl">
+                                <%
+                                    var imgPath = common.BASE_PATH + '/static/img/no-fingerreader.jpg';
+                                %>
+                                <img src="<%=imgPath%>" alt="<%=label.photo%>">
+                            </div>
+                            <ul class="f-fl">
+                                <li><%=label.devicestatus%>：<%if(data[i].signalFlag == 1){%>
+												            	<font color="red"><%=label.offline%></font>
+												            <%}else{%>
+												            	<%=label.online%>
+												            <%}%></li>
+
+                                <li><%=label.bindingstatus%>：<%if(data[i].bindStatus == 1){%>
+												            	<%=label.binding%>
+												            <%}else{%>
+												            	<%=label.free%>
+												            <%}%></li>
+                                <li class="f-toe" title="<%=data[i].districtName%> <%=data[i].build%> <%=label.building%>,<%=data[i].unit%> <%=label.unit%>,<%=data[i].floor%> <%=label.floor%>,<%=data[i].roomName%>"> <%=label.trueposition%>：<%=data[i].districtName%> <%=data[i].build%> <%=label.building%>,<%=data[i].unit%> <%=label.unit%>,<%=data[i].floor%> <%=label.floor%>,<%=data[i].roomName%></li>
+                            </ul>
+                        </div>
+                    </div>
+                     </a>
+                    </li>
+            <%}else if(data[i].deviceType == 1 || data[i].deviceType == 17 ){%>
+            <li>
+                <a href="<%=common.BASE_PATH%>/electricDetail.html?id=<%=data[i].id%>">
+                    <div class="list-wrap f-cb">
+                        <h3 class="cell-name"><%=data[i].deviceName%></h3>
+                        <div class="cell-details f-cb">
+                            <div class="f-fl">
+                                <%
+                                    var imgPath = common.BASE_PATH + '/static/img/no-electric.jpg';
+                                    var power = 0;
+                                    if(data[i].openStatus == 0 && data[i].signalFlag == 0){
+                                        power = data[i].currentPower;
+                                    }
+                                %>
+                                <img src="<%=imgPath%>" alt="<%=label.dianbiaotu%>">
+                            </div>
+                            <ul class="f-fl">
+                                <li><%=label.devicestatus%>：<%if(data[i].signalFlag == 1){%>
+												            	<font color="red"><%=label.offline%></font>
+												            <%}else{%>
+												            	<%=label.online%>
+												            <%}%></li>
+                                <li><%=label.bindingstatus%>：<%if(data[i].bindStatus == 1){%>
+												            	<%=label.binding%>
+												            <%}else{%>
+												            	<%=label.free%>
+												            <%}%></li>
+                                <li><%=label.currentreading%>：
+                                    <%=data[i].currentDegrees%>
+                                    &nbsp;
+                                    <%=label.currentpower%>：
+                                    <%=power%>
+                                </li>
+                                <li><%=label.status%>：<%if(data[i].openStatus == 1){%>
+												            	<%=label.off%>
+												            <%}else{%>
+												            	<%=label.on%>
+												            <%}%></li>
+                                <li class="f-toe" title="<%=data[i].districtName%> <%=data[i].build%> <%=label.building%>,<%=data[i].unit%> <%=label.unit%>,<%=data[i].floor%> <%=label.floor%>,<%=data[i].roomName%>"><%=label.anzhuangposition%>：<%=data[i].districtName%>
+                                <%if(data[i].bindStatus == 1){%>
+                                    <%=data[i].build%> <%=label.building%>,<%=data[i].unit%> <%=label.unit%>,<%=data[i].floor%> <%=label.floor%>,<%=data[i].roomName%>
+                                <%}%>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                     </a>
+                    </li>
+                <%}%>
+                
+           
+    <%}%>
+<%}%>

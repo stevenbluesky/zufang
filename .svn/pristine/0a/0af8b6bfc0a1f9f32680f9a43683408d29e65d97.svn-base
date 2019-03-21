@@ -1,0 +1,212 @@
+<%if(type == 0){%>
+    <div class="layer-box f-cb">
+        <div class="box-title"><%=label.newdistrict%><div class="btn-close"><i></i></div></div>
+        <div class="box-bd">
+            <div class="m-form">
+                <form id="svaeCellForm" class="m-plane-bd"> 
+                    <div class="formitm">
+                        <label class="lab"><%=label.communityname%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="districtName" autocomplete="off"/>
+                        </div>  
+                    </div>
+                   
+                    <div class="formitm" id="provinceselect">
+                        <label class="lab"><%=label.address1%></label> 
+                        <div class="ipt">
+                            <input type="hidden" id="provinceCode" class="u-select"/>
+                            <input type="hidden" id="cityCode" class="u-select"/>
+                            <input type="hidden" id="areasCode" class="u-select"/>
+                        </div> 
+                    </div> 
+                   
+                    <div class="formitm">
+                        <label class="lab"><%=label.address2%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="address" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.priceofelectricity%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="money" name="price" autocomplete="off"/>&nbsp;<%=label.yuanmeidu%>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.priceofwater%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="money" name="waterprice" autocomplete="off"/>&nbsp;<%=label.yuanmeidun%>
+                        </div>
+                    </div> 
+                    <div class="formitm">
+                        <label class="lab"><%=label.priceofhotwater%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="money" name="hotwaterprice" autocomplete="off"/>&nbsp;<%=label.yuanmeidun%>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.houseapportionmentfee%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="money" name="shareAmount" autocomplete="off"/>&nbsp;<%=label.yuan%>
+                        </div>
+                    </div>                 
+                    <div class="formitm">
+                        <label class="lab"><%=label.communityphoto%></label>
+                        <div class="ipt">
+                            <a class="u-btn red" id="btn-add-fengmian" style="margin-left:170px"><%=label.photoselect%></a>
+                            <p><span class="u-tips"><%=label.photorequire%></span></p>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.remark%></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="remark" nocheck="nocheck" autocomplete="off"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-ft"> 
+            <div class="btns">
+                <button class="u-btn btn-close gray"><%=label.cancel%></button><button class="u-btn red" id="btn-save"><%=label.confirm%></button>
+            </div>
+        </div>
+    </div>
+<%}else if(type == 1){%>
+   <!--  <%if(data.length == 0){%>
+        <div class="no_list"><%=label.nodata%></div>
+    <%}%> -->
+    <%
+        for (var i in data){
+    %>
+        <li>
+            <a href="<%=common.BASE_PATH%>/room.html?id=<%=data[i].id%>">
+                <div class="list-wrap f-cb">
+                    <h3 class="cell-name"><%=data[i].districtName%></h3>
+                    <div class="cell-details f-cb">
+                        <div class="f-fl">
+                            <%
+                                var imgPath = data[i].districtImg;
+                                if(imgPath.indexOf("no") >= 0){
+                                    imgPath = common.IMG_PATH + imgPath;
+                                }
+                            %>
+                            <img src="<%=imgPath%>" alt="<%=label.communityphoto%>">
+                        </div>
+                        <ul class="f-fl">
+                            <li><%=label.numberofrooms%> <%=data[i].roomCount%></li>
+                            <li><%=label.numberofadmins%> <%=data[i].managerCount%></li>
+                            <li><%=label.address2%>：<%=data[i].provinceName%><%=data[i].cityName%><%=data[i].areasName%><%=data[i].address%></li>
+                            <li><%=label.remark%>：<%=data[i].remark%></li>
+                            <li>
+                                <button class="u-btn gray btn-open-edit"
+                                        data-districtImg="<%=data[i].districtImg%>"
+                                        data-address="<%=data[i].address%>"
+                                        data-areasCode="<%=data[i].areasCode%>"
+                                        data-provinceCode="<%=data[i].provinceCode%>"
+                                        data-cityCode="<%=data[i].cityCode%>"
+                                        data-price="<%=data[i].price%>"
+                                        data-hotwaterprice="<%=data[i].hotwaterprice%>"
+                                        data-waterprice="<%=data[i].waterprice%>"
+                                        data-shareAmount="<%=data[i].shareAmount%>"
+                                        data-districtName="<%=data[i].districtName%>"
+                                        data-remark="<%=data[i].remark%>"
+                                        data-id="<%=data[i].id%>"
+                                        ><%=label.modify%></button>
+                                <button class="u-btn gray btn-delete"
+                                        data-id="<%=data[i].id%>"
+                                        ><%=label.ddelete%></button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </a>
+        </li>
+    <%}%>
+    <li class="new new-cell btn-open-save">
+        <div class="list-wrap f-cb">
+        </div>
+    </li>
+<%}else if(type == 2){%>
+    <div class="layer-box f-cb">
+        <div class="box-title"><%=label.modifycommunity%><div class="btn-close"><i></i></div></div>
+        <div class="box-bd">
+            <div class="m-form">
+                <form id="svaeCellForm" class="m-plane-bd">
+                    <div class="formitm">
+                        <label class="lab"><%=label.communityname%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="hidden" name="id" value="<%=data.id%>"/>
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="districtName" value="<%=data.districtName%>" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm" id="provinceselect">
+                        <label class="lab"><%=label.address1%></label>
+                        <div class="ipt">
+                            <input type="hidden" id="provinceCode" class="u-select"/>
+                            <input type="hidden" id="cityCode" class="u-select"/>
+                            <input type="hidden" id="areasCode" class="u-select"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.address2%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="address" value="<%=data.address%>" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.priceofelectricity%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="money" name="price" autocomplete="off" value="<%=data.price/100%>" />&nbsp;<%=label.yuanmeidu%>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.priceofwater%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="money" name="waterprice" autocomplete="off" value="<%=data.waterprice/100%>"/>&nbsp;<%=label.yuanmeidun%>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.priceofhotwater%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="money" name="hotwaterprice" autocomplete="off" value="<%=data.hotwaterprice/100%>"/>&nbsp;<%=label.yuanmeidun%>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.houseapportionmentfee%><font>*</font></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="money" name="shareAmount" autocomplete="off" value="<%=data.shareAmount/100%>" />&nbsp;<%=label.yuan%>
+                        </div>
+                    </div>                 
+                    <div class="formitm">
+                        <label class="lab"><%=label.communityphoto%></label>
+                        <div class="ipt">
+                            <%
+                                var imgPath = data.districtImg,flag = true;
+                                if(imgPath.indexOf("no") >= 0){
+                                    imgPath = common.IMG_PATH  + imgPath;
+                                    flag = false;
+                                }
+                            %>
+                            <div><img src="<%=imgPath%>" width="115" height="150"  id="coverImgUrl" 
+                                <%if(flag){%>data-src="<%=data.districtImg%>"<%}%>/></div>
+                            <a class="u-btn red" id="btn-add-fengmian" style="margin-left:170px"><%=label.photoselect%></a>
+                            <p><span class="u-tips"><%=label.photorequire2%></span></p>
+                        </div>
+                    </div>
+                    <div class="formitm">
+                        <label class="lab"><%=label.remark%></label>
+                        <div class="ipt">
+                            <input type="text" class="u-ipt"  datatype="*{1,20}" name="remark" nocheck="nocheck" value="<%=data.remark%>" autocomplete="off"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-ft">
+            <div class="btns">
+                <button class="u-btn btn-close gray"><%=label.cancel%></button><button class="u-btn red" id="btn-save"><%=label.confirm%></button>
+            </div>
+        </div>
+    </div>
+<%}%>

@@ -1,0 +1,185 @@
+<%if(type==1){%>
+    <table >
+        <thead>
+        <div style="font-size:22px;text-align:center"><%=label.secondadmin%></div>
+        <br/>
+	        <div class="ipt">
+	            <a class="u-btn gray" id="btn-delete" style="width:40px;float:right;"><%=label.ddelete%></a>
+	            <a class="u-btn gray" id="btn-edit" style="width:40px;float:right;margin-right:1px;"><%=label.modify%></a>
+	            <a class="u-btn gray" id="btn-add"  style="width:40px;float:right;margin-right:1px;"><%=label.add%></a>
+	            <a class="u-btn gray" id="btn-changepassword" style="float:right;margin-right:1px;"><%=label.changepassword%></a>
+	            <a class="u-btn gray" id="btn-dataprivilege" style="float:right;margin-right:1px;"><%=label.dataprivilege%></a>
+	            <a class="u-btn gray" id="btn-recover" style="width:40px;float:right;margin-right:1px;"><%=label.recover%></a>
+	            <a class="u-btn gray" id="btn-freeze" style="width:40px;float:right;margin-right:1px;"><%=label.freeze%></a>
+	        </div>
+           <tr>
+                <th></th>
+                <th><%=label.name%></th>
+                <th><%=label.phone%></th>
+                <th><%=label.account1%></th>
+                <th><%=label.status%></th>
+                <th><%=label.createtime%></th>
+            </tr>
+        </thead>
+        </table>
+       
+        <div class="scroll">
+        <table>
+            <%
+                for (var i in data){
+            %>
+            <tr>
+            	<td><input type="checkbox" name="no" value="<%=data[i].id%>" style="zoom:180%;"></td>
+                <td><%=data[i].realName%></td>
+                <td><%=data[i].phone%></td>
+                <td><%=data[i].personCode%></td>
+                <td><%if(data[i].status==1){%><%=label.normal%><%}%>
+                <%if(data[i].status==2){%><%=label.freeze%><%}%></td>
+                <td><%=new Date(data[i].inputDate).Format('yyyy-MM-dd hh:mm:ss')%></td>
+            </tr>
+            <%}%>
+        </table>
+    </div>
+<%}else if(type == 2){%>
+	 <div class="layer-box f-cb">
+        <div class="box-title"><%=label.addsecondadmin%><div class="btn-close" id="lockdetailclose"><i></i></div></div>
+        <div class="box-bd">
+            <div class="m-form">
+                <form id="svaeCellForm" class="m-plane-bd">
+   					<div class="formitm">
+                        <label class="lab"><%=label.name%></label>
+                         <div class="ipt">
+                           <input type="text" class="u-ipt"  datatype="*{1,20}" name="realName" placeholder="<%=label.name%>"  id="realName" autocomplete="off"/>
+						 </div>
+                    </div>
+               		<div class="formitm">
+                        <label class="lab"><%=label.account1%></label>
+                         <div class="ipt">
+                           <input type="text" class="u-ipt"  datatype="s{1,20}" name="personCode" placeholder="<%=label.account1%>"  id="personCode" autocomplete="off"/>
+						 </div>
+                    </div>
+                   <div class="formitm">
+                	  <label class="lab"><%=label.setpassword%></label>
+                	  <div class="ipt">
+                           <input type="password" class="u-ipt" id="password"  datatype="up" placeholder="<%=label.setpassword%>"  name="personPassword" autocomplete="off"/>
+						 </div>
+                    </div>
+   					<div class="formitm">
+                	  <label class="lab"><%=label.confirmpassword%></label>
+                	  <div class="ipt">
+                           <input type="password" class="u-ipt"  datatype="up|tobe(password)" placeholder="<%=label.repeatpassword%>" autocomplete="off"/>
+						 </div>
+                    </div>
+                    <div class="formitm">
+                	  <label class="lab"><%=label.phonenumber%></label>
+                	  <div class="ipt">
+                           <input type="text" class="u-ipt" id="phone"  datatype="m" name="phone" placeholder="<%=label.phonenumber%>" autocomplete="off"/>
+						 </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-ft">
+            <div class="btns">
+                <button class="u-btn btn-close gray" id="lockcancel"><%=label.cancel%></button>
+                <button class="u-btn red" id="btn-save-add" data-type="0"><%=label.confirm%></button>
+            </div>
+        </div>
+    </div>
+<%}else if(type == 3){%>
+	 <div class="layer-box f-cb">
+        <div class="box-title"><%=label.modifysecondadmininfo%><div class="btn-close" id="lockdetailclose"><i></i></div></div>
+        <div class="box-bd">
+            <div class="m-form">
+                <form id="svaeCellForm" class="m-plane-bd">
+                	<label class="lab"><%=label.account1%></label><div class="ipt"><%=data.personCode%></div>
+                	<input type="hidden" name="id" value="<%=data.id%>">
+   					<div class="formitm">
+                        <label class="lab"><%=label.name%></label>
+                         <div class="ipt">
+                           <input type="text" class="u-ipt"  datatype="*{1,20}" name="realName" placeholder="<%=label.name%>" value="<%=data.realName%>"  id="realName" autocomplete="off"/>
+						 </div>
+                    </div>
+                    <div class="formitm">
+                	  <label class="lab"><%=label.phonenumber%></label>
+                	  <div class="ipt">
+                           <input type="text" class="u-ipt" id="phone"  datatype="m" name="phone" placeholder="<%=label.phonenumber%>" value="<%=data.phone%>" autocomplete="off"/>
+						 </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-ft">
+            <div class="btns">
+                <button class="u-btn btn-close gray" id="lockcancel"><%=label.cancel%></button>
+                <button class="u-btn red" id="btn-save-modify" data-type="0"><%=label.confirm%></button>
+            </div>
+        </div>
+    </div>
+<%}else if(type == 4){%>
+	 <div class="layer-box f-cb">
+        <div class="box-title"><%=label.modifysecondadminpassword%><div class="btn-close" id="lockdetailclose"><i></i></div></div>
+        <div class="box-bd">
+            <div class="m-form">
+                <form id="svaeCellForm" class="m-plane-bd">
+                	<div style="font-size:17px;text-align:center"><%=label.name%>:<%=data.realName%>&nbsp;&nbsp;&nbsp;&nbsp;<%=label.phone%>:<%=data.phone%>&nbsp;&nbsp;&nbsp;&nbsp;<%=label.account1%>:<%=data.personCode%></div>
+                	<input type="hidden" name="id" value="<%=data.id%>">
+   					<div class="formitm">
+                	  <label class="lab"><%=label.setpassword%></label>
+                	  <div class="ipt">
+                           <input type="password" class="u-ipt" id="password"  datatype="up" placeholder="<%=label.setpassword%>"  name="personPassword" autocomplete="off"/>
+						 </div>
+                    </div>
+   					<div class="formitm">
+                	  <label class="lab"><%=label.confirmpassword%></label>
+                	  <div class="ipt">
+                           <input type="password" class="u-ipt"  datatype="up|tobe(password)" placeholder="<%=label.repeatpassword%>" autocomplete="off"/>
+						 </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-ft">
+            <div class="btns">
+                <button class="u-btn btn-close gray" id="lockcancel"><%=label.cancel%></button>
+                <button class="u-btn red" id="btn-save-modifyp" data-type="0"><%=label.confirm%></button>
+            </div>
+        </div>
+    </div>
+<%}else if(type == 5){%> 
+	 <div class="layer-box f-cb" style="width:1000px;">
+        <div class="box-title"><%=label.privilegeofsecondadmin%><div class="btn-close" id="lockdetailclose"><i></i></div></div>
+					<br/>
+			        <div style="font-size:22px;text-align:center"><%=label.privilegeofsecondadmin%></div>
+			        <br/>
+				<div style="font-size:17px;text-align:center"><%=label.name%>:<%=admindata.realName%>&nbsp;&nbsp;&nbsp;&nbsp;<%=label.phone%>:<%=admindata.phone%>&nbsp;&nbsp;&nbsp;&nbsp;<%=label.account1%>:<%=admindata.personCode%></div>
+                	<input type="hidden" name="adminid" id="adminid" value="<%=admindata.id%>">
+		        <div class="scroll">
+		        <table width="99%" border="1" cellpadding="2" cellspacing="0" style="border-color:#ddd;margin:auto;">
+		        		<tr>
+			                <th style="width:10%;text-align:center;"></th>
+			                <th style="width:30%;text-align:center;"><%=label.communityname%></th>
+			                <th style="width:60%;text-align:center;"><%=label.address2%></th>
+			            </tr>
+		            <%
+		                for (var i in data){
+		            %>
+		            <tr>
+		            	<td style="width:10%;text-align:center;"><input type="checkbox" <%if(data[i].checked==1){%>checked<%}%> name="districtno" value="<%=data[i].id%>" style="zoom:150%;"></td>
+		                <td style="width:30%;text-align:center;"><%=data[i].districtName%></td>
+		                <td style="width:60%;text-align:center;">
+		                	<%=data[i].provinceName%> <%=data[i].cityName%> <%=data[i].areasName%> <%=data[i].address%>
+		                </td>
+		            </tr>
+		            <%}%>
+		        </table>
+		    	</div>
+        <div class="box-ft">
+            <div class="btns">
+                <button class="u-btn btn-close gray" id="lockcancel"><%=label.cancel%></button>
+                <button class="u-btn red" id="btn-save-privilege" data-type="0"><%=label.update%></button>
+            </div>
+        </div>
+      </div>
+      
+<%}%>

@@ -1,0 +1,40 @@
+<div class="scroll" style="overflow-x: auto;">
+    <table>
+        <thead>
+           <tr>
+                <th><%=label.community%></th>
+                <th><%=label.building%></th>
+                <th><%=label.unit%></th>
+                <th><%=label.floor%></th>
+                <th><%=label.room%></th>
+                <th><%=label.month%></th>
+                <th><%=label.electricityfee%></th>
+                <th><%=label.waterfee%></th>
+                <th><%=label.hotwaterfee%></th>
+                <th><%=label.houseapportionmentfee%></th>
+                <th><%=label.rentfee%></th>
+                <th><%=label.heji%></th>
+            </tr>
+        </thead>
+        <tbody>
+            <%
+                for (var i in data){
+            %>
+                <tr>
+                    <td><%=data[i].districtName%></td>
+                    <td><%=data[i].build%></td>
+                    <td><%=data[i].unit%></td>
+                    <td><%=data[i].floor%></td>
+                    <td><%=data[i].roomName%></td>
+                    <td><%=data[i].month%></td>
+                    <td><%=data[i].electricityfee/100%></td>
+                    <td><%=data[i].waterfee/100%></td>
+                    <td><%=data[i].hotwaterfee/100%></td>
+                    <td><%=data[i].pooledfee/100%></td>
+                    <td><%=data[i].rentfee/100%></td>
+                    <td><%=data[i].totalamount/100%></td>
+                </tr>
+            <%}%>
+        </tbody>
+    </table>
+</div>

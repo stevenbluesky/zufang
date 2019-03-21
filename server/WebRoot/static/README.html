@@ -1,0 +1,91 @@
+<h1 id="jello-demo">jello-demo</h1>
+<p>Jello demo &amp; doc, you can <a href="http://106.186.23.103:8080/">preview this online</a>.</p>
+<h2 id="%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8">如何使用</h2>
+<ol>
+<li><p>安装 jello</p>
+<pre><code> npm <span class="hljs-keyword">install</span> -g jello
+</code></pre></li>
+<li><p>安装插件</p>
+<pre><code> npm <span class="hljs-keyword">install</span> -g fis-parser-marked
+ npm <span class="hljs-keyword">install</span> -g fis-parser-utc
+ npm <span class="hljs-keyword">install</span> -g fis-parser-sass
+ npm <span class="hljs-keyword">install</span> -g fis-packager-depscombine
+ npm <span class="hljs-keyword">install</span> -g fis-postprocessor-am
+</code></pre></li>
+<li><p>git clone 下来此仓库</p>
+<pre><code> git clone <span class="hljs-string">https:</span><span class="hljs-comment">//github.com/2betop/jello-demo.git</span>
+</code></pre></li>
+<li><p>进入 jello-demo 目录后 安装 components</p>
+<pre><code> <span class="hljs-built_in">cd</span> jello-demo
+ jello install
+</code></pre></li>
+<li><p>进入当前目录后发布代码</p>
+<pre><code> jello <span class="hljs-operator"><span class="hljs-keyword">release</span>
+ jello <span class="hljs-keyword">server</span> <span class="hljs-keyword">start</span></span>
+</code></pre></li>
+<li>自动打开浏览器预览页面</li>
+</ol>
+<h2 id="%E6%97%A0%E9%99%90%E7%80%91%E5%B8%83%E6%B5%81%E5%86%99%E6%B3%95">无限瀑布流写法</h2>
+<p>1.将分页 写在 UrlController 里 传递page、rows<br>    @Resource<br>    private PositionInfoService positionInfoService;</p>
+<pre><code>public void setPositionInfoService<span class="hljs-params">(PositionInfoService positionInfoService)</span> {
+    this.positionInfoService = positionInfoService;
+}
+@RequestMapping<span class="hljs-params">(value = <span class="hljs-string">"/list.html"</span>)</span>
+public ModelAndView list<span class="hljs-params">(@ModelAttribute<span class="hljs-params">(<span class="hljs-string">"positionInfoVo"</span>)</span> PositionInfoVo positionInfoVo)</span> {
+    <span class="hljs-comment">// 退出</span>
+    Grid grid = positionInfoService.findPositionInfoPage<span class="hljs-params">(positionInfoVo, positionInfoVo.getPage<span class="hljs-params">()</span>, 
+            positionInfoVo.getRows<span class="hljs-params">()</span>)</span>;
+    Integer page =  positionInfoVo.getPage<span class="hljs-params">()</span>;
+    Integer rows = positionInfoVo.getRows<span class="hljs-params">()</span>;
+    ModelMap modelMap = new ModelMap<span class="hljs-params">()</span>;
+    modelMap.put<span class="hljs-params">(<span class="hljs-string">"gird"</span>, grid)</span>;
+    modelMap.put<span class="hljs-params">(<span class="hljs-string">"isNoNext"</span>, <span class="hljs-literal">true</span>)</span>;
+    <span class="hljs-keyword">if</span><span class="hljs-params">(Math.ceil<span class="hljs-params">(<span class="hljs-params">(double)</span>grid.getCount<span class="hljs-params">()</span> / rows)</span> &lt;= page)</span>{
+        modelMap.put<span class="hljs-params">(<span class="hljs-string">"isNoNext"</span>, <span class="hljs-literal">false</span>)</span>;
+    }
+    modelMap.put<span class="hljs-params">(<span class="hljs-string">"page"</span>,page + <span class="hljs-number">1</span>)</span>;
+    modelMap.put<span class="hljs-params">(<span class="hljs-string">"rows"</span>, rows)</span>;
+    return new ModelAndView<span class="hljs-params">(<span class="hljs-string">"page/index/list"</span>, modelMap)</span>;
+} 
+</code></pre><p>2.显示页vm页面写法</p>
+<pre><code>&lt;<span class="hljs-keyword">div</span> <span class="hljs-property">id</span>=<span class="hljs-string">"container"</span> <span class="hljs-type">class</span>=<span class="hljs-string">"f-cb"</span>&gt;
+&lt;/<span class="hljs-keyword">div</span>&gt;
+&lt;a <span class="hljs-type">class</span>=<span class="hljs-string">"infinite-more-link"</span> href=<span class="hljs-string">"list.html?page=1&amp;rows=10"</span>&gt;更多&lt;/a&gt;
+</code></pre><p>3.列表页VM写法<br>    <div class="infinite-container"><br>       &lt;!--  #set( $list = [26, 27, 21, 28, 20, 25, 16, 21, 20, 25, 16, 21, 28, 20, 25, 15, 23, 22, 16])</p>
+<pre><code>    <span class="hljs-comment">#foreach( $item in $list)</span>
+        &lt;<span class="hljs-keyword">div</span> <span class="hljs-type">class</span>=<span class="hljs-string">"infinite-item"</span>&gt;
+            &lt;<span class="hljs-keyword">div</span> <span class="hljs-type">class</span>=<span class="hljs-string">"imgholder"</span>&gt;
+                &lt;img <span class="hljs-type">class</span>=<span class="hljs-string">"lazy"</span> data-original=<span class="hljs-string">"http://www.inwebson.com/demo/blocksit-js/demo2/images/img${item}.jpg"</span>/&gt;
+            &lt;/<span class="hljs-keyword">div</span>&gt;
+            &lt;strong&gt;Sunset Lake ${page}&lt;/strong&gt;
+            &lt;p&gt;A peaceful sunset view...&lt;/p&gt;
+            &lt;<span class="hljs-keyword">div</span> <span class="hljs-type">class</span>=<span class="hljs-string">"meta"</span>&gt;<span class="hljs-keyword">by</span> j osborn&lt;/<span class="hljs-keyword">div</span>&gt;
+        &lt;/<span class="hljs-keyword">div</span>&gt;
+    <span class="hljs-comment">#end --&gt;</span>
+    <span class="hljs-comment">#foreach( $item in $gird.list )</span>
+       &lt;<span class="hljs-keyword">div</span> <span class="hljs-type">class</span>=<span class="hljs-string">"infinite-item"</span>&gt;
+            &lt;<span class="hljs-keyword">div</span> <span class="hljs-type">class</span>=<span class="hljs-string">"imgholder"</span>&gt;
+                &lt;img <span class="hljs-type">class</span>=<span class="hljs-string">"lazy"</span> data-original=<span class="hljs-string">"http://www.inwebson.com/demo/blocksit-js/demo2/images/img${item}.jpg"</span>/&gt;
+            &lt;/<span class="hljs-keyword">div</span>&gt;
+            &lt;strong&gt;Sunset Lake&lt;/strong&gt;
+            &lt;p&gt;A peaceful sunset view...&lt;/p&gt;
+            &lt;<span class="hljs-keyword">div</span> <span class="hljs-type">class</span>=<span class="hljs-string">"meta"</span>&gt;<span class="hljs-keyword">by</span> j osborn&lt;/<span class="hljs-keyword">div</span>&gt;
+        &lt;/<span class="hljs-keyword">div</span>&gt;
+    <span class="hljs-comment">#end</span>
+&lt;/<span class="hljs-keyword">div</span>&gt;
+<span class="hljs-comment">#if($!isNoNext )</span>
+    &lt;a <span class="hljs-type">class</span>=<span class="hljs-string">"infinite-more-link"</span> href=<span class="hljs-string">"list.html?page=$page&amp;rows=$rows"</span>&gt;更多&lt;/a&gt;
+<span class="hljs-comment">#end</span>
+</code></pre><p>4.使用插件<br>    require(&#39;waypoints&#39;);<br>    require(&#39;waypoints/infinite&#39;);<br>    require(&#39;blocksit/blocksit&#39;);<br>    require(&#39;imgLoader/imgLoader&#39;);<br>    var infinite = new Waypoint.Infinite({<br>        element: $(&#39;#container&#39;),<br>        onAfterPageLoad: function() {<br>            $(&quot;img.lazy&quot;).lazyload({<br>                // effect: &quot;fadeIn&quot;,<br>                // 如果一个img元素没有指定src属性，我们使用这个placeholder，在真正的图片被加载之前，此img会呈现这个占位图。<br>                placeholder_data_img: &#39;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC&#39;,</p>
+<pre><code>            <span class="hljs-comment">// IE6/7 的 placeholder。这是我当时在百度时的cdn地址，建议改为你服务器上的任一张灰色或白色的1*1的小图</span>
+            placeholder_real_img: <span class="hljs-string">'http://webmap3.map.bdimg.com/yyfm/lazyload/0.0.1/img/placeholder.png'</span>,
+            load: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{}
+        });
+        $(<span class="hljs-string">'#container'</span>).BlocksIt({
+            numOfCol: <span class="hljs-number">5</span>,
+            offsetX: <span class="hljs-number">8</span>,
+            offsetY: <span class="hljs-number">8</span>
+        });
+    }
+})
+</code></pre>

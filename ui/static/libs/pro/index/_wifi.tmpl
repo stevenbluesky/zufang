@@ -1,0 +1,37 @@
+<%if(type == 0){%>
+   
+<%}else if(type == 1){%>
+   <!--  <%if(data.length == 0){%>
+        <div class="no_list">暂时没有此类数据</div>
+    <%}%> -->
+    <%
+        for (var i in data){
+    %>
+        <li>
+            <a href="<%=common.BASE_PATH%>/wifiDetail.html?id=<%=data[i].id%>">
+                <div class="list-wrap f-cb">
+                    <h3 class="cell-name"><%=data[i].gatewayName%></h3>
+                    <div class="cell-details f-cb">
+                        <div class="f-fl">
+                            <%
+                                var imgPath = common.BASE_PATH + '/static/img/no-iremote.jpg';
+                            %>
+                            <img src="<%=imgPath%>" alt="<%=label.communityphoto%>">
+                        </div>
+                        <ul class="f-fl">
+                            <li><%=label.community%>：<%=data[i].districtName%></li>
+                            <li><%=label.anzhuangdizhi%>：<%=data[i].provinceName%><%=data[i].cityName%><%=data[i].areasName%><%=data[i].address%></li>
+                            <li><%=label.status%>：<%if(data[i].signalFlag == 1){%>
+											            	<font color="red"><%=label.offline%></font>
+											            <%}else{%>
+											            	<%=label.online%>
+											            <%}%></li>
+                        </ul>
+                    </div>
+                </div>
+            </a>
+        </li>
+    <%}%>
+<%}else if(type == 2){%>
+   
+<%}%>

@@ -1,0 +1,29 @@
+#extends("/page/include/base.vm") #require("/static/scss/index.scss") #block("content")
+<div class="login-box m-form">
+	<div class="m-login-title">
+		<a href="index.html" class="logo"><img src="static/img/#springMessage('indexlogo')" /></a> 
+	    <span class="i-fgx">  </span>
+	    <span>#springMessage('view.label.login')</span>
+	</div>
+    <form id="form" class="m-plane-bd"> 
+        <div class="formitm">
+            <div class="ipt">
+                <input type="text" class="u-ipt i-user" datatype="*" name="personCode" placeholder="#springMessage('view.label.account1')" autocomplete="off"/>
+                <input type="password" class="u-ipt i-pwd" datatype="up" name="personPassword" placeholder="#springMessage('view.label.password')" autocomplete="off"/>
+            </div>
+        </div>
+        <div class="formitm">
+            <div class="ipt-1 f-cb">
+            	<a id="btn-register" class="s-dft-a f-fl" style="text-decoration:none">#springMessage('view.label.register1')</a>
+                <a id="btn-find-pswd" class="s-dft-a f-fr" style="text-decoration:none">#springMessage('view.label.forgotpassword')</a>
+            </div>
+        </div>
+        <div class="formitm">
+            <div class="ipt-1 f-cb">
+                <a id="btn-login" class="u-btn blue">#springMessage('view.label.login')</a>
+            </div>
+        </div>
+    </form>
+</div>
+#script("https://pv.sohu.com/cityjson")#end
+#end #script() require('/static/libs/pro/index/index') #end #end

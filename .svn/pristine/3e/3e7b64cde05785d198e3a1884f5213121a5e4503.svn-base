@@ -1,0 +1,42 @@
+<div class="scroll" style="overflow-x: auto;">
+    <table>
+        <thead>
+           <tr>
+                <th><%=label.community%></th>
+                <th><%=label.building%></th>
+                <th><%=label.unit%></th>
+                <th><%=label.floor%></th>
+                <th><%=label.room%></th>
+                <th><%=label.month%></th>
+                <th><%=label.earlyreading%></th>
+                <th><%=label.currentreading%></th>
+                <th><%=label.originalreading%></th>
+                <th><%=label.monthlyconsumption%></th>
+                <th><%=label.totalconsumption%></th>
+                <th><%=label.unitprice%></th>
+                <th><%=label.monthlycharge%></th>
+            </tr>
+        </thead>
+        <tbody>
+            <%
+                for (var i in data){
+            %>
+                <tr>
+                    <td><%=data[i].districtName%></td>
+                    <td><%=data[i].build%></td>
+                    <td><%=data[i].unit%></td>
+                    <td><%=data[i].floor%></td>
+                    <td><%=data[i].roomName%></td>
+                    <td><%=data[i].month%></td>
+                    <td><%=data[i].preMonthDegrees%></td>
+                    <td><%=data[i].currentDegrees%></td>
+                    <td><%=data[i].baseDegrees%></td>
+                    <td><%=data[i].monthDegrees%></td>
+                    <td><%=data[i].sumDegrees%></td>
+                    <td><%=data[i].price/100%></td>
+                    <td><%=data[i].sumAmount/100%></td>
+                </tr>
+            <%}%>
+        </tbody>
+    </table>
+</div>

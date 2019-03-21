@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  xmlns="http://www.springframework.org/schema/beans"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		                    http://www.springframework.org/schema/context 
+		                    http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		                    http://www.springframework.org/schema/tx 
+		                    http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		                    http://www.springframework.org/schema/aop 
+		                    http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"> 
+
+    
+    <bean id="infochanged" class="com.isurpass.message.processor.InfoChangeProcessor"/>
+    <bean id="deleteremote" class="com.isurpass.message.processor.DeleteRemoteProcessor"/>
+    <bean id="remoteoffline" class="com.isurpass.message.processor.RemoteOfflineProcessor"/>
+    <bean id="remoteonline" class="com.isurpass.message.processor.RemoteOnlineProcessor"/>
+    <bean id="doorlockopen" class="com.isurpass.message.processor.DoorLockOpenProcessor"/>
+    <bean id="doorlockclose" class="com.isurpass.message.processor.DoorLockCloseProcessor"/>
+    <bean id="malfunction" class="com.isurpass.message.processor.MalfunctionProcessor"/>
+    <bean id="tampleralarm" class="com.isurpass.message.processor.TamplerAlarmProcessor"/>
+    <bean id="unalarmtampleralarm" class="com.isurpass.message.processor.UnalarmTamplerAlarm"/>
+    <bean id="recovery" class="com.isurpass.message.processor.DeviceRecoveryProcessor"/>
+    <bean id="lowbattery" class="com.isurpass.message.processor.BatteryProcessor"/>
+    <bean id="battery" class="com.isurpass.message.processor.BatteryProcessor"/>
+    <bean id="devicestatus" class="com.isurpass.message.processor.DeviceStatusProcessor"/>
+    <bean id="meterstatus" class="com.isurpass.message.processor.DeviceStatusProcessor"/>
+    <bean id="electriccurrent" class="com.isurpass.message.processor.ElectricCurrentProcessor"/>
+
+</beans>

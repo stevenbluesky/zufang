@@ -1,0 +1,103 @@
+#extends("page/include/base.vm") #require("static/scss/log.scss") #block("content")
+<div class="g-sd">
+    <div class="g-sdc">
+        #widget("widget/sidebarmenus/nav.vm" "var:type=8")
+    </div>
+</div>
+<div class="g-mn">
+    #block("header") #widget("widget/header/header.vm") #end
+    <div class="m-page-title">
+        <span><i>&gt;</i>统计</span>
+    </div>
+    <div class="g-mnc">
+        <ul class="form-box-ul">
+            <li class="z-sel">电量统计</li>
+            <li>电费统计</li>
+            <li>水费统计</li>
+            <li>热水费统计</li>
+            <li>总费用统计</li>
+        </ul>
+        <div class="show-box">
+            <div class="search-item f-cb">
+                <ul class="f-cb f-fl" id="search-type">
+                    <li><i class="fa fa-bar-chart fa-fw"></i>统计方式：</li>
+                    <li class="item" data-id="0"><a>按月</a></li>
+                    <li class="item" data-id="1"><a>按日</a></li>
+                    <li class="item" data-id="2"><a>按时</a></li>
+                </ul>
+            </div>
+            <div class="search-item f-cb">
+                <ul class="f-cb">
+                    <li><i class="fa fa-map-marker fa-fw"></i>搜索条件：</li>
+                    <li>
+                        <input type="hidden" class="u-select" id="district-search" />
+                        <input type="hidden" class="u-select" id="build-search" />
+                        <input type="hidden" class="u-select" id="unit-search" />
+                        <input type="hidden" class="u-select" id="floor-search" />
+                        <input type="hidden" class="u-select" id="room-search" />
+                    </li>
+                </ul>
+            </div>
+            <div class="search-item search-item-last">
+                <ul class="f-cb">
+                    <li><i class="fa fa-clock-o fa-fw"></i>日期：</li>
+                    <li class="month-box time f-dn">
+                        <input type="text" class="u-ipt" id="search-monthStart" placeholder="开始日期" onfocus="this.blur()" onclick="laydate(monthStart);" />
+                    </li>
+                    <li class="month-box time f-dn">
+                        <input type="text" class="u-ipt" id="search-monthEnd" placeholder="结束日期" onfocus="this.blur()" onclick="laydate(monthEnd);" />
+                    </li>
+                    <li class="date-box time f-dn">
+                        <input type="text" class="u-ipt" id="search-dateStart" placeholder="开始日期" onfocus="this.blur()" onclick="laydate(dateStart);" />
+                    </li>
+                    <li class="date-box time f-dn">
+                        <input type="text" class="u-ipt" id="search-dateEnd" placeholder="结束日期" onfocus="this.blur()" onclick="laydate(dateEnd);" />
+                    </li>
+                    <li class="hour-box time f-dn">
+                        <input type="text" class="u-ipt" id="search-hourStart" placeholder="开始日期" onfocus="this.blur()" onclick="laydate(hourStart);" />
+                    </li>
+                    <li class="hour-box time f-dn">
+                        <input type="text" class="u-ipt" id="search-hourEnd" placeholder="结束日期" onfocus="this.blur()" onclick="laydate(hourEnd);" />
+                    </li>
+                    <li>
+                        <button class="u-btn gray" id="btn-search">搜索</button>
+                    </li>
+                </ul>
+            </div>
+            <div id="chart" style="height:400px;width:100%;margin:15px 0;">
+            </div>
+        </div>
+        <div class="show-box f-dn">
+            <div class="search-item f-cb">
+                <ul class="f-cb">
+                    <li><i class="fa fa-map-marker fa-fw"></i>搜索条件：</li>
+                    <li>
+                        <input type="hidden" class="u-select" id="district-list" />
+                        <input type="hidden" class="u-select" id="build-list" />
+                        <input type="hidden" class="u-select" id="unit-list" />
+                        <input type="hidden" class="u-select" id="floor-list" />
+                        <input type="hidden" class="u-select" id="room-list" />
+                    </li>
+                </ul>
+            </div>
+            <div class="search-item search-item-last">
+                <ul class="f-cb">
+                    <li><i class="fa fa-clock-o fa-fw"></i>日期：</li>
+                    <li class="month-box time f-dn">
+                        <input type="hidden" class="u-select" id="search-month" placeholder="开始日期"/>
+                    </li>
+                    <li>
+                        <button class="u-btn gray" id="btn-search-list">搜索</button>
+                    </li>
+                </ul>
+            </div>
+            <div id="list" class="m-demo" style="margin-top:20px;">
+            </div>
+            <div class="page" id="page"></div>
+        </div>
+    </div>
+</div>
+#end #script() require('static/libs/pro/index/electricityLog') #end 
+  ## auto inject by fis3-preprocess-extlang
+  #require("page/index/electricityLog.vm")
+#end

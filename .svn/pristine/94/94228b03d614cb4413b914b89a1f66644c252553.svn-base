@@ -1,0 +1,253 @@
+var $ = require('jquery'),
+	common = require('static/libs/util/common'),
+	laypage = require('static/libs/laypage/laypage'),
+	validate = require('static/libs/util/validate'),
+	Data = require('static/libs/util/data'),
+	tmpl = __inline('_manager.tmpl');
+require('select2');
+require('select2/select2_locale_zh-CN');
+var cellId = common.getUrlParm("id"),
+	data = {
+		districtId: cellId,
+		page: 1,
+		rows: 10
+	},
+	idType;
+init();
+
+function init() {
+	load();
+	loadList(1);
+	$(document)
+		.on('click', '.form-box-ul li', function(event) {
+			event.preventDefault();
+			var index = $(this).index();
+			switch (index) {
+				case 0:
+					location.href = common.BASE_PATH + '/room.html?id=' + cellId;
+					break;
+				case 1:
+					location.href = common.BASE_PATH + '/manager.html?id=' + cellId;
+					break;
+				case 2:
+					location.href = common.BASE_PATH + '/service/district/paymentsetting?districtid=' + cellId;
+					break;
+			}
+		})
+		.on('click', '.btn-open-save', function(event) {
+			event.preventDefault();
+			var _tmpl = $.trim(tmpl({
+				type: 0
+			}));
+			idType = '';
+			common.open({
+				title: false,
+				closeBtn: false,
+				zIndex: 100,
+				content: _tmpl,
+				shadeClose: false,
+				scrollbar: false,
+				success: function(layero, index) {
+					$(layero).find('.btn-close').attr('data-index', index);
+					$("#idType").select2({
+						placeholder: label.idtype,
+						data: Data.idType
+					});
+
+				}
+			});
+		})
+		//新增
+		.on('click', '#btn-save', function(event) {
+			event.preventDefault();
+			saveAction();
+		})
+		// 修改
+		.on('click', '.btn-open-edit', function(event) {
+			event.preventDefault();
+			var that = this,
+				loginName = $(that).attr("data-loginName"),
+				_tmpl = $.trim(tmpl({
+					type: 2,
+					data: {
+						id: $(that).attr("data-id"),
+						districtId: $(that).attr("data-districtId"),
+						loginName: loginName,
+						managerName: $(that).attr("data-managerName"),
+						phone: $(that).attr("data-phone"),
+						idNo: $(that).attr("data-idNo"),
+						remark: $(that).attr("data-remark"),
+						loginPassword: $(that).attr("data-loginPassword")
+					}
+				}));
+			idType = $(that).attr("data-idType");
+			common.open({
+				title: false,
+				closeBtn: false,
+				zIndex: 100,
+				content: _tmpl,
+				shadeClose: false,
+				scrollbar: false,
+				success: function(layero, index) {
+					$(layero).find('.btn-close').attr('data-index', index);
+					$("#idType").select2({
+						placeholder: label.idtype,
+						data: Data.idType
+					});
+					if (idType && idType.length > 0)
+						$("#idType").select2('val', idType).trigger('change');
+				}
+			});
+		})
+}
+//分页查询
+function loadList(cur) {
+	if (cur)
+		data.page = cur;
+	findPage(data, function(json) {
+		var _tmpl = $.trim(tmpl({
+			type: 1,
+			data: json.object.list
+		}));
+		$("#list").html(_tmpl);
+		if (json.object.count > 0) {
+			if (cur)
+				laypage({
+					cont: 'page', //容器。值支持id名、原生dom对象，jquery对象。【如该容器为】：<div id="page1"></div>
+					pages: Math.ceil(json.object.count / data.rows), //总页数
+					curr: cur, //当前页
+					jump: function(e, first) { //触发分页后的回调
+						if (!first) {
+							loadList(e.curr);
+						}
+					}
+				});
+			$("#page").show();
+		} else {
+			$("#page").hide();
+		}
+		if (json.object.count == 0 || Math.ceil(json.object.count / data.rows) == data.page) {
+			$(".btn-open-save").show();
+		} else {
+			$(".btn-open-save").hide();
+		}
+	})
+};
+//解析地址
+function parsePlaceData(obj, key, value) {
+	var arr = [];
+	$.each(obj, function(i, n) {
+		arr.push({
+			id: n[key],
+			text: n[value]
+		})
+	})
+	return arr;
+};
+// 查询小区详细信息
+function load() {
+	findDistrictById({
+		id: cellId
+	}, function(json) {
+		$("#cellName").html("<i>&gt;</i>" + json.object.districtName + label.community);
+	});
+};
+// 新增
+function saveAction() {
+	var that = '#btn-save';
+	if ($(that).hasClass('z-dis')) return;
+	if (validate.check("#svaeCellForm")) {
+		$(that).addClass('z-dis');
+		var formData = $("#svaeCellForm").serializeJson();
+		formData.districtId = cellId;
+		formData.idType = $('#idType').select2('val');
+		if (formData.id && formData.id.length > 0)
+			updateManager(formData,
+				function(json) {
+					common.msg(json.message, function() {
+						$(that).prev().trigger('click');
+						loadList();
+					})
+				},
+				function() {
+					$(that).removeClass('z-dis');
+				});
+		else
+			saveManager(
+				formData,
+				function(json) {
+					common.msg(json.message, function() {
+						$(that).prev().trigger('click');
+						var len = $("#list>li").not($('.new')).length;
+						if (len >= 10) {
+							loadList(data.page+1);
+						} else {
+							loadList();
+						}
+					})
+				},
+				function() {
+					$(that).removeClass('z-dis');
+				});
+	}
+};
+//新增
+function saveManager(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/manager/saveManager',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+// 修改
+function updateManager(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/manager/updateManager',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//分页查询
+function findPage(data, callback, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/manager/findPage',
+		data: data,
+		success: function(json) {
+			typeof callback === 'function' && callback(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}
+//查询小区详细信息
+function findDistrictById(data, success, failure) {
+	$.ajax({
+		type:"post",
+		dataType: "json",
+		url: common.BASE_PATH + '/service/district/findDistrictById',
+		data: data,
+		success: function(json) {
+			typeof success === 'function' && success(json);
+		},
+		failure: function(json) {
+			typeof failure === 'function' && failure(json);
+		}
+	})
+}

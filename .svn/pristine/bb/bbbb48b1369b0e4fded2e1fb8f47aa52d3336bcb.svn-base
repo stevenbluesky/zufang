@@ -1,0 +1,19 @@
+#extends("/page/include/base.vm") #require("/static/scss/log.scss") #block("content")
+<div class="g-sd">
+    <div class="g-sdc">
+        #widget("widget/sidebarmenus/nav.vm" "var:type=10")
+    </div>
+</div>
+<div class="g-mn">
+    #block("header") #widget("widget/header/header.vm") #end
+    <div class="m-page-title">
+        <span><i>&gt;</i>二级管理员</span>
+    </div>
+    <div class="g-mnc">
+
+        <div id="list" class="m-demo">
+        </div>
+        <div class="page" id="page"></div>
+    </div>
+</div>
+#end #script() require('/static/libs/pro/index/admin') #end #end

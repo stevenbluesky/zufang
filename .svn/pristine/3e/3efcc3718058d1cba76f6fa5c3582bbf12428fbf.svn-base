@@ -1,0 +1,15 @@
+package com.ant.util;
+
+public class ConstDefine 
+{
+	public static final int LOCKPASSWORD_STATUS_NORMAL = 0 ;//正常
+	public static final int LOCKPASSWORD_STATUS_SENDING = 1 ;//正在下发
+	public static final int LOCKPASSWORD_STATUS_SENDINGTIME = 2 ;//密码已下发，正在下发有效期
+	public static final int LOCKPASSWORD_STATUS_SENDFAILED = 3;//下发、操作失败
+	public static final int LOCKPASSWORD_STATUS_SENDTIMEFAILED = 4;//密码下发成功，有效期下发失败
+	public static final int LOCKPASSWORD_STATUS_DELETEFAILED = 7;//删除失败
+	public static final int LOCKPASSWORD_STATUS_DELETING = 8;//正在删除
+	public static final int LOCKPASSWORD_STATUS_DELEET = 9 ;//已删除
+	
+	public static final int LOCKPASSWORD_USERCODE_TEMP = 242;
+}

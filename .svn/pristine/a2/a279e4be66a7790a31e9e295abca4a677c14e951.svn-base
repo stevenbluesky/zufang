@@ -1,0 +1,9 @@
+package com.ant.util;
+
+public class ConstDefine 
+{
+	public static final int LOCKPASSWORD_STATUS_NORMAL = 0 ;
+	public static final int LOCKPASSWORD_STATUS_DELEET = 9 ;
+	
+	public static final int LOCKPASSWORD_USERCODE_TEMP = 242;
+}

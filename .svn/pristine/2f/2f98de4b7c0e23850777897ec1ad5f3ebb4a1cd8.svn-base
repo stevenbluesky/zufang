@@ -1,0 +1,49 @@
+<h1 id="select2">Select2</h1>
+<p><a href="https://travis-ci.org/select2/select2"><img src="https://travis-ci.org/select2/select2.svg?branch=master" alt="Build Status"></a></p>
+<p>Select2 is a jQuery-based replacement for select boxes. It supports searching,<br>remote data sets, and pagination of results.</p>
+<p>To get started, checkout examples and documentation at<br><a href="https://select2.github.io/">https://select2.github.io/</a></p>
+<h2 id="use%20cases">Use cases</h2>
+<ul>
+<li>Enhancing native selects with search.</li>
+<li>Enhancing native selects with a better multi-select interface.</li>
+<li>Loading data from JavaScript: easily load items via AJAX and have them<br>searchable.</li>
+<li>Nesting optgroups: native selects only support one level of nesting. Select2<br>does not have this restriction.</li>
+<li>Tagging: ability to add new items on the fly.</li>
+<li>Working with large, remote datasets: ability to partially load a dataset based<br>on the search term.</li>
+<li>Paging of large datasets: easy support for loading more pages when the results<br>are scrolled to the end.</li>
+<li>Templating: support for custom rendering of results and selections.</li>
+</ul>
+<h2 id="browser%20compatibility">Browser compatibility</h2>
+<ul>
+<li>IE 8+</li>
+<li>Chrome 8+</li>
+<li>Firefox 10+</li>
+<li>Safari 3+</li>
+<li>Opera 10.6+</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<p>You can source Select2 directly from a CDN like <a href="http://www.jsdelivr.com/#!select2">JSDliver</a> or<br><a href="http://www.cdnjs.com/libraries/select2">CDNJS</a>, <a href="https://github.com/select2/select2/releases">download it from this GitHub repo</a>, or use one of<br>the integrations below.</p>
+<h2 id="integrations">Integrations</h2>
+<ul>
+<li><a href="https://github.com/ivaynberg/wicket-select2">Wicket-Select2</a> (Java / <a href="http://wicket.apache.org">Apache Wicket</a>)</li>
+<li><a href="https://github.com/argerim/select2-rails">select2-rails</a> (Ruby on Rails)</li>
+<li><a href="http://angular-ui.github.io/#ui-select">AngularUI</a> (<a href="https://angularjs.org/">AngularJS</a>)</li>
+<li><a href="https://github.com/applegrew/django-select2">Django</a></li>
+<li><a href="https://github.com/19Gerhard85/sfSelect2WidgetsPlugin">Symfony</a></li>
+<li><a href="https://github.com/avocode/FormExtensions">Symfony2</a></li>
+<li><a href="https://github.com/t0m/select2-bootstrap-css">Bootstrap 2</a> and <a href="https://github.com/t0m/select2-bootstrap-css/tree/bootstrap3">Bootstrap 3</a><br>(CSS skins)</li>
+<li><a href="https://github.com/nate-strauser/meteor-select2">Meteor</a> (<a href="https://github.com/zimme/meteor-select2-bootstrap3-css/">Bootstrap 3 skin</a>)</li>
+<li><a href="https://jquery-select2.meteor.com">Meteor</a></li>
+<li><a href="http://demos.krajee.com/widgets#select2">Yii 2.x</a></li>
+<li><a href="https://github.com/tonybolzan/yii-select2">Yii 1.x</a></li>
+<li><a href="https://atmospherejs.com/package/jquery-select2">AtmosphereJS</a></li>
+</ul>
+<h2 id="internationalization%20(i18n)">Internationalization (i18n)</h2>
+<p>Select2 supports multiple languages by simply including the right language JS<br>file (<code>dist/js/i18n/it.js</code>, <code>dist/js/i18n/nl.js</code>, etc.) after<br><code>dist/js/select2.js</code>.</p>
+<p>Missing a language? Just copy <code>src/js/select2/i18n/en.js</code>, translate it, and<br>make a pull request back to Select2 here on GitHub.</p>
+<h2 id="documentation">Documentation</h2>
+<p>The documentation for Select2 is available<br><a href="https://select2.github.io/">through GitHub Pages</a> and is located within this repository<br>in the <a href="https://github.com/select2/select2/tree/master/docs"><code>docs</code> folder</a>.</p>
+<h2 id="community">Community</h2>
+<p>You can find out about the different ways to get in touch with the Select2<br>community at the <a href="https://select2.github.io/community.html">Select2 community page</a>.</p>
+<h2 id="copyright%20and%20license">Copyright and license</h2>
+<p>The license is available within the repository in the <a href="LICENSE.md">LICENSE</a> file.</p>

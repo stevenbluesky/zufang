@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+ <session-factory>
+  <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+
+  <property name="hibernate.connection.url">jdbc:mysql://127.0.0.1/zufang_0422?useUnicode=true&amp;characterEncoding=utf-8</property>
+  <property name="hibernate.connection.username">root</property>
+  <property name="hibernate.connection.password">root</property>
+  <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+  <property name="hibernate.show_sql">true</property>
+  <property name="hibernate.format_sql">true</property>
+  <property name="hibernate.hbm2ddl.auto">none</property>
+  <property name="connection.autoReconnect">true</property>
+  <property name="connection.autoReconnectForPools">true</property>
+  <property name="connection.is-connection-validation-required">true</property>
+  <property name="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property>
+  <property name="hibernate.c3p0.max_size">5</property>
+  <property name="hibernate.c3p0.min_size">1</property>
+  <property name="hibernate.c3p0.timeout">3600</property>
+  <property name="hibernate.c3p0.max_statements">0</property>
+  <property name="hibernate.c3p0.idle_test_period">3000</property>
+  <property name="hibernate.c3p0.acquire_increment">2</property>
+  <property name="hibernate.c3p0.validate">true</property>
+  <property name="hibernate.jdbc.fetch_size">6</property>
+  <mapping class="com.ant.business.Areas"/>
+  <mapping class="com.ant.business.City"/>
+  <mapping class="com.ant.business.CommuLog"/>
+  <mapping class="com.ant.business.Device"/>
+  <mapping class="com.ant.business.DeviceBatteryLog"/>
+  <mapping class="com.ant.business.DeviceDegreesHourLog"/>
+  <mapping class="com.ant.business.DeviceDegreesLog"/>
+  <mapping class="com.ant.business.District"/>
+  <mapping class="com.ant.business.Gateway"/>
+  <mapping class="com.ant.business.LastTimeLog"/>
+  <mapping class="com.ant.business.LockPassword"/>
+  <mapping class="com.ant.business.Manager"/>
+  <mapping class="com.ant.business.OpenDeviceLog"/>
+  <mapping class="com.ant.business.OperateLog"/>
+  <mapping class="com.ant.business.Person"/>
+  <mapping class="com.ant.business.PowerPriceLog"/>
+  <mapping class="com.ant.business.Province"/>
+  <mapping class="com.ant.business.Room"/>
+  <mapping class="com.ant.business.RoomFee"/>
+  <mapping class="com.ant.business.RoomPrivilege"/>
+  <mapping class="com.ant.business.TbSequence"/>
+  <mapping class="com.ant.business.Transaction"/>
+  <mapping class="com.ant.business.SmsHistory"/>
+  <mapping class="com.ant.business.DistrictPaymentSetting"/>
+  <mapping class="com.ant.business.Customer"/>
+  <mapping class="com.ant.business.SystemParameter"/>
+<<<<<<< .working
+  <mapping class="com.ant.business.DoorlockPasswordRule"/>
+  <mapping class="com.ant.business.DoorlockPasswordRuleDtl"/>
+||||||| .merge-left.r8869
+=======
+  <mapping class="com.ant.business.DataPrivilegeGrant"/>
+>>>>>>> .merge-right.r8964
+ </session-factory>
+</hibernate-configuration>

@@ -1,0 +1,7 @@
+{
+    "repos": "https://github.com/kindsoft/kindeditor",
+    "version": "master",
+    "description": "WYSIWYG HTML editor http://kindeditor.org/",
+    "name": "kindeditor",
+    "main": "kindeditor.js"
+}

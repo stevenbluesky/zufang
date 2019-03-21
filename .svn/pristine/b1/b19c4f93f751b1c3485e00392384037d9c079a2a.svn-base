@@ -1,0 +1,99 @@
+@import "base";
+
+html, body, .g-bd {
+	height: 100%;
+}
+.g-bd {
+	background: url(../img/indexBg.jpg) center top no-repeat #f8f8f8;
+	width: 100%;
+	@include background-size(cover);
+
+	.login-box {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 490px;
+		height: 354px;
+		padding: 32px 30px 54px 30px;
+		margin-left: -275px;
+		margin-top: -222px;
+		background-color:#FFFFFF;
+		.m-login-title{
+		    border-bottom: 1px solid #c9c9c9;
+		    a.logo {
+                @include inline-block();
+                height: 50px;
+                line-height: 50px;
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+            span{
+                font-size: 24px;
+                color: #979797;
+            }
+            .i-fgx{
+                    margin: 0 20px;
+                    font-size: 16px;
+                    display: inline-block;
+                    width: 1px;
+                    height: 18px;
+                    background: #c9c9c9;
+            }
+            h3 {
+                line-height: 50px;
+                font-size: 20px;
+                text-align: left;
+                color: #fff;
+                margin-bottom: 15px;
+            }
+		}
+		.fa {
+			position: absolute;
+			left: 14px;
+			top: 10px;
+			color: #999;
+		}
+		#btn-login{
+			
+		}
+        .m-plane-bd{
+            color: #fff;
+            .formitm .ipt{
+                margin-left: 0;
+                input{
+                    width: 428px;
+                    height: 48px;
+                    margin-top: 32px;
+                    border: 1px solid #c9c9c9;
+                    background-color: #fff;
+                    padding-left: 50px;
+                    font-size: 18px;
+                }   
+                .i-user{
+                    background: url(../img/login-user.png) no-repeat 20px center;
+                }
+                .i-pwd{
+                    background: url(../img/login-pwd.png) no-repeat 20px center;
+                }
+            }
+            #btn-register{
+                color: #2ba9c5;
+            }
+            .s-dft-a{
+                font-size: 18px;
+                text-decoration: underline;
+            }
+            #btn-login{
+                background-color:#2ba9c5;
+                border: none;
+                width: 488px;
+                height: 50px;
+                font-size: 18px;
+                font-weight: bold;
+                line-height: 50px;
+                padding: 0;
+                margin: 5px 0 0 0;
+            }
+        }
+	}
+}

@@ -1,0 +1,28 @@
+   <table>
+        <thead>
+           <tr>
+                <td align="center"><%=label.operationtype%></td>
+                <td align="center"><%=label.amount%></td>
+                <td align="center"><%=label.roombalance%></td>
+                <td align="center"><%=label.completetime%></td>
+            </tr>
+        </thead>
+        </table>
+        <div class="scroll">
+        <table>   
+            <%
+                for (var i in data){
+            %>
+            <tr>
+                <td><%=data[i].description%></td>
+                <td align="right"><%=data[i].amount%></td>
+                <td align="right"><%=data[i].postbalance%></td>
+                <%  if ( data[i].finishtime != null ) { %>
+                	<td><%= new Date(data[i].finishtime).Format('yyyy-MM-dd hh:mm:ss')%></td>
+                <% } else { %>
+                	<td> <%=label.unfinished%> </td>
+                <% } %>
+            </tr>
+            <%}%>
+        </table>
+    </div>

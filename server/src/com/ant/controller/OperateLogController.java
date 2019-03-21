@@ -1,0 +1,223 @@
+package com.ant.controller;
+
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+import javax.annotation.Resource;
+
+import com.isurpass.common.exception.BusinessException;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.ant.business.OperateLog;
+import com.ant.util.MessageParser;
+import com.ant.vo.OperateLogVo;
+import com.ant.vo.PersonVo;
+import com.isurpass.common.hibernate.BasicScroll;
+import com.isurpass.service.HiOperateLogService;
+
+
+@Controller
+@RequestMapping(value="/service/operateLog")
+@Scope(value = "prototype")
+public class OperateLogController extends BaseController{
+
+	private static Log log = LogFactory.getLog(OperateLogController.class);
+	
+	@Resource
+	private HiOperateLogService hiOperateLogService;
+
+	@RequestMapping(value="/findPage")
+	public @ResponseBody Map<String , Object> findPage(@ModelAttribute("operateLogVo")OperateLogVo operateLogVo)
+	{
+		try
+		{
+			if(operateLogVo.getPage() == null || operateLogVo.getRows() == null)
+			{
+				throw new BusinessException(getRB().getString("pagerowsdeviceid"));
+			}
+			
+			PersonVo sessionPersonVo = super.getCurrentUser();
+			operateLogVo.setPersonId(sessionPersonVo.getId());
+			
+			BasicScroll scroll = new BasicScroll(operateLogVo.getPage() , operateLogVo.getRows());
+			List<OperateLog> lst = hiOperateLogService.findPage(operateLogVo,scroll);
+			for(OperateLog l:lst){
+				if(!StringUtils.isEmpty(l.getMsg1())){//如果msg1不为空，则需要将此条记录转换国际化
+			        	/*
+			        	String wei="{msg1:'维也纳'}";
+			    		JSONObject wo = (JSONObject) JSONObject.parse(wei);
+			    		MessageParser mp = new MessageParser("添加小区【${msg1}】",wo);		
+			    		System.out.println(mp.getMessage());
+			    		*/
+			        	switch(l.getOperateType()){
+				        	case 0:
+				        		l.setTitle(getRB().getString("case0"));
+				        		break;
+				        	case 1:
+				        		String str1="{\"msg1\":\""+l.getMsg1()+"\"}";
+				        		JSONObject js1 = (JSONObject) JSONObject.parse(str1);
+					    		MessageParser mp1 = new MessageParser(getRB().getString("case1"),js1);	
+				        		l.setTitle(mp1.getMessage());
+				        		break;
+				        	case 2:
+				        		String str2="{\"msg1\":\""+l.getMsg1()+"\"}";
+				        		JSONObject js2 = (JSONObject) JSONObject.parse(str2);
+					    		MessageParser mp2 = new MessageParser(getRB().getString("case2"),js2);	
+				        		l.setTitle(mp2.getMessage());
+				        		break;
+				        	case 3:
+				        		String str3="{\"msg1\":\""+l.getMsg1()+"\"}";
+				        		JSONObject js3 = (JSONObject) JSONObject.parse(str3);
+					    		MessageParser mp3 = new MessageParser(getRB().getString("case3"),js3);	
+				        		l.setTitle(mp3.getMessage());
+				        		break;
+				        	case 4:
+				        		String str4="{\"msg1\":\""+l.getMsg1()+"\",\"msg2\":\""+l.getMsg2()+"\"}";
+				        		JSONObject js4 = (JSONObject) JSONObject.parse(str4);
+					    		MessageParser mp4 = new MessageParser(getRB().getString("case4"),js4);	
+				        		l.setTitle(mp4.getMessage());				        		
+				        		break;
+				        	case 5:
+				        		String str5="{\"msg1\":\""+l.getMsg1()+"\",\"msg2\":\""+l.getMsg2()+"\"}";
+				        		JSONObject js5 = (JSONObject) JSONObject.parse(str5);
+					    		MessageParser mp5 = new MessageParser(getRB().getString("case5"),js5);	
+				        		l.setTitle(mp5.getMessage());
+				        		break;
+				        	case 6:
+				        		break;
+				        	case 7:
+				        		String str7="{\"msg1\":\""+l.getMsg1()+"\",\"msg2\":\""+l.getMsg2()+"\"}";
+				        		JSONObject js7 = (JSONObject) JSONObject.parse(str7);
+					    		MessageParser mp7 = new MessageParser(getRB().getString("case7"),js7);	
+				        		l.setTitle(mp7.getMessage());
+				        		break;
+				        	case 8:
+				        		String str8="{\"msg1\":\""+l.getMsg1()+"\",\"msg2\":\""+l.getMsg2()+"\"}";
+				        		JSONObject js8 = (JSONObject) JSONObject.parse(str8);
+					    		MessageParser mp8 = new MessageParser(getRB().getString("case8"),js8);	
+				        		l.setTitle(mp8.getMessage());
+				        		break;
+				        	case 9:
+				        		String str9="{\"msg1\":\""+l.getMsg1()+"\",\"msg2\":\""+l.getMsg2()+"\"}";
+				        		JSONObject js9 = (JSONObject) JSONObject.parse(str9);
+					    		MessageParser mp9 = new MessageParser(getRB().getString("case9"),js9);	
+				        		l.setTitle(mp9.getMessage());
+				        		break;
+				        	case 10:
+				        		String str10="{\"msg1\":\""+l.getMsg1()+"\",\"msg2\":\""+l.getMsg2()+"\",\"msg3\":\""+l.getMsg3()+"\"}";
+				        		JSONObject js10 = (JSONObject) JSONObject.parse(str10);
+					    		MessageParser mp10 = new MessageParser(getRB().getString("case10"),js10);	
+				        		l.setTitle(mp10.getMessage());
+				        		break;
+				        	case 11:
+				        		String str11="{\"msg1\":\""+l.getMsg1()+"\",\"msg2\":\""+l.getMsg2()+"\",\"msg3\":\""+l.getMsg3()+"\"}";
+				        		JSONObject js11 = (JSONObject) JSONObject.parse(str11);
+					    		MessageParser mp11 = new MessageParser(getRB().getString("case11"),js11);	
+				        		l.setTitle(mp11.getMessage());
+				        		break;
+				        	case 12:
+				        		String str12="{\"msg1\":\""+l.getMsg1()+"\"}";
+				        		JSONObject js12 = (JSONObject) JSONObject.parse(str12);
+					    		MessageParser mp12 = new MessageParser(getRB().getString("case12"),js12);	
+				        		l.setTitle(mp12.getMessage());
+				        		break;
+				        	case 13:
+				        		String str13="{\"msg1\":\""+l.getMsg1()+"\",\"msg2\":\""+l.getMsg2()+"\",\"msg3\":\""+l.getMsg3()+"\"}";
+				        		JSONObject js13 = (JSONObject) JSONObject.parse(str13);
+					    		MessageParser mp13 = new MessageParser(getRB().getString("case13"),js13);	
+				        		l.setTitle(mp13.getMessage());
+				        		break;
+				        	case 14:
+				        		String str14="{\"msg1\":\""+l.getMsg1()+"\",\"msg2\":\""+l.getMsg2()+"\",\"msg3\":\""+l.getMsg3()+"\"}";
+				        		JSONObject js14 = (JSONObject) JSONObject.parse(str14);
+					    		MessageParser mp14 = new MessageParser(getRB().getString("case14"),js14);	
+				        		l.setTitle(mp14.getMessage());
+				        		break;
+				        	case 15:
+				        		String str15="{\"msg1\":\""+l.getMsg1()+"\"}";
+				        		JSONObject js15 = (JSONObject) JSONObject.parse(str15);
+					    		MessageParser mp15 = new MessageParser(getRB().getString("case15"),js15);	
+				        		l.setTitle(mp15.getMessage());
+				        		break;
+				        	case 16:
+				        		String str16="{\"msg1\":\""+l.getMsg1()+"\"}";
+				        		JSONObject js16 = (JSONObject) JSONObject.parse(str16);
+					    		MessageParser mp16 = new MessageParser(getRB().getString("case16"),js16);	
+				        		l.setTitle(mp16.getMessage());
+				        		break;
+				        	case 17:
+				        		String str17="{\"msg1\":\""+l.getMsg1()+"\"}";
+				        		JSONObject js17 = (JSONObject) JSONObject.parse(str17);
+					    		MessageParser mp17 = new MessageParser(getRB().getString("case17"),js17);	
+				        		l.setTitle(mp17.getMessage());
+				        		break;
+				        	case 18:
+				        		String str18="{\"msg1\":\""+l.getMsg1()+"\"}";
+				        		JSONObject js18 = (JSONObject) JSONObject.parse(str18);
+					    		MessageParser mp18 = new MessageParser(getRB().getString("case18"),js18);	
+				        		l.setTitle(mp18.getMessage());
+				        		break;
+				        	case 19:
+				        		String str19="{\"msg1\":\""+l.getMsg1()+"\"}";
+				        		JSONObject js19 = (JSONObject) JSONObject.parse(str19);
+					    		MessageParser mp19 = new MessageParser(getRB().getString("case19"),js19);	
+				        		l.setTitle(mp19.getMessage());
+				        		break;
+				        	case 20:
+				        		String str20="{\"msg1\":\""+l.getMsg1()+"\"}";
+				        		JSONObject js20 = (JSONObject) JSONObject.parse(str20);
+					    		MessageParser mp20 = new MessageParser(getRB().getString("case20"),js20);	
+				        		l.setTitle(mp20.getMessage());
+				        		break;
+				        	case 21:
+				        		String str21="{\"msg1\":\""+l.getMsg1()+"\"}";
+				        		JSONObject js21 = (JSONObject) JSONObject.parse(str21);
+					    		MessageParser mp21 = new MessageParser(getRB().getString("case21"),js21);	
+				        		l.setTitle(mp21.getMessage());
+				        		break;
+				        	case 22:
+				        		String str22="{\"msg1\":\""+l.getMsg1()+"\",\"msg2\":\""+l.getMsg2()+"\",\"msg3\":\""+l.getMsg3()+"\"}";
+				        		JSONObject js22 = (JSONObject) JSONObject.parse(str22);
+					    		MessageParser mp22 = new MessageParser(getRB().getString("case22"),js22);	
+				        		l.setTitle(mp22.getMessage());
+				        		break;
+				        	case 23:
+				        		String str23="{\"msg1\":\""+l.getMsg1()+"\",\"msg2\":\""+l.getMsg2()+"\",\"msg3\":\""+l.getMsg3()+"\"}";
+				        		JSONObject js23 = (JSONObject) JSONObject.parse(str23);
+					    		MessageParser mp23 = new MessageParser(getRB().getString("case23"),js23);	
+				        		l.setTitle(mp23.getMessage());
+				        		break;
+				        	case 24:
+				        		String str24="{\"msg1\":\""+l.getMsg1()+"\"}";
+				        		JSONObject js24 = (JSONObject) JSONObject.parse(str24);
+					    		MessageParser mp24 = new MessageParser(getRB().getString("case24"),js24);	
+				        		l.setTitle(mp24.getMessage());
+				        		break;
+				        	default :
+				        		break;
+			        	}
+			        
+				}
+			}
+			return createResponse(1 , "" , scroll.getRows() , lst);
+		}
+		catch (Exception e) 
+		{
+			log.error(e.getMessage() , e);
+			return super.createErrorResponse(-1, e.getMessage());
+		}
+	}
+}

@@ -1,0 +1,525 @@
+package com.isurpass.service;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+import javax.annotation.Resource;
+
+import com.ant.util.StringUtil;
+import com.isurpass.common.exception.BusinessException;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.alibaba.fastjson.JSON;
+import com.ant.business.Device;
+import com.ant.business.District;
+import com.ant.business.DistrictPaymentSetting;
+import com.ant.business.Room;
+import com.ant.business.RoomPrivilege;
+import com.ant.business.Transaction;
+import com.ant.config.MjConfig;
+import com.ant.constant.CommonConstant;
+import com.ant.constant.TransactionStatus;
+import com.ant.constant.TransactionType;
+import com.ant.restful.service.RestfulUtil;
+import com.ant.util.Utils;
+import com.ant.vo.PersonVo;
+import com.ant.vo.RoomVo;
+import com.isurpass.common.hibernate.BasicScroll;
+import com.isurpass.common.hibernate.CriteriaWrap;
+import com.isurpass.common.hibernate.ExpWrap;
+import com.isurpass.common.hibernate.HqlWrap;
+
+/**
+ * 房间service
+ *
+ */
+public class HiRoomService extends BaseService<Room>
+{
+	@Resource
+	private HiOperateLogService hiOperateLogService;
+
+	private static Log log = LogFactory.getLog(HiRoomService.class);
+	
+	/**
+	 * 保存房间信息
+	 * @param room
+	 * @param sessionPersonVo
+	 */
+	public void saveRoom(Room room,PersonVo sessionPersonVo){
+		room.setPersonId(sessionPersonVo.getId());
+		if(StringUtil.checkNull(room.getRoomImg())){
+			room.setRoomImg(MjConfig.get("roomDefaultImgUrl"));
+		}
+//		room.setDeviceCount(0);
+		room.setGrantFlag(0);
+		room.setInputDate(new Date());
+		super.save(room);
+		
+		/**更新小区房间数 + 1*/
+		HiDistrictService hiDistrictService = super.createService(HiDistrictService.class);
+		District dbDistrict = hiDistrictService.findById(room.getDistrictId());
+		hiDistrictService.updateRoomCount(room.getDistrictId(), 1);
+		
+		/**保存日志*/
+		hiOperateLogService.saveOperateLog(7, "【" + dbDistrict.getDistrictName() + "】小区添加房间【" + room.getRoomName() + "】", sessionPersonVo.getRealName(), sessionPersonVo.getId(), 
+				sessionPersonVo.getIp(), room.getId(),dbDistrict.getDistrictName(),room.getRoomName(),null);
+	}
+	
+	/**
+	 * 修改房间信息
+	 * @param room
+	 * @param sessionPersonVo
+	 */
+	public void updateRoom(Room room,PersonVo sessionPersonVo){
+		Room dbRoom = this.findById(room.getId());
+		
+		Room.checkRole(dbRoom, sessionPersonVo);
+		dbRoom.setRoomImg(room.getRoomImg());
+		if(StringUtil.checkNull(dbRoom.getRoomImg())){
+			dbRoom.setRoomImg(MjConfig.get("roomDefaultImgUrl"));
+		}
+		dbRoom.setRoomType(room.getRoomType());
+		dbRoom.setRoomName(room.getRoomName());
+		dbRoom.setBuild(room.getBuild());
+		dbRoom.setUnit(room.getUnit());
+		dbRoom.setFloor(room.getFloor());
+		dbRoom.setRemark(room.getRemark());
+		dbRoom.setRentfee(room.getRentfee());
+		super.update(dbRoom);
+		
+		/**保存日志*/
+		HiDistrictService hiDistrictService = super.createService(HiDistrictService.class);
+		District dbDistrict = hiDistrictService.findById(room.getDistrictId());
+		hiOperateLogService.saveOperateLog(8, "【" + dbDistrict.getDistrictName() + "】小区修改房间【" + room.getRoomName() + "】", sessionPersonVo.getRealName(), sessionPersonVo.getId(), 
+				sessionPersonVo.getIp(), room.getId(),dbDistrict.getDistrictName(),room.getRoomName(),null);
+	}
+
+	/**
+	 * 根据id查询
+	 * @param id
+	 * @return
+	 */
+	public Room findById(Long id)
+	{
+		return super.query(id);
+	}
+	
+	public List<Room> findByDistrictId(Long districtId)
+	{
+		return super.findByProperty("districtId", districtId);
+	}
+	
+	/**
+	 * 查询房间
+	 * @param roomVo
+	 * @return
+	 */
+	public List<Room> findRoom(RoomVo roomVo)
+	{
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.addifNotNull(ExpWrap.eq("personId", roomVo.getPersonId()));
+		cw.addifNotNull(ExpWrap.eq("districtId", roomVo.getDistrictId()));
+		cw.addifNotNull(ExpWrap.eq("build", roomVo.getBuild()));
+		cw.addifNotNull(ExpWrap.eq("unit", roomVo.getUnit()));
+		cw.addifNotNull(ExpWrap.eq("floor", roomVo.getFloor()));
+		cw.addifNotNull(ExpWrap.eq("id", roomVo.getId()));
+		cw.addifNotNull(ExpWrap.like("roomName", roomVo.getRoomName()));
+		
+		return cw.list();
+	}
+	
+	/**
+	 * 分页查询
+	 * @param district
+	 * @param page
+	 * @param rows
+	 * @return
+	 */
+	public List<RoomVo> findPage(RoomVo roomVo,BasicScroll scroll)
+	{
+		CriteriaWrap cw = super.createCriteriaWrap();
+		cw.addifNotNull(ExpWrap.eq("personId", roomVo.getPersonId()));
+		cw.addifNotNull(ExpWrap.eq("districtId", roomVo.getDistrictId()));
+		cw.addifNotNull(ExpWrap.eq("build", roomVo.getBuild()));
+		cw.addifNotNull(ExpWrap.eq("unit", roomVo.getUnit()));
+		cw.addifNotNull(ExpWrap.eq("floor", roomVo.getFloor()));
+		cw.addifNotNull(ExpWrap.like("roomName", roomVo.getRoomName()));
+		cw.setScroll(scroll);
+
+		List<Room> lst = cw.list();
+		if ( lst == null || lst.isEmpty() )
+			return new ArrayList<RoomVo>();
+				
+		List<Long> ridl = new ArrayList<Long>();
+		for ( Room r : lst )
+			ridl.add(r.getId());
+		
+		HiDeviceService hiDeviceService = super.createService(HiDeviceService.class);
+		Map<Long, Integer> map = hiDeviceService.findMapBindDeviceCount(ridl);
+		
+		List<RoomVo> rvl = new ArrayList<RoomVo>();
+		for ( Room r : lst )
+		{
+			RoomVo vo = new RoomVo();
+			try
+			{
+				PropertyUtils.copyProperties(vo, r);
+			} 
+			catch (Throwable e)
+			{
+				log.error(e.getMessage() , e);
+			}
+			if(map.containsKey(vo.getId()))
+				vo.setDeviceCount(map.get(vo.getId()));
+			else 
+				vo.setDeviceCount(0);
+			rvl.add(vo);
+		}
+		
+		return rvl ;
+	}
+	
+
+	
+	/**
+	 * 根据小区id查询栋
+	 * @param district
+	 * @param page
+	 * @param rows
+	 * @return
+	 */
+	public List<Map> findBuildByDistrictId(Long personId,Long districtId)
+	{
+		HqlWrap hw = new HqlWrap(super.sessionFactory);
+		hw.add("select distinct build as build ");
+		hw.add("from Room ");
+		hw.add("where personId = ? " , personId ) ;
+		hw.add("and districtId = ? " , districtId ) ;
+		hw.setResultBeanClass(Map.class);
+		return hw.list();
+	}
+	
+	/**
+	 * 根据栋查询单元
+	 * @param district
+	 * @param page
+	 * @param rows
+	 * @return
+	 */
+	public List<Map> findUnitByBuild(Long personId,Long districtId,String build)
+	{
+		HqlWrap hw = new HqlWrap(super.sessionFactory);
+		hw.add("select distinct unit as unit ");
+		hw.add("from Room ");
+		hw.add("where personId = ? " , personId ) ;
+		hw.add("and districtId = ? " , districtId ) ;
+		hw.add("and build = ? " , build) ;
+		hw.setResultBeanClass(Map.class);
+		return hw.list();
+	}
+	
+	/**
+	 * 根据单元查询楼
+	 * @param district
+	 * @param page
+	 * @param rows
+	 * @return
+	 */
+	public List<Map> findFloorByUnit(Long personId,Long districtId,String build,String unit)
+	{
+		HqlWrap hw = new HqlWrap(super.sessionFactory);
+		hw.add("select distinct floor as floor ");
+		hw.add("from Room ");
+		hw.add("where personId = ? " , personId ) ;
+		hw.add("and districtId = ? " , districtId ) ;
+		hw.add("and build = ? " , build) ;
+		hw.add("and unit = ? " , unit );
+		hw.setResultBeanClass(Map.class);
+		return hw.list();
+	}
+	
+	/**
+	 * 删除房间
+	 * @param id
+	 * @param sessionPersonVo
+	 */
+	public void deleteRoom(Long id,PersonVo sessionPersonVo){
+		Room dbRoom = this.findById(id);
+		
+		Room.checkRole(dbRoom, sessionPersonVo);
+		if(dbRoom.getGrantFlag() == 1){
+			throw new BusinessException("已授权房间不允许删除");
+		}
+		HiDeviceService hiDeviceService = super.createService(HiDeviceService.class);
+		int bindDeviceCount = hiDeviceService.findBindDeviceCount(id,null , null);
+		if(bindDeviceCount > 0)
+			throw new BusinessException("请先删除房间下的设备");
+		
+		super.delete(dbRoom);
+		
+		/**小区房间数量 -1 */
+		HiDistrictService hiDistrictService = super.createService(HiDistrictService.class);
+		hiDistrictService.updateRoomCount(dbRoom.getDistrictId(), -1);
+		
+		/**保存日志*/
+		District dbDistrict = hiDistrictService.findById(dbRoom.getDistrictId());
+		hiOperateLogService.saveOperateLog(9, "【" + dbDistrict.getDistrictName() + "】小区删除房间【" + dbRoom.getRoomName() + "】", sessionPersonVo.getRealName(), sessionPersonVo.getId(), 
+				sessionPersonVo.getIp(), dbRoom.getId(),dbDistrict.getDistrictName(),dbRoom.getRoomName(),null);
+	}
+	
+	/**
+	 * 租客授权
+	 * @param id
+	 * @param grantUserName
+	 * @param grantRealName
+	 * @param rb 
+	 */
+	public void grant(Long id,String grantUserName,String grantRealName,Date grantBeginDate,Date grantEndDate, PersonVo sessionPersonVo, ResourceBundle rb){
+		Room dbRoom = this.findById(id);
+		
+		Room.checkRole(dbRoom, sessionPersonVo);
+		
+		dbRoom.setGrantRealName(grantRealName);
+		dbRoom.setGrantUserName(grantUserName);
+		dbRoom.setGrantBeginDate(grantBeginDate);
+		dbRoom.setGrantEndDate(grantEndDate);
+		dbRoom.setGrantFlag(1);
+		
+		/**查询房间绑定的设备*/
+		HiDeviceService hiDeviceService = super.createService(HiDeviceService.class);
+		List<Device> bindDeviceList = hiDeviceService.findBindDevice(id);
+		
+		/**调用授权接口*/
+		List<Integer> zwavedeviceid = new ArrayList<Integer>();
+		if(bindDeviceList.size() == 0)
+			throw new BusinessException("请先绑定设备");
+		super.update(dbRoom);
+		for(Device tempDevice : bindDeviceList){
+			zwavedeviceid.add(Integer.parseInt(tempDevice.getPtDeviceId()));
+			tempDevice.setBaseDegrees(tempDevice.getCurrentDegrees());
+			tempDevice.setInitPreMonthDegrees(1);	//需要初始化本月初始度數
+			hiDeviceService.update(tempDevice);
+		}
+		
+		/**调用授权接口*/
+		if(CommonConstant.restFlag == 1){
+			Map<String , Object>  map = new HashMap<String , Object> ();
+			map.put("username", dbRoom.getGrantUserName());
+			map.put("zwavedeviceid", zwavedeviceid);
+			map.put("validfrom", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(grantBeginDate));
+			map.put("validthrough", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(grantEndDate));
+			
+			String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/grantdevice", map,rb);
+			Utils.checkResult(str,rb);
+			
+			/**发送短信提醒*/
+		}
+		
+		/**保存日志*/
+		HiDistrictService hiDistrictService = super.createService(HiDistrictService.class);
+		District dbDistrict = hiDistrictService.findById(dbRoom.getDistrictId());
+		hiOperateLogService.saveOperateLog(10, "将【" + dbDistrict.getDistrictName() + "】小区下【" + dbRoom.getRoomName() + "】房间授权给" 
+				+ dbRoom.getGrantRealName() + "（" + dbRoom.getGrantUserName() + "）", 
+				sessionPersonVo.getRealName(), sessionPersonVo.getId(), 
+				sessionPersonVo.getIp(), dbRoom.getId(),dbDistrict.getDistrictName(),dbRoom.getRoomName(),dbRoom.getGrantRealName()+"（" + dbRoom.getGrantUserName() + "）");
+	}
+	
+	/**
+	 * 解除租客授权
+	 * @param id
+	 * @param rb 
+	 * @param grantUserName
+	 * @param grantRealName
+	 */
+	public void unGrant(Long id,PersonVo sessionPersonVo, ResourceBundle rb){
+		Room dbRoom = this.findById(id);
+		
+		Room.checkRole(dbRoom, sessionPersonVo);
+		String grantUserName = dbRoom.getGrantUserName();
+		String grantRealName = dbRoom.getGrantRealName();
+		dbRoom.setGrantRealName("");
+		dbRoom.setGrantUserName("");
+		dbRoom.setGrantFlag(0);
+		super.update(dbRoom);
+		
+		/**查询房间绑定的设备*/
+		HiDeviceService hiDeviceService = super.createService(HiDeviceService.class);
+		List<Device> bindDeviceList = hiDeviceService.findBindDevice(id);
+		
+		/**调用解授权接口*/
+		List<Integer> zwavedeviceid = new ArrayList<Integer>();
+		if(bindDeviceList.size() != 0){
+			for(Device tempDevice : bindDeviceList){
+				zwavedeviceid.add(Integer.parseInt(tempDevice.getPtDeviceId()));
+			}
+			
+			/**调用授权接口*/
+			if(CommonConstant.restFlag == 1){
+				Map<String , Object>  map = new HashMap<String , Object> ();
+				map.put("username", grantUserName);
+				map.put("zwavedeviceid", zwavedeviceid);
+				log.info(JSON.toJSONString(map));
+				String str = RestfulUtil.postToServerHttps(MjConfig.get("restUrl") + "thirdpart/zufang/ungrantdevice", map,rb);
+				Utils.checkResult(str,rb);
+			}
+		}
+		
+		/**保存日志*/
+		HiDistrictService hiDistrictService = super.createService(HiDistrictService.class);
+		District dbDistrict = hiDistrictService.findById(dbRoom.getDistrictId());
+		hiOperateLogService.saveOperateLog(11, "将【" + dbDistrict.getDistrictName() + "】小区下【" + dbRoom.getRoomName() + "】房间解除" 
+				+ grantRealName + "（" + grantUserName + "）的授权", 
+				sessionPersonVo.getRealName(), sessionPersonVo.getId(), 
+				sessionPersonVo.getIp(), dbRoom.getId(),dbDistrict.getDistrictName(),dbRoom.getRoomName(),grantRealName + "（" + grantUserName + "）");
+	}
+	
+	/**
+	 * 查询用户下面的授权租客
+	 * @param personId
+	 * @return
+	 */
+	public List<Map> findGrantRealName(Long personId)
+	{
+		HqlWrap hw = new HqlWrap(super.sessionFactory);
+		hw.add("select distinct(rp.grantRealName) as grantRealName ");
+		hw.add("from Room r ,  RoomPrivilege rp " );
+		hw.add("where r.id = rp.roomId and r.personId = ? " , personId);
+		hw.setResultBeanClass(Map.class);
+		return hw.list();
+	}
+	
+	public void recharge(Room room,Integer rechargetype,PersonVo sessionPersonVo)
+	{
+		Room dbRoom = this.findById(room.getId());
+		
+		if ( rechargetype == null || rechargetype >= TransactionType.values().length )
+			rechargetype = TransactionType.unknow.ordinal();
+		
+		TransactionService ts = super.createService(TransactionService.class);
+		Transaction t = ts.createTransaction(room.getId().intValue(), room.getBalance(), TransactionType.values()[rechargetype], TransactionStatus.finished);
+		
+		t.setPrebalance(dbRoom.getBalance());
+		
+		dbRoom.setBalance( dbRoom.getBalance() + room.getBalance());
+		
+		t.setPostbalance(dbRoom.getBalance());
+		
+		super.update(dbRoom);
+				
+		/**保存日志*/
+		HiDistrictService districtService = (HiDistrictService)this.applicationContext.getBean("HiDistrictService");
+		District dbDistrict = districtService.findById(dbRoom.getDistrictId());
+		hiOperateLogService.saveOperateLog(22, "【" + dbDistrict.getDistrictName() + "】小区房间【" + dbRoom.getRoomName() + "】充值" + room.getBalance() +"分", sessionPersonVo.getRealName(), sessionPersonVo.getId(), 
+				sessionPersonVo.getIp(), dbRoom.getId(),dbDistrict.getDistrictName(),dbRoom.getRoomName(),room.getBalance()+"");
+		
+	}
+	
+	public List<RoomVo> queryRoomFee(RoomVo roomvo, Boolean arrearageonly)
+	{
+		List<Room> lst = this.findRoom(roomvo);
+		
+		List<RoomVo> rvlst = new ArrayList<RoomVo>();
+		
+		if ( lst == null || lst.size() == 0 )
+			return rvlst ;
+		
+		HiDistrictService districtService = (HiDistrictService)this.applicationContext.getBean("HiDistrictService");
+		DistrictPaymentSettingService districtPaymentSettingService = (DistrictPaymentSettingService)this.applicationContext.getBean("DistrictPaymentSettingService");
+
+		for ( Room r : lst )
+		{
+			DistrictPaymentSetting dps = districtPaymentSettingService.querybydistrictid(r.getDistrictId().intValue());
+			
+			if ( dps == null || dps.getAutofee() == 0 )
+				continue;
+			
+			District d = districtService.findById(r.getDistrictId());
+			if ( arrearageonly != null && arrearageonly == true && r.getArrearage() == 0)
+				continue;
+			
+			RoomVo rv = new RoomVo();
+			try {
+				PropertyUtils.copyProperties(rv, r);
+			} catch (Throwable t) {
+				log.info(t.getMessage() , t);
+			} 
+
+			rv.setDistrictName(d.getDistrictName());
+			
+			rvlst.add(rv);
+		}
+
+		return rvlst ;
+	}
+	
+	public List<RoomVo> queryFeeRoombyPhonenumber(String phonenumber)
+	{
+		HiRoomPrivilegeService roomPrivilegeService = (HiRoomPrivilegeService)this.applicationContext.getBean("HiRoomPrivilegeService");
+
+		List<RoomPrivilege> lst = roomPrivilegeService.findValidRoomPrivilegebyPhonenumber(phonenumber);
+		
+		List<RoomVo> rvlst = new ArrayList<RoomVo>();
+		
+		if ( lst == null || lst.size() == 0 )
+			return rvlst ;
+		
+		HiDistrictService districtService = (HiDistrictService)this.applicationContext.getBean("HiDistrictService");
+		DistrictPaymentSettingService districtPaymentSettingService = (DistrictPaymentSettingService)this.applicationContext.getBean("DistrictPaymentSettingService");
+
+		for ( RoomPrivilege rp : lst )
+		{
+			Room r = this.findById(rp.getRoomId());
+			
+			DistrictPaymentSetting dps = districtPaymentSettingService.querybydistrictid(r.getDistrictId().intValue());
+			
+			if ( dps == null || dps.getAutofee() == 0 )
+				continue;
+			
+			District d = districtService.findById(r.getDistrictId());
+			RoomVo rv = new RoomVo();
+			try {
+				PropertyUtils.copyProperties(rv, r);
+			} catch (Throwable t) {
+				log.info(t.getMessage() , t);
+			} 
+
+			rv.setDistrictName(d.getDistrictName());
+			
+			rvlst.add(rv);
+		}
+
+		return rvlst ;
+	}
+	
+	public void withdraw(Room room,PersonVo sessionPersonVo)
+	{
+		Room dbRoom = this.findById(room.getId());
+		
+		if ( dbRoom.getBalance() < room.getBalance())
+			throw new BusinessException("退款金额不能大于房间余额");
+		
+		TransactionService ts = super.createService(TransactionService.class);
+		Transaction t = ts.createTransaction(room.getId().intValue(), -1 * room.getBalance(), TransactionType.withdraw, TransactionStatus.finished);
+		
+		t.setPrebalance(dbRoom.getBalance());
+		
+		dbRoom.setBalance( dbRoom.getBalance() - room.getBalance());
+
+		t.setPostbalance(dbRoom.getBalance());
+		
+		super.update(dbRoom);
+		
+		/**保存日志*/
+		HiDistrictService districtService = (HiDistrictService)this.applicationContext.getBean("HiDistrictService");
+		District dbDistrict = districtService.findById(dbRoom.getDistrictId());
+		hiOperateLogService.saveOperateLog(23, "【" + dbDistrict.getDistrictName() + "】小区房间【" + dbRoom.getRoomName() + "】退款" + room.getBalance() +"分", sessionPersonVo.getRealName(), sessionPersonVo.getId(), 
+				sessionPersonVo.getIp(), dbRoom.getId(),dbDistrict.getDistrictName(),dbRoom.getRoomName(),room.getBalance()+"");
+	}
+}

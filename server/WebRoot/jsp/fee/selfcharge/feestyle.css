@@ -1,0 +1,30 @@
+.inputtext
+{
+	border:1px solid #e1e1e1;
+	border-radius:6px;
+	font: normal 16px arial, sans-serif; 
+	font-family:"Source Han Sans";
+	height:48px;
+	width:202px;
+	padding-left:10px;
+}
+
+.button {
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+	border-radius:6px;
+	border:1px solid #999999;
+	background-color:#ffbe69;
+	height:48px;
+	width:275px;
+	color:#ffffff;
+}
+
+.fontsytle
+{
+	font: normal 16px arial, sans-serif; 
+	font-family:"Source Han Sans";
+}

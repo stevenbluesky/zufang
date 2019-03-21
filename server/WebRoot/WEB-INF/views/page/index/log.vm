@@ -1,0 +1,43 @@
+#extends("page/include/base.vm") #require("static/scss/log.scss") #block("content")
+<div class="g-sd">
+    <div class="g-sdc">
+        #widget("widget/sidebarmenus/nav.vm" "var:type=7")
+    </div>
+</div>
+<div class="g-mn">
+    #block("header") #widget("widget/header/header.vm") #end
+    <div class="m-page-title">
+        <span><i>&gt;</i>系统日志</span>
+    </div>
+    <div class="g-mnc">
+        <div class="search-item search-item-last">
+            <ul class="f-cb">
+                <li><i class="fa fa-map-marker fa-fw"></i>日期：</li>
+                <li>
+                    <input type="text" class="u-ipt" id="startTime-search" placeholder="开始日期" onfocus="this.blur()" />
+                </li>
+                <li>
+                    <input type="text" class="u-ipt" id="endTime-search" placeholder="结束日期" onfocus="this.blur()" />
+                </li>
+            </ul>
+        </div>
+        <div class="search-item search-item-last">
+            <ul class="f-cb">
+                <li><i class="fa fa-user fa-fw"></i>操作员：</li>
+                <li>
+                    <input type="text" class="u-ipt" id="operateName-search" placeholder="操作员" />
+                </li>
+                <li>
+                    <button class="u-btn gray" id="btn-search">搜索</button>
+                </li>
+            </ul>
+        </div>
+        <div id="list" class="m-demo">
+        </div>
+        <div class="page" id="page"></div>
+    </div>
+</div>
+#end #script() require('static/libs/pro/index/log') #end 
+  ## auto inject by fis3-preprocess-extlang
+  #require("page/index/log.vm")
+#end

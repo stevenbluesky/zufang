@@ -1,0 +1,140 @@
+<%if(type==1){%>
+    <table >
+        <thead>
+        <br/>
+        <div style="font-size:22px;text-align:center"><%=label.passwordgeneraterule%></div>
+        <br/>
+	        <div class="ipt">
+	        	<input type="checkbox" id="autoflag" value="1" style="zoom:150%;vertical-align: -3px;"><%=label.userule%>
+
+	            <a class="u-btn gray" id="btn-delete" style="width:50px;float:right;"><%=label.ddelete%></a>
+	            <a class="u-btn gray" id="btn-edit" style="width:50px;float:right;margin-right:1px;"><%=label.modify%></a>
+	            <a class="u-btn gray" id="btn-add"  style="width:50px;float:right;margin-right:1px;"><%=label.add%></a>
+	            <a class="u-btn gray" id="btn-genenow" style="float:right;margin-right:1px;"><%=label.generationnow%></a>
+	            <a class="u-btn gray" id="btn-geneafter" style="float:right;margin-right:1px;"><%=label.regenerate%></a>
+	        </div>
+	        <br/>
+	        <div><%=label.tomanydtlofpassword%></div>
+           <tr>
+                <th style="text-align:center;width:10px;"></th>
+                <th style="text-align:center"><%=label.validstarttime%></th>
+                <th style="text-align:center"><%=label.validtime%></th>
+                <th style="text-align:center"><%=label.validweek%></th>
+            </tr>
+        </thead>
+        </table>
+        <div class="scroll">
+        <table >
+            <%
+                for (var i in data){
+            %>
+            <tr>
+                <td style="text-align:center;width:10px;"><input type="checkbox" name="no" value="<%=data[i].doorlockpasswordruledtlid%>" style="zoom:150%;"></td>
+                <td style="text-align:center"><%=data[i].starttime%></td>
+                <td style="text-align:center"><%=(data[i].duration-(data[i].duration%60))/60%><%=label.hours%>,<%=(data[i].duration)%60%><%=label.minutes%>
+					
+                <td style="text-align:center">
+					<%if(((data[i].weekday)%(Math.pow(2, 6)))/(Math.pow(2, 6-1)) >= 1.0){%><%=label.monday%><%}%>
+					<%if(((data[i].weekday)%(Math.pow(2, 6)))/(Math.pow(2, 6-1)) >1.0){%>,<%}%>
+					<%if(((data[i].weekday)%(Math.pow(2, 5)))/(Math.pow(2, 5-1)) >= 1.0){%><%=label.tuesday%><%}%>
+					<%if(((data[i].weekday)%(Math.pow(2, 5)))/(Math.pow(2, 5-1)) > 1.0){%>,<%}%>
+					<%if(((data[i].weekday)%(Math.pow(2, 4)))/(Math.pow(2, 4-1)) >= 1.0){%><%=label.wednesday%><%}%>
+					<%if(((data[i].weekday)%(Math.pow(2, 4)))/(Math.pow(2, 4-1)) > 1.0){%>,<%}%>
+					<%if(((data[i].weekday)%(Math.pow(2, 3)))/(Math.pow(2, 3-1)) >= 1.0){%><%=label.thursday%><%}%>
+					<%if(((data[i].weekday)%(Math.pow(2, 3)))/(Math.pow(2, 3-1)) > 1.0){%>,<%}%>
+					<%if(((data[i].weekday)%(Math.pow(2, 2)))/(Math.pow(2, 2-1)) >= 1.0){%><%=label.friday%><%}%>
+					<%if(((data[i].weekday)%(Math.pow(2, 2)))/(Math.pow(2, 2-1)) > 1.0){%>,<%}%>
+					<%if(((data[i].weekday)%(Math.pow(2, 1)))/(Math.pow(2, 1-1)) >= 1.0){%><%=label.saturday%><%}%>
+					<%if(((data[i].weekday)%(Math.pow(2, 7)))/(Math.pow(2, 7-1)) > 1.0){%>,<%}%>
+					<%if(((data[i].weekday)%(Math.pow(2, 7)))/(Math.pow(2, 7-1)) >= 1.0){%><%=label.sunday%><%}%>
+				</td>
+            </tr>
+            <%}%>
+        </table>
+    </div>
+<%}else if(type == 2){%>
+	 <div class="layer-box f-cb">
+        <div class="box-title"><%=label.addrule%><div class="btn-close" id="lockdetailclose"><i></i></div></div>
+        <div class="box-bd">
+            <div class="m-form">
+                <form id="svaeCellForm" class="m-plane-bd">
+   					<div class="formitm">
+                        <label class="lab"><%=label.validstarttime%></label>
+                         <div class="ipt">
+                           <input type="text" id="starttime" name="starttime" style="width:270px;" placeholder="<%=label.timeformat%>"/>
+						 </div>
+                    </div>
+               		<div class="formitm">
+                        <label class="lab"><%=label.validtime%></label>
+                         <div class="ipt">
+                           <input type="text" id="hour" name="hour" style="width:100px;" placeholder="2"/><%=label.hours%>&nbsp;
+                           <input type="text" id="min" name="min" style="width:100px;" placeholder="30"/><%=label.minutes%>
+						 </div>
+                    </div>
+                   <div class="formitm" id="weekshow">
+                	  <label class="lab"><%=label.validweek%></label>
+                	  <div class="ipt" id="weekday">
+    					<input type="checkbox" checked name="week1" value="32" style="zoom:150%;"><%=label.dyi%>&nbsp;
+    					<input type="checkbox" checked name="week2" value="16" style="zoom:150%;"><%=label.der%>&nbsp;
+    					<input type="checkbox" checked name="week3" value="8"  style="zoom:150%;"><%=label.dsan%>&nbsp;
+    					<input type="checkbox" checked name="week4" value="4"  style="zoom:150%;"><%=label.dsi%>&nbsp;
+    					<input type="checkbox" checked name="week5" value="2"  style="zoom:150%;"><%=label.dwu%>&nbsp;
+    					<input type="checkbox" checked name="week6" value="1"  style="zoom:150%;"><%=label.dliu%>
+    					<input type="checkbox" checked name="week7" value="64" style="zoom:150%;"><%=label.dtian%>&nbsp;
+                	  </div>
+                    </div>
+   
+                </form>
+            </div>
+        </div>
+        <div class="box-ft">
+            <div class="btns">
+                <button class="u-btn btn-close gray" id="lockcancel"><%=label.cancel%></button>
+                <button class="u-btn red" id="btn-save-add" data-type="0"><%=label.confirm%></button>
+            </div>
+        </div>
+    </div>
+<%}else if(type == 3){%>
+	 <div class="layer-box f-cb">
+        <div class="box-title"><%=label.modifyrule%><div class="btn-close" id="lockdetailclose"><i></i></div></div>
+        <div class="box-bd">
+            <div class="m-form">
+                <form id="svaeCellForm" class="m-plane-bd">
+   					<div class="formitm">
+                        <label class="lab"><%=label.validstarttime%></label>
+                         <div class="ipt">
+                         	<input type="hidden" id="doorlockpasswordruledtlid" value="<%=data.doorlockpasswordruledtlid%>"/>
+                           <input type="text" id="starttime" name="starttime" style="width:270px;" value="<%=data.starttime%>" placeholder="<%=label.timeformat%>"/>
+						 </div>
+                    </div>
+               		<div class="formitm">
+                        <label class="lab"><%=label.validtime%></label>
+                         <div class="ipt">
+                           <input type="text" id="hour" name="hour" style="width:100px;" value="<%=(data.duration-data.duration%60)/60%>" placeholder="2"/><%=label.hours%>&nbsp;
+                           <input type="text" id="min" name="min" style="width:100px;" value="<%=data.duration%60%>" placeholder="30"/><%=label.minutes%>
+						 </div>
+                    </div>
+                   <div class="formitm" id="weekshow">
+                	  <label class="lab"><%=label.validweek%></label>
+                	  <div class="ipt" id="weekday">
+    					<input type="checkbox" name="week1" value="32" <%if(((data.weekday)%(Math.pow(2, 6)))/(Math.pow(2, 6-1)) >= 1.0){%>checked="checked"<%}%> style="zoom:150%;"><%=label.dyi%>&nbsp;
+    					<input type="checkbox" name="week2" value="16" <%if(((data.weekday)%(Math.pow(2, 5)))/(Math.pow(2, 5-1)) >= 1.0){%>checked="checked"<%}%> style="zoom:150%;"><%=label.der%>&nbsp;
+    					<input type="checkbox" name="week3" value="8"  <%if(((data.weekday)%(Math.pow(2, 4)))/(Math.pow(2, 4-1)) >= 1.0){%>checked="checked"<%}%> style="zoom:150%;"><%=label.dsan%>&nbsp;
+    					<input type="checkbox" name="week4" value="4"  <%if(((data.weekday)%(Math.pow(2, 3)))/(Math.pow(2, 3-1)) >= 1.0){%>checked="checked"<%}%> style="zoom:150%;"><%=label.dsi%>&nbsp;
+    					<input type="checkbox" name="week5" value="2"  <%if(((data.weekday)%(Math.pow(2, 2)))/(Math.pow(2, 2-1)) >= 1.0){%>checked="checked"<%}%> style="zoom:150%;"><%=label.dwu%>&nbsp;
+    					<input type="checkbox" name="week6" value="1"  <%if(((data.weekday)%(Math.pow(2, 1)))/(Math.pow(2, 1-1)) >= 1.0){%>checked="checked"<%}%> style="zoom:150%;"><%=label.dliu%>
+    					<input type="checkbox" name="week7" value="64" <%if(((data.weekday)%(Math.pow(2, 7)))/(Math.pow(2, 7-1)) >= 1.0){%>checked="checked"<%}%> style="zoom:150%;"><%=label.dtian%>&nbsp;
+                	  </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="box-ft">
+            <div class="btns">
+                <button class="u-btn btn-close gray" id="lockcancel"><%=label.cancel%></button>
+                <button class="u-btn red" id="btn-save-modify" data-type="0"><%=label.confirm%></button>
+            </div>
+        </div>
+    </div>
+
+<%}%>

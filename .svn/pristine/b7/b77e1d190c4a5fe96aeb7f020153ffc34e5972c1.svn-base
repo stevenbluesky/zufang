@@ -1,0 +1,10 @@
+{
+    "repos": "https://github.com/wbotelhos/raty.git",
+    "version": "v2.7.0",
+    "name": "jquery-raty",
+    "main": "jquery.raty.js",
+    "description": "A Star Rating Plugin",
+    "dependencies": {
+        "jquery": ">=1.6"
+    }
+}

@@ -1,0 +1,11 @@
+# 页面转发
+
+# 首页
+rewrite ^\/index.html$ /page/index/index
+rewrite ^\/home.html$ /page/index/home
+rewrite ^\/wifi.html$ /page/index/wifi
+rewrite ^\/user.html$ /page/index/user
+rewrite ^\/chart.html$ /page/index/chart
+rewrite ^\/manager.html$ /page/index/manager
+rewrite ^\/lockDetail.html$ /page/index/lockDetail
+rewrite ^\/cell.html$ /page/index/cell

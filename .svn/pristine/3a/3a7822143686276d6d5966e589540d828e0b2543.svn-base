@@ -1,0 +1,32 @@
+<html lang="zh-CN">
+	<head>
+		<!-- 基本配置信息 -->
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta http-equiv="Pragma" content="no-cache"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="renderer" content="webkit" />
+
+        <!-- seo 优化部分 -->
+        <meta name="title" content=""/>
+        <meta name="keywords" content=""/>
+        <meta name="author" content="libiqi"/>
+        <meta name="email" content="274793580@qq.com"/>
+        <meta name="Description" content=""/>
+
+
+        <!-- 防止缓存 -->
+        <meta HTTP-EQUIV="Pragma" CONTENT="no-cache">
+        <meta HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+        <meta HTTP-EQUIV="Expires" CONTENT="0">
+        
+        <title>注册协议</title>
+        <link rel="shortcut icon" type="image/x-icon" href="http://127.0.0.1:8080/mj/static/favicon_cd76b30.ico" />
+	</head>
+	<body>
+		
+
+	</body>
+</html>

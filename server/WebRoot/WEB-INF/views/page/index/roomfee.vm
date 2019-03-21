@@ -1,0 +1,53 @@
+#extends("page/include/base.vm") 
+    #require("static/scss/log.scss")
+	#require("static/scss/equipment.scss") 
+	#block("content")
+		<div class="g-sd">
+			<div class="g-sdc">
+				#widget("widget/sidebarmenus/nav.vm" "var:type=6")
+			</div>
+		</div>
+		<div class="g-mn">
+			#block("header")
+				#widget("widget/header/header.vm")
+			#end
+			<div class="m-page-title">
+				<span><a href="$!{request.contextPath}$!{ns}/cell.html" id="cellName"></a></span>
+				<span><a href="$!{request.contextPath}$!{ns}/room.html" id="roomName"></a></span>
+				<span id="roomfee"><i>&gt;</i>缴费</span>
+			</div>
+			<div class="g-mnc">
+				<ul class="form-box-ul">
+					<li>设备列表</li>
+					<li>授权列表</li>
+					<li class="z-sel">缴费</li>
+				</ul>
+				
+				<ul class="cell-list">
+				<form id="frm_charge">
+				账户余额: <span id="balance"></span> 分&nbsp;&nbsp;欠费: <span id="arrearage"></span>分<br>
+				金额：<input type="text" class="u-ipt"  datatype="n" name="amount" id="amount" autocomplete="off"/> 分
+						<select name="rechargetype" id="rechargetype">
+							<option value="3">现金</option>
+							<option value="4">微信扫码</option>
+							<option value="5">支付宝扫码</option> 
+							<option value="6">刷卡</option>
+						</select>
+				 	  <button class="u-btn gray" id="btn_recharge">充值</button>
+				 	  <button class="u-btn gray" id="btn_withdraw">退款</button>
+				 	  <button class="u-btn gray" id="btn_charge">扣款</button>
+				</ul>
+				</form>
+				<div class="m-demo" id="list">
+				</div>
+				<div class="page" id="page"></div>
+			</div>  
+		</div>
+	#end 
+	#script()
+		require('static/libs/pro/index/roomrentfee')
+	#end
+
+  ## auto inject by fis3-preprocess-extlang
+  #require("page/index/roomfee.vm")
+#end

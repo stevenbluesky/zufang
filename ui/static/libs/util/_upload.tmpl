@@ -1,0 +1,17 @@
+<%if(type==0){%>
+	<!--dom结构部分-->
+	<div class="u-uploaderBox">
+	    <!--用来存放item-->
+	    <div id="fileList" class="uploader-list f-cb"></div>
+	    <div id="filePicker"><%=label.photoselect%></div>
+	</div>
+<%}else if(type == 1){%>
+	<div id="uploader" class="u-uploaderBox">
+	    <!--用来存放文件信息-->
+	    <div id="thelist" class="uploader-list"></div>
+	    <div class="btns">
+	        <div id="picker"><%=label.choosefile%></div>
+	        <button id="ctlBtn" class="u-btn gray"><%=label.uploadnow%></button>
+	    </div>
+	</div>
+<%}%>
